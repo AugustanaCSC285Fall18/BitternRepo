@@ -55,7 +55,7 @@ public class SecondWindowController {
 	@FXML public void handleEnd() {
 		
 	}
-	
+
 	@FXML public void handleConfirm() {
 		
 	}
