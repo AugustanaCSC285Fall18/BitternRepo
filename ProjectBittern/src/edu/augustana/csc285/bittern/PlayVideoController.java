@@ -1,6 +1,7 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -13,31 +14,38 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-
-public class SecondWindowController {
-	private VideoCapture video = new VideoCapture();
-	
+public class PlayVideoController {
+ 
 	@FXML private ImageView myImageView;
-	@FXML private Button confirmButton;
-	@FXML private TextField startTimeField;
-	@FXML private TextField endTimeField;
 	@FXML private Slider sliderBar;
+	@FXML private Button playButton;
+	@FXML private Label timeLabel;
 	
-	@FXML public void initialize() {
-		if (OpeningScreenController.getChosenFile() != null) {
-			video.open(OpeningScreenController.getChosenFile().getAbsolutePath());
+	private VideoCapture video = new VideoCapture();
+
+	public void handleBrowse() {
+		
+		File chosenFile = OpeningScreenController.getChosenFile();
+		if (chosenFile != null) {
+			video.open(chosenFile.getAbsolutePath());
 			sliderBar.setMax(video.get(Videoio.CV_CAP_PROP_FRAME_COUNT)-1);
 			displayFrame();
-		}
+		} 
+
+	}
+	
+	@FXML
+	public void handlePlay() {
 		
 	}
-		
-	@FXML public void handleSlider() {
+
+	@FXML 
+	public void handleSlider() {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
@@ -47,19 +55,7 @@ public class SecondWindowController {
 			}
 		});
 	}
-	
-	@FXML public void handleStart() {
-		
-	}
-	
-	@FXML public void handleEnd() {
-		
-	}
-	
-	@FXML public void handleConfirm() {
-		
-	}
-	
+
 	public void displayFrame() {
 		Mat frame = new Mat();
 		video.read(frame);
@@ -72,4 +68,5 @@ public class SecondWindowController {
 			}
 		});
 	}
+	 
 }

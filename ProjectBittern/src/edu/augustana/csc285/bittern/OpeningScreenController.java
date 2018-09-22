@@ -19,12 +19,13 @@ public class OpeningScreenController {
 	@FXML private Label nameLabel;
 	@FXML private Label fileNameLabel;
 	@FXML private Button confirmButton;
+	private static File chosenFile;
 	
 	@FXML public void handleBrowse() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Video File");
 		Window mainWindow = browseButton.getScene().getWindow();
-		File chosenFile = fileChooser.showOpenDialog(mainWindow);
+		chosenFile = fileChooser.showOpenDialog(mainWindow);
 		fileNameLabel.setText("You selected " + chosenFile.getAbsolutePath());
 	 }
 	
@@ -40,6 +41,9 @@ public class OpeningScreenController {
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
 		primary.setScene(nextScene);
 		primary.show();		
-		
+	}
+	
+	public static File getChosenFile() {
+		return chosenFile;
 	}
 }
