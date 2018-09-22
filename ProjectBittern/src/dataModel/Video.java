@@ -35,7 +35,6 @@ public class Video {
 	}
 
 	
-
 	public double getyPixelsPerCm() {
 		return yPixelsPerCm;
 	}
