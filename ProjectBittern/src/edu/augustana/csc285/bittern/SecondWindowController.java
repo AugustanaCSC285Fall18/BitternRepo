@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package edu.augustana.csc285.bittern;
 
 import java.io.ByteArrayInputStream;
