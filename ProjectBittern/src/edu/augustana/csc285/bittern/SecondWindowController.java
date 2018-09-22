@@ -31,7 +31,7 @@ public class SecondWindowController {
 	@FXML public void initialize() {	
 	}
 	
-	
+
 	
 	
 	
