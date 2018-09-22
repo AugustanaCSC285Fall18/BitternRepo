@@ -8,14 +8,14 @@ public class Video {
 	private double frameRate;
 	private double xPixelsPerCm;
 	private double yPixelsPerCm;
-	private double totalNumFrames;
+	private int totalNumFrames;
 	private String filePath;
 	private int startFrameNum;
 	private int endFrameNum;
 	private Rectangle arenaBounds;
 	//private double timeInSeconds;
 	
-	public Video(double frameRate, double totalNumFrames, String filePath) {
+	public Video(double frameRate, int totalNumFrames, String filePath) {
 		
 		this.frameRate = frameRate;
 		this.totalNumFrames = totalNumFrames;
@@ -40,7 +40,7 @@ public class Video {
 		return yPixelsPerCm;
 	}
 
-	public double getTotalNumFrames() {
+	public int getTotalNumFrames() {
 		return totalNumFrames;
 	}
 
@@ -52,7 +52,7 @@ public class Video {
 		this.filePath = filePath;
 	}
 
-	public int getStartFrameNum() {
+	public double getStartFrameNum() {
 		return startFrameNum;
 	}
 
@@ -60,7 +60,7 @@ public class Video {
 		this.startFrameNum = startFrameNum;
 	}
 
-	public int getEndFrameNum() {
+	public double getEndFrameNum() {
 		return endFrameNum;
 	}
 

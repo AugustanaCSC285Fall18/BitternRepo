@@ -37,7 +37,7 @@ public class SecondWindowController {
 		File chosenFile = OpeningScreenController.getChosenFile();
 		if (chosenFile != null) {
 			video.open(chosenFile.getAbsolutePath());
-			chosenVideo = new Video(video.get(Videoio.CV_CAP_PROP_FPS), video.get(Videoio.CV_CAP_PROP_FRAME_COUNT)-1, chosenFile.getAbsolutePath());
+			chosenVideo = new Video(video.get(Videoio.CV_CAP_PROP_FPS), (int) video.get(Videoio.CV_CAP_PROP_FRAME_COUNT)-1, chosenFile.getAbsolutePath());
 			sliderBar.setMax(chosenVideo.getTotalNumFrames());
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 			timeLabel.setText("0");
@@ -59,6 +59,10 @@ public class SecondWindowController {
 	}
 	
 	@FXML public void handleStart() {
+		if (isNumerical(startTimeField.getText())) {
+			chosenVideo.setStartFrameNum((int)Double.parseDouble(startTimeField.getText()));
+			System.out.println(chosenVideo.getStartFrameNum());
+		}
 		
 	}
 	
@@ -81,5 +85,15 @@ public class SecondWindowController {
 				myImageView.setImage(currentFrameImage);
 			}
 		});
+	}
+	
+	//https://stackoverflow.com/questions/14206768/how-to-check-if-a-string-is-numeric
+	public boolean isNumerical(String strNum) {
+	    try {
+	        Double.parseDouble(strNum);
+	    } catch (NumberFormatException e) {
+	        return false;
+	    }
+	    return true;
 	}
 }
