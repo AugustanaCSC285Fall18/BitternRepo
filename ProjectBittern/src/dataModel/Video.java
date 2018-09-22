@@ -1,6 +1,7 @@
 package dataModel;
 
-import java.awt.Rectangle;  // is this the right rectangle?
+//import java.awt.Rectangle;  // is this the right rectangle?
+import javafx.scene.shape.Rectangle;
 
 public class Video {
 	//fields
