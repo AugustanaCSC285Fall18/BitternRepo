@@ -39,9 +39,6 @@ public class OpeningScreenController {
 		
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
 		primary.setScene(nextScene);
-		
-		//Stage stage = new Stage();
-		//stage.setScene(nextScene);
 		primary.show();		
 		
 	}
