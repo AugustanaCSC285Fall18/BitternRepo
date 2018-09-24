@@ -28,8 +28,8 @@ public class SecondWindowController {
 	
 	@FXML private ImageView myImageView;
 	@FXML private Button confirmButton;
-	@FXML private TextField startTimeField;
-	@FXML private TextField endTimeField;
+	@FXML private Button startFrameButton;
+	@FXML private Button endFrameButton;
 	@FXML private Slider sliderBar;
 	@FXML private Label timeLabel;
 	
@@ -59,17 +59,20 @@ public class SecondWindowController {
 	}
 	
 	@FXML public void handleStart() {
-		if (isNumerical(startTimeField.getText())) {
+		/*if (isNumerical(startTimeField.getText())) {
 			chosenVideo.setStartFrameNum((int)Double.parseDouble(startTimeField.getText()));
 			System.out.println(chosenVideo.getStartFrameNum());
-		}
+		} */
 		
 	}
 	
 	@FXML public void handleEnd() {
-		
+		/*if (isNumerical(endTimeField.getText())) {
+			chosenVideo.setStartFrameNum((int)Double.parseDouble(startTimeField.getText()));
+			System.out.println(chosenVideo.getStartFrameNum());
+		} */
 	}
-
+	
 	@FXML public void handleConfirm() {
 		
 	}
