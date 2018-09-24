@@ -17,28 +17,30 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 
 public class SecondWindowController {
-	private VideoCapture video = new VideoCapture();
 	private Video chosenVideo;
 	
 	@FXML private ImageView myImageView;
 	@FXML private Button confirmButton;
-	@FXML private TextField startTimeField;
-	@FXML private TextField endTimeField;
+	@FXML private Button startFrameButton;
+	@FXML private Button endFrameButton;
 	@FXML private Slider sliderBar;
 	@FXML private Label timeLabel;
 	
 	@FXML public void initialize() {
 		File chosenFile = OpeningScreenController.getChosenFile();
 		if (chosenFile != null) {
-			video.open(chosenFile.getAbsolutePath());
-			chosenVideo = new Video(video.get(Videoio.CV_CAP_PROP_FPS), (int) video.get(Videoio.CV_CAP_PROP_FRAME_COUNT)-1, chosenFile.getAbsolutePath());
-			sliderBar.setMax(chosenVideo.getTotalNumFrames());
+			try {
+				chosenVideo = new Video(chosenFile.getAbsolutePath());
+			} catch (Exception e) {
+				System.out.println("Wromg file type."); //have catch be user being sent to previous screen
+			}
+			
+			sliderBar.setMax(chosenVideo.getTotalNumFrames()-1);
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 			timeLabel.setText("0");
 			displayFrame();
@@ -50,11 +52,16 @@ public class SecondWindowController {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
+<<<<<<< HEAD
 					double seconds = arg2.doubleValue()/chosenVideo.getFrameRate();
 					int minutes = (int) seconds / 60;
 					double remainingSeconds = seconds - 60 * minutes;
 					timeLabel.setText(minutes + ":" + String.format("%.2f", remainingSeconds));
 					video.set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+=======
+					timeLabel.setText(Double.toString(arg2.doubleValue()/chosenVideo.getFrameRate()));
+					chosenVideo.getVideo().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+>>>>>>> branch 'master' of https://github.com/AugustanaCSC285Fall18/BitternRepo.git
 					displayFrame();
 				}
 			}
@@ -62,24 +69,20 @@ public class SecondWindowController {
 	}
 	
 	@FXML public void handleStart() {
-		if (isNumerical(startTimeField.getText())) {
-			chosenVideo.setStartFrameNum((int)Double.parseDouble(startTimeField.getText()));
-			System.out.println(chosenVideo.getStartFrameNum());
-		}
-		
+		chosenVideo.setStartFrameNum((int) sliderBar.getValue());
 	}
 	
 	@FXML public void handleEnd() {
-		
+		chosenVideo.setEndFrameNum((int) sliderBar.getValue());
 	}
-
+	
 	@FXML public void handleConfirm() {
 		
 	}
 	
 	public void displayFrame() {
 		Mat frame = new Mat();
-		video.read(frame);
+		chosenVideo.getVideo().read(frame);
 		MatOfByte buffer = new MatOfByte();
 		Imgcodecs.imencode(".png", frame, buffer);
 		Image currentFrameImage = new Image(new ByteArrayInputStream(buffer.toArray()));

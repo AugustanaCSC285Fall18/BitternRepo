@@ -1,58 +1,48 @@
 package dataModel;
 
-//import java.awt.Rectangle;  // is this the right rectangle?
-import javafx.scene.shape.Rectangle;
+import java.awt.Rectangle;
+import java.io.FileNotFoundException;
+
+import org.opencv.videoio.VideoCapture;
+import org.opencv.videoio.Videoio;
 
 public class Video {
-	//fields
-	private double frameRate;
-	private double xPixelsPerCm;
-	private double yPixelsPerCm;
-	private int totalNumFrames;
+
 	private String filePath;
+	private VideoCapture video;
 	private int startFrameNum;
 	private int endFrameNum;
+
+	private double xPixelsPerCm;
+	private double yPixelsPerCm;
 	private Rectangle arenaBounds;
-	//private double timeInSeconds;
-	
-	public Video(double frameRate, int totalNumFrames, String filePath) {
-		
-		this.frameRate = frameRate;
-		this.totalNumFrames = totalNumFrames;
+
+	public Video(String filePath) throws FileNotFoundException {
 		this.filePath = filePath;
-	//	this.timeInSeconds = totalNumFrames / frameRate;
-		
-	}
-
-	public double getFrameRate() {
-		return frameRate;
-	}
-	
-	public double getDurationInSeconds() {
-		return totalNumFrames / frameRate;
-	}
-
-	public double getxPixelsPerCm() {
-		return xPixelsPerCm;
-	}
-
-	public double getyPixelsPerCm() {
-		return yPixelsPerCm;
-	}
-
-	public int getTotalNumFrames() {
-		return totalNumFrames;
+		this.video = new VideoCapture(filePath);
+		video.open(filePath);
+		if (!video.isOpened()) {
+			throw new FileNotFoundException("Unable to open video file: " + filePath);
+		}
 	}
 
 	public String getFilePath() {
-		return filePath;
+		return this.filePath;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public double getFrameRate() {
+		return video.get(Videoio.CAP_PROP_FPS);
 	}
 
-	public double getStartFrameNum() {
+	public int getTotalNumFrames() {
+		return (int) video.get(Videoio.CAP_PROP_FRAME_COUNT);
+	}
+
+	public VideoCapture getVideo() {
+		return this.video;
+	}
+
+	public int getStartFrameNum() {
 		return startFrameNum;
 	}
 
@@ -60,12 +50,28 @@ public class Video {
 		this.startFrameNum = startFrameNum;
 	}
 
-	public double getEndFrameNum() {
+	public int getEndFrameNum() {
 		return endFrameNum;
 	}
 
 	public void setEndFrameNum(int endFrameNum) {
 		this.endFrameNum = endFrameNum;
+	}
+
+	public double getXPixelsPerCm() {
+		return xPixelsPerCm;
+	}
+
+	public void setXPixelsPerCm(double xPixelsPerCm) {
+		this.xPixelsPerCm = xPixelsPerCm;
+	}
+
+	public double getYPixelsPerCm() {
+		return yPixelsPerCm;
+	}
+
+	public void setYPixelsPerCm(double yPixelsPerCm) {
+		this.yPixelsPerCm = yPixelsPerCm;
 	}
 
 	public Rectangle getArenaBounds() {
@@ -75,4 +81,5 @@ public class Video {
 	public void setArenaBounds(Rectangle arenaBounds) {
 		this.arenaBounds = arenaBounds;
 	}
+
 }
