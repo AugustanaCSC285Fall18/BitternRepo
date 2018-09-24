@@ -50,7 +50,7 @@ public class SecondWindowController {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
-					timeLabel.setText(Double.toString(arg2.doubleValue()/chosenVideo.getFrameRate()));
+					timeLabel.setText("Time in Second: " +Double.toString(arg2.doubleValue()/chosenVideo.getFrameRate()));
 					video.set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
 					displayFrame();
 				}
