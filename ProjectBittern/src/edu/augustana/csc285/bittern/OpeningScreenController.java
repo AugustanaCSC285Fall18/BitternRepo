@@ -3,6 +3,7 @@ package edu.augustana.csc285.bittern;
 import java.io.File;
 import java.io.IOException;
 
+import dataModel.Video;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -26,15 +27,13 @@ public class OpeningScreenController {
 		fileChooser.setTitle("Open Video File");
 		Window mainWindow = browseButton.getScene().getWindow();
 		chosenFile = fileChooser.showOpenDialog(mainWindow);
-		fileNameLabel.setText("You selected " + chosenFile.getAbsolutePath());
+		fileNameLabel.setText("You selected " + chosenFile.getAbsolutePath());		
 	 }
 	
 	@FXML public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("SecondWindow.fxml"));
 		AnchorPane root = (AnchorPane)loader.load();
-		
-		//SecondWindowController confirmController = loader.getController();	
-		
+			
 		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		

@@ -41,7 +41,7 @@ public class PlayVideoController {
 	
 	@FXML
 	public void handlePlay() {
-		
+	
 	}
 
 	@FXML 

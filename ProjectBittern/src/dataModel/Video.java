@@ -81,5 +81,9 @@ public class Video {
 	public void setArenaBounds(Rectangle arenaBounds) {
 		this.arenaBounds = arenaBounds;
 	}
+	
+	/*public String toString() {
+		System.out.println();
+	}*/
 
 }

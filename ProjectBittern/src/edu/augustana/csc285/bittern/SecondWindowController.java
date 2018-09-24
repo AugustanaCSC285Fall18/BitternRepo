@@ -2,6 +2,7 @@ package edu.augustana.csc285.bittern;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -14,11 +15,15 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 
 public class SecondWindowController {
@@ -68,8 +73,15 @@ public class SecondWindowController {
 		chosenVideo.setEndFrameNum((int) sliderBar.getValue());
 	}
 	
-	@FXML public void handleConfirm() {
+	@FXML public void handleConfirm() throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("PlayVideoScreen.fxml"));
+		AnchorPane root = (AnchorPane)loader.load();
+		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
+		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
+		Stage primary = (Stage) confirmButton.getScene().getWindow();
+		primary.setScene(nextScene);
+		primary.show();		
 	}
 	
 	public void displayFrame() {
