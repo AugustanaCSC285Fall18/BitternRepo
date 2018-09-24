@@ -52,17 +52,11 @@ public class SecondWindowController {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
-<<<<<<< HEAD
 					double seconds = arg2.doubleValue()/chosenVideo.getFrameRate();
 					int minutes = (int) seconds / 60;
 					double remainingSeconds = seconds - 60 * minutes;
 					timeLabel.setText(minutes + ":" + String.format("%.2f", remainingSeconds));
-					video.set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
-=======
-					timeLabel.setText(Double.toString(arg2.doubleValue()/chosenVideo.getFrameRate()));
 					chosenVideo.getVideo().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
->>>>>>> branch 'master' of https://github.com/AugustanaCSC285Fall18/BitternRepo.git
-					displayFrame();
 				}
 			}
 		});
