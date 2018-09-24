@@ -26,47 +26,11 @@ public class PlayVideoController {
 	@FXML private Button playButton;
 	@FXML private Label timeLabel;
 	
-	private VideoCapture video = new VideoCapture();
-
-	public void handleBrowse() {
-		
-		File chosenFile = OpeningScreenController.getChosenFile();
-		if (chosenFile != null) {
-			video.open(chosenFile.getAbsolutePath());
-			sliderBar.setMax(video.get(Videoio.CV_CAP_PROP_FRAME_COUNT)-1);
-			displayFrame();
-		} 
-
-	}
-	
 	@FXML
 	public void handlePlay() {
 	
 	}
 
-	@FXML 
-	public void handleSlider() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					video.set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
-					displayFrame();
-				}
-			}
-		});
-	}
-
-	public void displayFrame() {
-		Mat frame = new Mat();
-		video.read(frame);
-		MatOfByte buffer = new MatOfByte();
-		Imgcodecs.imencode(".png", frame, buffer);
-		Image currentFrameImage = new Image(new ByteArrayInputStream(buffer.toArray()));
-		Platform.runLater(new Runnable() {
-			public void run() {
-				myImageView.setImage(currentFrameImage);
-			}
-		});
-	}
+	
 	 
 }
