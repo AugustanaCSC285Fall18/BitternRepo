@@ -17,7 +17,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -36,8 +35,13 @@ public class SecondWindowController {
 	@FXML public void initialize() {
 		File chosenFile = OpeningScreenController.getChosenFile();
 		if (chosenFile != null) {
-			video.open(chosenFile.getAbsolutePath());
-			chosenVideo = new Video(video.get(Videoio.CV_CAP_PROP_FPS), (int) video.get(Videoio.CV_CAP_PROP_FRAME_COUNT)-1, chosenFile.getAbsolutePath());
+			//video.open(chosenFile.getAbsolutePath());
+			try {
+				chosenVideo = new Video(chosenFile.getAbsolutePath());
+			} catch (Exception e) {
+				System.out.println("Wromg file type."); //have catch be user being sent to previous screen
+			}
+			
 			sliderBar.setMax(chosenVideo.getTotalNumFrames());
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 			timeLabel.setText("0");
@@ -59,18 +63,11 @@ public class SecondWindowController {
 	}
 	
 	@FXML public void handleStart() {
-		/*if (isNumerical(startTimeField.getText())) {
-			chosenVideo.setStartFrameNum((int)Double.parseDouble(startTimeField.getText()));
-			System.out.println(chosenVideo.getStartFrameNum());
-		} */
-		
+		chosenVideo.setStartFrameNum((int) sliderBar.getValue());
 	}
 	
 	@FXML public void handleEnd() {
-		/*if (isNumerical(endTimeField.getText())) {
-			chosenVideo.setStartFrameNum((int)Double.parseDouble(startTimeField.getText()));
-			System.out.println(chosenVideo.getStartFrameNum());
-		} */
+		chosenVideo.setEndFrameNum((int) sliderBar.getValue());
 	}
 	
 	@FXML public void handleConfirm() {
