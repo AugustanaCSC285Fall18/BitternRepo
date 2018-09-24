@@ -57,6 +57,7 @@ public class SecondWindowController {
 					double remainingSeconds = seconds - 60 * minutes;
 					timeLabel.setText(minutes + ":" + String.format("%.2f", remainingSeconds));
 					chosenVideo.getVideo().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+					displayFrame();
 				}
 			}
 		});
