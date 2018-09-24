@@ -7,40 +7,45 @@ import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
 public class Video {
-	
+
 	private String filePath;
 	private VideoCapture video;
 	private int startFrameNum;
 	private int endFrameNum;
-	
+
 	private double xPixelsPerCm;
 	private double yPixelsPerCm;
-	private Rectangle arenaBounds; 
-	
-		
+	private Rectangle arenaBounds;
+
 	public Video(String filePath) throws FileNotFoundException {
 		this.filePath = filePath;
 		this.video = new VideoCapture(filePath);
+		video.open(filePath);
 		if (!video.isOpened()) {
 			throw new FileNotFoundException("Unable to open video file: " + filePath);
-		}		
+		}
 	}
-	
+
 	public String getFilePath() {
 		return this.filePath;
 	}
+
 	public double getFrameRate() {
 		return video.get(Videoio.CAP_PROP_FPS);
 	}
+
 	public int getTotalNumFrames() {
 		return (int) video.get(Videoio.CAP_PROP_FRAME_COUNT);
 	}
 
-	
+	public VideoCapture getVideo() {
+		return this.video;
+	}
+
 	public int getStartFrameNum() {
 		return startFrameNum;
 	}
-	
+
 	public void setStartFrameNum(int startFrameNum) {
 		this.startFrameNum = startFrameNum;
 	}
@@ -76,6 +81,5 @@ public class Video {
 	public void setArenaBounds(Rectangle arenaBounds) {
 		this.arenaBounds = arenaBounds;
 	}
-	
 
 }
