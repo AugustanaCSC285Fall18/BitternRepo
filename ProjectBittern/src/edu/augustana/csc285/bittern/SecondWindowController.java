@@ -2,6 +2,7 @@ package edu.augustana.csc285.bittern;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.text.DecimalFormat;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -52,6 +53,7 @@ public class SecondWindowController {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
+					DecimalFormat df = new DecimalFormat("###.##");
 					double seconds = arg2.doubleValue()/chosenVideo.getFrameRate();
 					int minutes = (int) seconds / 60;
 					double remainingSeconds = seconds - 60 * minutes;
