@@ -57,7 +57,6 @@ public class PlayVideoController {
 			Runnable frameGrabber = new Runnable() {
 				public void run() {
 					chosenVideo.setCurrentFrameNum((int) chosenVideo.getVidCap().get(Videoio.CAP_PROP_POS_FRAMES));
-					System.out.println(chosenVideo.getCurrentFrameNum());
 					displayFrame();
 				}
 			};
