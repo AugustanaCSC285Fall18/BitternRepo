@@ -22,8 +22,12 @@ import javafx.scene.image.ImageView;
 
 
 public class SecondWindowController {
+<<<<<<< HEAD
 	private VideoCapture video = new VideoCapture();
 	private Video chosenVideo;
+=======
+	private static Video chosenVideo;
+>>>>>>> branch 'master' of https://github.com/AugustanaCSC285Fall18/BitternRepo.git
 	
 	@FXML private ImageView myImageView;
 	@FXML private Button confirmButton;
@@ -53,8 +57,16 @@ public class SecondWindowController {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
+<<<<<<< HEAD
 					timeLabel.setText(Double.toString(arg2.doubleValue()/chosenVideo.getFrameRate()));
 					video.set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+=======
+					double seconds = arg2.doubleValue()/chosenVideo.getFrameRate();
+					int minutes = (int) seconds / 60;
+					double remainingSeconds = seconds - 60 * minutes;
+					timeLabel.setText(minutes + ":" + String.format("%.2f", remainingSeconds));
+					chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+>>>>>>> branch 'master' of https://github.com/AugustanaCSC285Fall18/BitternRepo.git
 					displayFrame();
 				}
 			}
@@ -63,6 +75,8 @@ public class SecondWindowController {
 	
 	@FXML public void handleStart() {
 		chosenVideo.setStartFrameNum((int) sliderBar.getValue());
+		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
+		chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, chosenVideo.getStartFrameNum());
 	}
 	
 	@FXML public void handleEnd() {
@@ -75,7 +89,11 @@ public class SecondWindowController {
 	
 	public void displayFrame() {
 		Mat frame = new Mat();
+<<<<<<< HEAD
 		video.read(frame);
+=======
+		chosenVideo.getVidCap().read(frame);
+>>>>>>> branch 'master' of https://github.com/AugustanaCSC285Fall18/BitternRepo.git
 		MatOfByte buffer = new MatOfByte();
 		Imgcodecs.imencode(".png", frame, buffer);
 		Image currentFrameImage = new Image(new ByteArrayInputStream(buffer.toArray()));
@@ -95,4 +113,14 @@ public class SecondWindowController {
 	    }
 	    return true;
 	}
+<<<<<<< HEAD
+=======
+	
+	public static Video getChosenVideo() {
+		return chosenVideo;
+	}
+	
+	
+	
+>>>>>>> branch 'master' of https://github.com/AugustanaCSC285Fall18/BitternRepo.git
 }
