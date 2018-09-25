@@ -38,16 +38,13 @@ public class SecondWindowController {
 	@FXML public void initialize() {
 		File chosenFile = OpeningScreenController.getChosenFile();
 		if (chosenFile != null) {
-<<<<<<< HEAD
-		video.open(chosenFile.getAbsolutePath());
-=======
->>>>>>> e652dfeb88a4ece914875b1c89d8e86c292f452c
+		
 			try {
 				chosenVideo = new Video(chosenFile.getAbsolutePath());
 			} catch (Exception e) {
 				System.out.println("Wromg file type."); //have catch be user being sent to previous screen
 			}
-			
+			chosenVideo.getVidCap().open(chosenFile.getAbsolutePath());
 			sliderBar.setMax(chosenVideo.getTotalNumFrames()-1);
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 			timeLabel.setText("0");
