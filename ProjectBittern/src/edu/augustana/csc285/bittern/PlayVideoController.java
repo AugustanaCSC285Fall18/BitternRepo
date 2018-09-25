@@ -56,8 +56,8 @@ public class PlayVideoController {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
 					chosenVideo.setCurrentFrameNum((int) arg2);
-					chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
-					displayFrame();
+					//chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+					System.out.println("Slider moved" + chosenVideo.getCurrentFrameNum());
 				}
 			}
 		});
@@ -72,6 +72,7 @@ public class PlayVideoController {
 					chosenVideo.setCurrentFrameNum((int) chosenVideo.getVidCap().get(Videoio.CAP_PROP_POS_FRAMES));
 					if (chosenVideo.getCurrentFrameNum() <= chosenVideo.getEndFrameNum()) {
 						sliderBar.setValue(chosenVideo.getCurrentFrameNum());
+						System.out.println(chosenVideo.getCurrentFrameNum());
 						displayFrame();
 					}
 				}
