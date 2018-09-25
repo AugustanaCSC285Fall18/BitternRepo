@@ -31,8 +31,7 @@ public class OpeningScreenController {
 	
 	@FXML public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("SecondWindow.fxml"));
-		AnchorPane root = (AnchorPane)loader.load();
-			
+		AnchorPane root = (AnchorPane)loader.load();;
 		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		

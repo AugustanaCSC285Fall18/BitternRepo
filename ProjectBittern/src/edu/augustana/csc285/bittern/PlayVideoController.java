@@ -12,6 +12,8 @@ import org.opencv.videoio.Videoio;
 
 import dataModel.Video;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,7 +32,8 @@ public class PlayVideoController {
 	
 	@FXML public void initialize() {
 		chosenVideo.getVidCap().open(chosenVideo.getFilePath());
-		sliderBar.setMax(chosenVideo.getTotalNumFrames());
+		sliderBar.setMin(chosenVideo.getStartFrameNum());
+		sliderBar.setMax(chosenVideo.getEndFrameNum());
 		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 		displayFrame();
 	}
@@ -49,7 +52,15 @@ public class PlayVideoController {
 	
 	@FXML 
 	public void handleSlider() {
-		
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					chosenVideo.setCurrentFrameNum((int) arg2);
+					chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+					displayFrame();
+				}
+			}
+		});
 	}
 	
 	public void startVideo() {
@@ -59,8 +70,10 @@ public class PlayVideoController {
 			Runnable frameGrabber = new Runnable() {
 				public void run() {
 					chosenVideo.setCurrentFrameNum((int) chosenVideo.getVidCap().get(Videoio.CAP_PROP_POS_FRAMES));
-					sliderBar.setValue(chosenVideo.getCurrentFrameNum());
-					displayFrame();
+					if (chosenVideo.getCurrentFrameNum() <= chosenVideo.getEndFrameNum()) {
+						sliderBar.setValue(chosenVideo.getCurrentFrameNum());
+						displayFrame();
+					}
 				}
 			};
 			
