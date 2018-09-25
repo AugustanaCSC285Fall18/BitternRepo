@@ -9,7 +9,7 @@ import org.opencv.videoio.Videoio;
 public class Video {
 
 	private String filePath;
-	private  static VideoCapture video;
+	private   VideoCapture video;
 	private int startFrameNum;
 	private int endFrameNum;
 
@@ -38,7 +38,7 @@ public class Video {
 		return (int) video.get(Videoio.CAP_PROP_FRAME_COUNT);
 	}
 
-	public static VideoCapture getVideo() {
+	public  VideoCapture getVideo() {
 		return video;
 	}
 

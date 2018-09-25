@@ -7,7 +7,6 @@ import java.io.IOException;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
 import dataModel.Video;
@@ -106,4 +105,6 @@ public class SecondWindowController {
 	    }
 	    return true;
 	}
+	
+	
 }
