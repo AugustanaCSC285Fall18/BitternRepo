@@ -30,6 +30,8 @@ public class PlayVideoController {
 	
 	@FXML public void initialize() {
 		chosenVideo.getVidCap().open(chosenVideo.getFilePath());
+		sliderBar.setMax(chosenVideo.getTotalNumFrames());
+		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 		displayFrame();
 	}
 	
@@ -57,6 +59,7 @@ public class PlayVideoController {
 			Runnable frameGrabber = new Runnable() {
 				public void run() {
 					chosenVideo.setCurrentFrameNum((int) chosenVideo.getVidCap().get(Videoio.CAP_PROP_POS_FRAMES));
+					sliderBar.setValue(chosenVideo.getCurrentFrameNum());
 					displayFrame();
 				}
 			};

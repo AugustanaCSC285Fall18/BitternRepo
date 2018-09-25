@@ -3,7 +3,6 @@ package edu.augustana.csc285.bittern;
 import java.io.File;
 import java.io.IOException;
 
-import dataModel.Video;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
