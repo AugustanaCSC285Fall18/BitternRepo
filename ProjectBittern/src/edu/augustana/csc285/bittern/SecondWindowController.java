@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
 import dataModel.Video;
@@ -27,7 +28,11 @@ import javafx.stage.Stage;
 
 
 public class SecondWindowController {
+
+	private VideoCapture video = new VideoCapture();
+
 	private static Video chosenVideo;
+
 	
 	@FXML private ImageView myImageView;
 	@FXML private Button confirmButton;
@@ -39,12 +44,14 @@ public class SecondWindowController {
 	@FXML public void initialize() {
 		File chosenFile = OpeningScreenController.getChosenFile();
 		if (chosenFile != null) {
-		
+
 			try {
 				chosenVideo = new Video(chosenFile.getAbsolutePath());
 			} catch (Exception e) {
 				System.out.println("Wromg file type."); //have catch be user being sent to previous screen
 			}
+
+			sliderBar.setMax(chosenVideo.getTotalNumFrames());
 			chosenVideo.getVidCap().open(chosenFile.getAbsolutePath());
 			sliderBar.setMax(chosenVideo.getTotalNumFrames()-1);
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
@@ -59,6 +66,8 @@ public class SecondWindowController {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
 					DecimalFormat df = new DecimalFormat("00.00");
+					timeLabel.setText(Double.toString(arg2.doubleValue()/chosenVideo.getFrameRate()));
+					video.set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue()); // why
 					double seconds = arg2.doubleValue()/chosenVideo.getFrameRate();
 					int minutes = (int) seconds / 60;
 					double remainingSeconds = seconds - (60 * minutes); 
@@ -83,6 +92,7 @@ public class SecondWindowController {
 	@FXML public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("PlayVideoScreen.fxml"));
 		AnchorPane root = (AnchorPane)loader.load();
+			
 		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
@@ -117,7 +127,5 @@ public class SecondWindowController {
 	public static Video getChosenVideo() {
 		return chosenVideo;
 	}
-	
-	
-	
+
 }
