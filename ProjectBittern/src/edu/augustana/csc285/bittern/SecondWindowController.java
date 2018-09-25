@@ -35,7 +35,7 @@ public class SecondWindowController {
 	@FXML public void initialize() {
 		File chosenFile = OpeningScreenController.getChosenFile();
 		if (chosenFile != null) {
-			//video.open(chosenFile.getAbsolutePath());
+		video.open(chosenFile.getAbsolutePath());
 			try {
 				chosenVideo = new Video(chosenFile.getAbsolutePath());
 			} catch (Exception e) {
