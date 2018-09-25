@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 
 
 public class SecondWindowController {
-	private Video chosenVideo;
+	private static Video chosenVideo;
 	
 	@FXML private ImageView myImageView;
 	@FXML private Button confirmButton;
@@ -60,7 +60,7 @@ public class SecondWindowController {
 					int minutes = (int) seconds / 60;
 					double remainingSeconds = seconds - 60 * minutes;
 					timeLabel.setText(minutes + ":" + String.format("%.2f", remainingSeconds));
-					chosenVideo.getVideo().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+					chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
 					displayFrame();
 				}
 			}
@@ -69,6 +69,8 @@ public class SecondWindowController {
 	
 	@FXML public void handleStart() {
 		chosenVideo.setStartFrameNum((int) sliderBar.getValue());
+		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
+		chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, chosenVideo.getStartFrameNum());
 	}
 	
 	@FXML public void handleEnd() {
@@ -88,7 +90,7 @@ public class SecondWindowController {
 	
 	public void displayFrame() {
 		Mat frame = new Mat();
-		chosenVideo.getVideo().read(frame);
+		chosenVideo.getVidCap().read(frame);
 		MatOfByte buffer = new MatOfByte();
 		Imgcodecs.imencode(".png", frame, buffer);
 		Image currentFrameImage = new Image(new ByteArrayInputStream(buffer.toArray()));
@@ -108,6 +110,11 @@ public class SecondWindowController {
 	    }
 	    return true;
 	}
+	
+	public static Video getChosenVideo() {
+		return chosenVideo;
+	}
+	
 	
 	
 }
