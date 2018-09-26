@@ -41,6 +41,7 @@ public class SecondWindowController {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
+					chosenVideo.setCurrentFrameNum(arg2.intValue());
 					timeLabel.setText(getTime(arg2.doubleValue()));
 					displayFrame();
 				}

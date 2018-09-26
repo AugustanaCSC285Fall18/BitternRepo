@@ -91,7 +91,7 @@ public class Video {
 	}
 	
 	public void setCurrentFrameNum(int currentFrameNum) {
-		if (currentFrameNum >= 0 && currentFrameNum <= getEndFrameNum()) {
+		if (currentFrameNum >= 0 && currentFrameNum <= getTotalNumFrames()) {
 			vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
 		} else {
 			throw new IllegalArgumentException("Input out of range");
