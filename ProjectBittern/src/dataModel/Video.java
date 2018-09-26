@@ -2,6 +2,7 @@ package dataModel;
 
 import java.awt.Rectangle;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
@@ -91,7 +92,7 @@ public class Video {
 	}
 	
 	public void setCurrentFrameNum(int currentFrameNum) {
-		if (currentFrameNum >= 0 && currentFrameNum <= getTotalNumFrames()) {
+		if (currentFrameNum > 0 && currentFrameNum <= getTotalNumFrames()) {
 			vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
 		} else {
 			throw new IllegalArgumentException("Input out of range");
@@ -103,7 +104,7 @@ public class Video {
 	}
 
 	public void resetToStart() {
-		setCurrentFrameNum(0);
+		setCurrentFrameNum(1);
 	}
 	
 	public void readFrame(Mat frame) {
@@ -113,6 +114,15 @@ public class Video {
 	public boolean isOpened() {
 		return vidCap.isOpened();
 	}
+	
+	//take out double decimals
+	public String getTime(int frameNumber) {
+		DecimalFormat df = new DecimalFormat("00.00");
+		int seconds = (int) (frameNumber / this.getFrameRate());
+		int minutes = seconds / 60;
+		int remainingSeconds = (int) seconds - (60 * minutes);
+		return minutes + ":" + df.format(remainingSeconds);
+	} 
 	
 	@Override
 	public String toString() {
