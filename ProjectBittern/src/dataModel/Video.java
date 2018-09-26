@@ -3,6 +3,7 @@ package dataModel;
 import java.awt.Rectangle;
 import java.io.FileNotFoundException;
 
+import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
@@ -12,7 +13,6 @@ public class Video {
 	private VideoCapture vidCap;
 	private int startFrameNum;
 	private int endFrameNum;
-	private int currentFrameNum;
 
 	private double xPixelsPerCm;
 	private double yPixelsPerCm;
@@ -37,10 +37,6 @@ public class Video {
 
 	public int getTotalNumFrames() {
 		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_COUNT);
-	}
-
-	public VideoCapture getVidCap() {
-		return vidCap;
 	}
 
 	public int getStartFrameNum() {
@@ -84,11 +80,20 @@ public class Video {
 	}
 	
 	public void setCurrentFrameNum(int currentFrameNum) {
-		this.currentFrameNum = currentFrameNum;
+		vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
+
 	}
 	
 	public int getCurrentFrameNum() {
-		return this.currentFrameNum;
+		return (int) vidCap.get(Videoio.CAP_PROP_POS_FRAMES);
+	}
+
+	public void resetToStart() {
+		setCurrentFrameNum(0);
+	}
+	
+	public void readFrame(Mat frame) {
+		vidCap.read(frame);
 	}
 	
 	/*public String toString() {

@@ -31,7 +31,7 @@ public class PlayVideoController {
 	private ScheduledExecutorService timer;
 	
 	@FXML public void initialize() {
-		chosenVideo.getVidCap().open(chosenVideo.getFilePath());
+		chosenVideo.resetToStart();
 		sliderBar.setMin(chosenVideo.getStartFrameNum());
 		sliderBar.setMax(chosenVideo.getEndFrameNum());
 		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
@@ -39,12 +39,13 @@ public class PlayVideoController {
 	}
 	
 	@FXML
-	public void handlePlay() {
+	public void handlePlay() throws InterruptedException {
 		if(playButton.getText().equalsIgnoreCase("play")) {
 			playButton.setText("Pause");
 			startVideo();
 		} else {
 			timer.shutdown();
+			timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
 			playButton.setText("Play");
 		}
 		
@@ -55,8 +56,15 @@ public class PlayVideoController {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
-					chosenVideo.setCurrentFrameNum((int) arg2);
-					chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+					//timer.shutdown();
+					try {
+						
+						timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					chosenVideo.setCurrentFrameNum(arg2.intValue());
 					displayFrame();
 				}
 			}
@@ -65,11 +73,10 @@ public class PlayVideoController {
 	
 	public void startVideo() {
 		
-		if (chosenVideo.getVidCap().isOpened()) {
-			chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, chosenVideo.getCurrentFrameNum());
+		chosenVideo.setCurrentFrameNum(Videoio.CAP_PROP_POS_FRAMES);
 			Runnable frameGrabber = new Runnable() {
 				public void run() {
-					chosenVideo.setCurrentFrameNum((int) chosenVideo.getVidCap().get(Videoio.CAP_PROP_POS_FRAMES));
+					chosenVideo.setCurrentFrameNum(Videoio.CAP_PROP_POS_FRAMES);
 					if (chosenVideo.getCurrentFrameNum() <= chosenVideo.getEndFrameNum()) {
 						sliderBar.setValue(chosenVideo.getCurrentFrameNum());
 						displayFrame();
@@ -81,11 +88,11 @@ public class PlayVideoController {
 			this.timer.scheduleAtFixedRate(frameGrabber, 0,(int) chosenVideo.getFrameRate(), TimeUnit.MILLISECONDS);
 			
 		}
-	}
+
 	
 	public void displayFrame() {
 		Mat frame = new Mat();
-		chosenVideo.getVidCap().read(frame);
+		chosenVideo.readFrame(frame);
 		MatOfByte buffer = new MatOfByte();
 		Imgcodecs.imencode(".png", frame, buffer);
 		Image currentFrameImage = new Image(new ByteArrayInputStream(buffer.toArray()));
