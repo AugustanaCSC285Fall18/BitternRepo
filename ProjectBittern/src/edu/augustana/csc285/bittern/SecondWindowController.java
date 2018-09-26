@@ -1,15 +1,12 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.text.DecimalFormat;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.VideoCapture;
-import org.opencv.videoio.Videoio;
 
 import dataModel.Video;
 import javafx.application.Platform;
@@ -28,55 +25,22 @@ import javafx.stage.Stage;
 
 public class SecondWindowController {
 
-	private VideoCapture video = new VideoCapture();
+	private Video chosenVideo;
 
-	private static Video chosenVideo;
-
-	@FXML
-	private ImageView myImageView;
-	@FXML
-	private Button confirmButton;
-	@FXML
-	private Button startFrameButton;
-	@FXML
-	private Button endFrameButton;
-	@FXML
-	private Slider sliderBar;
-	@FXML
-	private Label timeLabel;
-
-	@FXML
-	public void initialize() {
-		File chosenFile = OpeningScreenController.getChosenFile();
-		if (chosenFile != null) {
-
-			try {
-				chosenVideo = new Video(chosenFile.getAbsolutePath());
-			} catch (Exception e) {
-				System.out.println("Wromg file type."); // have catch be user being sent to previous screen
-			}
-
-			sliderBar.setMax(chosenVideo.getTotalNumFrames() - 1);
-			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
-			timeLabel.setText("0:00");
-			displayFrame();
-		}
-
-	}
+	@FXML private ImageView myImageView;
+	@FXML private Button confirmButton;
+	@FXML private Button startFrameButton;
+	@FXML private Button endFrameButton;
+	@FXML private Slider sliderBar;
+	@FXML private Label timeLabel;
 
 	@FXML
 	public void handleSlider() {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
-					DecimalFormat df = new DecimalFormat("00.00");
-					timeLabel.setText(Double.toString(arg2.doubleValue() / chosenVideo.getFrameRate()));
-					video.set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue()); // why
-					double seconds = arg2.doubleValue() / chosenVideo.getFrameRate();
-					int minutes = (int) seconds / 60;
-					double remainingSeconds = seconds - (60 * minutes);
-					timeLabel.setText(minutes + ":" + df.format(remainingSeconds));
 					chosenVideo.setCurrentFrameNum(arg2.intValue());
+					displayTime(arg2.doubleValue());
 					displayFrame();
 				}
 			}
@@ -99,6 +63,9 @@ public class SecondWindowController {
 	public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("PlayVideoScreen.fxml"));
 		AnchorPane root = (AnchorPane) loader.load();
+		
+		PlayVideoController pvc = loader.getController();
+		pvc.setVideo(chosenVideo);
 
 		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -121,18 +88,26 @@ public class SecondWindowController {
 		});
 	}
 
-	// https://stackoverflow.com/questions/14206768/how-to-check-if-a-string-is-numeric
-	public boolean isNumerical(String strNum) {
+
+	public void createVideo(String chosenFileName) {
 		try {
-			Double.parseDouble(strNum);
-		} catch (NumberFormatException e) {
-			return false;
+			chosenVideo = new Video(chosenFileName);
+			sliderBar.setMax(chosenVideo.getTotalNumFrames() - 1);
+			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
+			timeLabel.setText("0:00");
+			displayFrame();
+			System.out.println(chosenVideo);
+		} catch (Exception e) {
+			System.out.println("File not found.");
 		}
-		return true;
 	}
-
-	public static Video getChosenVideo() {
-		return chosenVideo;
+	
+	public void displayTime(double frameNumber) {
+		DecimalFormat df = new DecimalFormat("00.00");
+		timeLabel.setText(Double.toString(frameNumber / chosenVideo.getFrameRate()));
+		double seconds = frameNumber / chosenVideo.getFrameRate();
+		int minutes = (int) seconds / 60;
+		double remainingSeconds = seconds - (60 * minutes);
+		timeLabel.setText(minutes + ":" + df.format(remainingSeconds));
 	}
-
 }

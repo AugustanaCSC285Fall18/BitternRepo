@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.Videoio;
 
 import dataModel.Video;
 import javafx.application.Platform;
@@ -22,22 +21,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class PlayVideoController {
- 
+
 	@FXML private ImageView myImageView;
 	@FXML private Slider sliderBar;
 	@FXML private Button playButton;
 	@FXML private Label timeLabel;
-	private Video chosenVideo = SecondWindowController.getChosenVideo();
+	private Video chosenVideo;
 	private ScheduledExecutorService timer;
-	
-	@FXML public void initialize() {
-		chosenVideo.resetToStart();
-		sliderBar.setMin(chosenVideo.getStartFrameNum());
-		sliderBar.setMax(chosenVideo.getEndFrameNum());
-		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
-		displayFrame();
-	}
-	
+
 	@FXML
 	public void handlePlay() throws InterruptedException {
 		if(playButton.getText().equalsIgnoreCase("play")) {
@@ -48,39 +39,35 @@ public class PlayVideoController {
 			timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
 			playButton.setText("Play");
 		}
-		
+
 	}
-	
+
 	@FXML 
 	public void handleSlider() {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
-					//timer.shutdown();
+					timer.shutdown();
 					try {
-						
 						timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-
+					
 					chosenVideo.setCurrentFrameNum(arg2.intValue());
 					displayFrame();
-					//chosenVideo.setCurrentFrameNum((int) arg2);
-					//chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
 					System.out.println("Slider moved" + chosenVideo.getCurrentFrameNum());
 
 				}
+				startVideo();
 			}
 		});
 	}
-	
+
 	public void startVideo() {
-		
-		chosenVideo.setCurrentFrameNum(Videoio.CAP_PROP_POS_FRAMES);
+		if (chosenVideo.isOpened()) {
 			Runnable frameGrabber = new Runnable() {
 				public void run() {
-					chosenVideo.setCurrentFrameNum(Videoio.CAP_PROP_POS_FRAMES);
 					if (chosenVideo.getCurrentFrameNum() <= chosenVideo.getEndFrameNum()) {
 						sliderBar.setValue(chosenVideo.getCurrentFrameNum());
 						System.out.println(chosenVideo.getCurrentFrameNum());
@@ -88,13 +75,15 @@ public class PlayVideoController {
 					}
 				}
 			};
-			
+
 			this.timer = Executors.newSingleThreadScheduledExecutor();
 			this.timer.scheduleAtFixedRate(frameGrabber, 0,(int) chosenVideo.getFrameRate(), TimeUnit.MILLISECONDS);
-			
+
 		}
 
-	
+	}
+
+
 	public void displayFrame() {
 		Mat frame = new Mat();
 		chosenVideo.readFrame(frame);
@@ -107,6 +96,15 @@ public class PlayVideoController {
 			}
 		});
 	}
-	
-	
+
+	public void setVideo(Video chosenVideo) {
+		this.chosenVideo = chosenVideo;
+		chosenVideo.resetToStart();
+		System.out.println(chosenVideo);
+		sliderBar.setMin(chosenVideo.getStartFrameNum());
+		sliderBar.setMax(chosenVideo.getEndFrameNum());
+		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
+		displayFrame();
+	}
+
 }

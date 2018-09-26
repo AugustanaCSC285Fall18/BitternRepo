@@ -25,6 +25,8 @@ public class Video {
 		if (!vidCap.isOpened()) {
 			throw new FileNotFoundException("Unable to open video file: " + filePath);
 		}
+		startFrameNum = 0;
+		endFrameNum = this.getTotalNumFrames() - 1;
 	}
 
 	public String getFilePath() {
@@ -96,8 +98,15 @@ public class Video {
 		vidCap.read(frame);
 	}
 	
-	/*public String toString() {
-		System.out.println();
-	}*/
-
+	public boolean isOpened() {
+		return vidCap.isOpened();
+	}
+	
+	@Override
+	public String toString() {
+		return "File Path: " + this.getFilePath() + "\nStart Frame Number: " + this.getStartFrameNum() 
+				+ "\nEnd Frame Number: " + this.getEndFrameNum()
+				+ "\nTotal Number Frames: " + this.getTotalNumFrames() 
+				+ "\n";
+	}
 }

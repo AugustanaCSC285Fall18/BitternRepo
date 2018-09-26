@@ -19,28 +19,28 @@ public class OpeningScreenController {
 	@FXML private Label nameLabel;
 	@FXML private Label fileNameLabel;
 	@FXML private Button confirmButton;
-	private static File chosenFile;
+	private File chosenFile;
 	
 	@FXML public void handleBrowse() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Video File");
 		Window mainWindow = browseButton.getScene().getWindow();
 		chosenFile = fileChooser.showOpenDialog(mainWindow);
-		fileNameLabel.setText("You selected " + chosenFile.getAbsolutePath());		
+		fileNameLabel.setText("You selected " + chosenFile.getAbsolutePath());	
 	 }
 	
 	@FXML public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("SecondWindow.fxml"));
-		AnchorPane root = (AnchorPane)loader.load();;
+		AnchorPane root = (AnchorPane)loader.load();
+		
+		SecondWindowController swc = loader.getController();
+		swc.createVideo(chosenFile.getAbsolutePath());
+		
 		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
 		primary.setScene(nextScene);
 		primary.show();		
-	}
-	
-	public static File getChosenFile() {
-		return chosenFile;
 	}
 }
