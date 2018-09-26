@@ -48,16 +48,13 @@ public class PlayVideoController {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
 					timer.shutdown();
-					try {
+					/*try {
 						timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-					}
-					
-					chosenVideo.setCurrentFrameNum(arg2.intValue());
+					}*/
 					displayFrame();
-					System.out.println("Slider moved" + chosenVideo.getCurrentFrameNum());
-
+					System.out.println("Slider moved " + arg2);
 				}
 				startVideo();
 			}

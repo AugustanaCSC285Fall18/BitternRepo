@@ -33,14 +33,15 @@ public class SecondWindowController {
 	@FXML private Button endFrameButton;
 	@FXML private Slider sliderBar;
 	@FXML private Label timeLabel;
+	@FXML private Label startTimeLabel;
+	@FXML private Label endTimeLabel;
 
 	@FXML
 	public void handleSlider() {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
-					chosenVideo.setCurrentFrameNum(arg2.intValue());
-					displayTime(arg2.doubleValue());
+					timeLabel.setText(getTime(arg2.doubleValue()));
 					displayFrame();
 				}
 			}
@@ -51,19 +52,21 @@ public class SecondWindowController {
 	public void handleStart() {
 		chosenVideo.setStartFrameNum((int) sliderBar.getValue());
 		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
-		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
+		startTimeLabel.setText("Start time: " + getTime(chosenVideo.getStartFrameNum()));
+
 	}
 
 	@FXML
 	public void handleEnd() {
 		chosenVideo.setEndFrameNum((int) sliderBar.getValue());
+		endTimeLabel.setText("End Time: " + getTime(chosenVideo.getEndFrameNum()));
 	}
 
 	@FXML
 	public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("PlayVideoScreen.fxml"));
 		AnchorPane root = (AnchorPane) loader.load();
-		
+
 		PlayVideoController pvc = loader.getController();
 		pvc.setVideo(chosenVideo);
 
@@ -95,19 +98,20 @@ public class SecondWindowController {
 			sliderBar.setMax(chosenVideo.getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 			timeLabel.setText("0:00");
+			startTimeLabel.setText("Start Time: " + getTime(0));
+			endTimeLabel.setText("End Time: " + getTime(chosenVideo.getTotalNumFrames()));
 			displayFrame();
 			System.out.println(chosenVideo);
 		} catch (Exception e) {
 			System.out.println("File not found.");
 		}
 	}
-	
-	public void displayTime(double frameNumber) {
+
+	public String getTime(double frameNumber) {
 		DecimalFormat df = new DecimalFormat("00.00");
-		timeLabel.setText(Double.toString(frameNumber / chosenVideo.getFrameRate()));
 		double seconds = frameNumber / chosenVideo.getFrameRate();
 		int minutes = (int) seconds / 60;
 		double remainingSeconds = seconds - (60 * minutes);
-		timeLabel.setText(minutes + ":" + df.format(remainingSeconds));
+		return minutes + ":" + df.format(remainingSeconds);
 	}
 }

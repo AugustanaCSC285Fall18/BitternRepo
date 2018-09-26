@@ -46,7 +46,12 @@ public class Video {
 	}
 
 	public void setStartFrameNum(int startFrameNum) {
-		this.startFrameNum = startFrameNum;
+		if (startFrameNum < endFrameNum) {
+			this.startFrameNum = startFrameNum;
+		} else {
+			throw new IllegalArgumentException("The start time cannot be greater than the end time.");
+		}
+		
 	}
 
 	public int getEndFrameNum() {
@@ -54,7 +59,11 @@ public class Video {
 	}
 
 	public void setEndFrameNum(int endFrameNum) {
-		this.endFrameNum = endFrameNum;
+		if (endFrameNum > startFrameNum) {
+			this.endFrameNum = endFrameNum;
+		} else {
+			throw new IllegalArgumentException("End time cannot be less than the start time.");
+		}
 	}
 
 	public double getXPixelsPerCm() {
@@ -82,8 +91,11 @@ public class Video {
 	}
 	
 	public void setCurrentFrameNum(int currentFrameNum) {
-		vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
-
+		if (currentFrameNum >= 0 && currentFrameNum <= getEndFrameNum()) {
+			vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
+		} else {
+			throw new IllegalArgumentException("Input out of range");
+		}
 	}
 	
 	public int getCurrentFrameNum() {

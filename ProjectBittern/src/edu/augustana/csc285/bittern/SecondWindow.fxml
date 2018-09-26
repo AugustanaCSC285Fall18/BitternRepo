@@ -14,7 +14,9 @@
       <ImageView fx:id="myImageView" fitHeight="353.0" fitWidth="440.0" layoutX="104.0" pickOnBounds="true" preserveRatio="true" />
       <Slider fx:id="sliderBar" blockIncrement="33.0" layoutX="114.0" layoutY="353.0" onDragDetected="#handleSlider" prefHeight="14.0" prefWidth="426.0" />
       <Label fx:id="timeLabel" layoutX="33.0" layoutY="352.0" prefHeight="17.0" prefWidth="52.0" />
-      <Button fx:id="startFrameButton" layoutX="96.0" layoutY="393.0" mnemonicParsing="false" onAction="#handleStart" text="Set Start" />
-      <Button fx:id="endFrameButton" layoutX="212.0" layoutY="393.0" mnemonicParsing="false" onAction="#handleEnd" text="Set End" />
+      <Button fx:id="startFrameButton" layoutX="147.0" layoutY="433.0" mnemonicParsing="false" onAction="#handleStart" text="Set Start" />
+      <Button fx:id="endFrameButton" layoutX="340.0" layoutY="433.0" mnemonicParsing="false" onAction="#handleEnd" text="Set End" />
+      <Label fx:id="startTimeLabel" layoutX="85.0" layoutY="402.0" prefHeight="17.0" prefWidth="134.0" text="Start Time: " />
+      <Label fx:id="endTimeLabel" layoutX="267.0" layoutY="402.0" prefHeight="17.0" prefWidth="134.0" text="End Time: " />
    </children>
 </AnchorPane>
