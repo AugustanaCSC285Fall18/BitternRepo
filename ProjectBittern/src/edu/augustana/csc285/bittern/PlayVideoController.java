@@ -82,12 +82,10 @@ public class PlayVideoController {
 					}
 				}
 			};
-
+			
 			this.timer = Executors.newSingleThreadScheduledExecutor();
 			this.timer.scheduleAtFixedRate(frameGrabber, 0,(int) chosenVideo.getFrameRate(), TimeUnit.MILLISECONDS);
-
 		}
-
 	}
 
 
