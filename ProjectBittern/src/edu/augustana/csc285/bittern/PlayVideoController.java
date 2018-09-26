@@ -66,6 +66,10 @@ public class PlayVideoController {
 
 					chosenVideo.setCurrentFrameNum(arg2.intValue());
 					displayFrame();
+					//chosenVideo.setCurrentFrameNum((int) arg2);
+					//chosenVideo.getVidCap().set(Videoio.CAP_PROP_POS_FRAMES, arg2.intValue());
+					System.out.println("Slider moved" + chosenVideo.getCurrentFrameNum());
+
 				}
 			}
 		});
@@ -79,6 +83,7 @@ public class PlayVideoController {
 					chosenVideo.setCurrentFrameNum(Videoio.CAP_PROP_POS_FRAMES);
 					if (chosenVideo.getCurrentFrameNum() <= chosenVideo.getEndFrameNum()) {
 						sliderBar.setValue(chosenVideo.getCurrentFrameNum());
+						System.out.println(chosenVideo.getCurrentFrameNum());
 						displayFrame();
 					}
 				}
