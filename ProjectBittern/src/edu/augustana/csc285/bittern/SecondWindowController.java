@@ -69,7 +69,7 @@ public class SecondWindowController {
 		AnchorPane root = (AnchorPane) loader.load();
 
 		PlayVideoController pvc = loader.getController();
-		pvc.setVideo(chosenVideo);
+		pvc.setUpVideo(chosenVideo);
 
 		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

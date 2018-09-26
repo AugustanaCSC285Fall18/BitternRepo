@@ -2,7 +2,7 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
+
+<AnchorPane prefHeight="225.0" prefWidth="370.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="edu.augustana.csc285.bittern.NewAnimalWindowController">
 	<!-- TODO Add Nodes -->
 </AnchorPane>
-
