@@ -19,19 +19,27 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 
 public class PlayVideoController {
 
-	@FXML private ImageView myImageView;
-	@FXML private Slider sliderBar;
-	@FXML private Button playButton;
-	@FXML private Label timeLabel;
+	@FXML
+	private ImageView myImageView;
+	@FXML
+	private Slider sliderBar;
+	@FXML
+	private Button playButton;
+	@FXML
+	private Label timeLabel;
+	@FXML
+	private AnchorPane wrapPane;
+
 	private Video chosenVideo;
 	private ScheduledExecutorService timer;
 
 	@FXML
 	public void handlePlay() throws InterruptedException {
-		if(playButton.getText().equalsIgnoreCase("play")) {
+		if (playButton.getText().equalsIgnoreCase("play")) {
 			playButton.setText("Pause");
 			startVideo();
 		} else {
@@ -42,18 +50,17 @@ public class PlayVideoController {
 
 	}
 
-	@FXML 
+	@FXML
 	public void handleSlider() {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
 					chosenVideo.setCurrentFrameNum(arg2.intValue());
 					timer.shutdown();
-					/*try {
-						timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}*/
+					/*
+					 * try { timer.awaitTermination(1000, TimeUnit.MILLISECONDS); } catch
+					 * (InterruptedException e) { e.printStackTrace(); }
+					 */
 					displayFrame();
 					System.out.println("Slider moved " + arg2);
 				}
@@ -75,12 +82,11 @@ public class PlayVideoController {
 			};
 
 			this.timer = Executors.newSingleThreadScheduledExecutor();
-			this.timer.scheduleAtFixedRate(frameGrabber, 0,(int) chosenVideo.getFrameRate(), TimeUnit.MILLISECONDS);
+			this.timer.scheduleAtFixedRate(frameGrabber, 0, (int) chosenVideo.getFrameRate(), TimeUnit.MILLISECONDS);
 
 		}
 
 	}
-
 
 	public void displayFrame() {
 		Mat frame = new Mat();
@@ -103,6 +109,13 @@ public class PlayVideoController {
 		sliderBar.setMax(chosenVideo.getEndFrameNum());
 		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 		displayFrame();
+	}
+
+	public void handleUserClick() {
+		
+		chosenVideo.getCurrentFrameNum();
+		//wrapPane.
+
 	}
 
 }
