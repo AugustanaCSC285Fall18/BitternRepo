@@ -9,8 +9,10 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="492.0" prefWidth="667.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.PlayVideoController">
    <children>
       <ImageView fx:id="myImageView" fitHeight="353.0" fitWidth="440.0" layoutX="104.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="playButton" layoutX="305.0" layoutY="397.0" mnemonicParsing="false" onAction="#handlePlay" text="Play" />
-      <Label fx:id="timeLabel" layoutX="612.0" layoutY="359.0" prefHeight="17.0" prefWidth="46.0" />
+      <Button fx:id="playButton" layoutX="274.0" layoutY="386.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="50.0" prefWidth="100.0" text="Play" />
       <Slider fx:id="sliderBar" layoutX="114.0" layoutY="353.0" onDragDetected="#handleSlider" prefHeight="14.0" prefWidth="426.0" />
+      <Label fx:id="currentTimeLabel" layoutX="46.0" layoutY="353.0" prefHeight="17.0" prefWidth="56.0" text="Label" />
+      <Label fx:id="endTimeLabel" layoutX="570.0" layoutY="353.0" prefHeight="17.0" prefWidth="56.0" text="Label" />
+      <Button fx:id="handleChicksButton" layoutX="31.0" layoutY="444.0" mnemonicParsing="false" text="Add Chicks" />
    </children>
 </AnchorPane>

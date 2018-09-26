@@ -1,6 +1,7 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.ByteArrayInputStream;
+import java.text.DecimalFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +26,10 @@ public class PlayVideoController {
 	@FXML private ImageView myImageView;
 	@FXML private Slider sliderBar;
 	@FXML private Button playButton;
-	@FXML private Label timeLabel;
+	@FXML private Label currentTimeLabel;
+	@FXML private Label endTimeLabel;
+	@FXML private Button handleChicksButton;
+	
 	private Video chosenVideo;
 	private ScheduledExecutorService timer;
 
@@ -61,6 +65,11 @@ public class PlayVideoController {
 			}
 		});
 	}
+	
+	@FXML
+	public void handleChicksButton() {
+		
+	}
 
 	public void startVideo() {
 		if (chosenVideo.isOpened()) {
@@ -68,7 +77,7 @@ public class PlayVideoController {
 				public void run() {
 					if (chosenVideo.getCurrentFrameNum() <= chosenVideo.getEndFrameNum()) {
 						sliderBar.setValue(chosenVideo.getCurrentFrameNum());
-						System.out.println(chosenVideo.getCurrentFrameNum());
+						//currentTimeLabel.setText(getTime(chosenVideo.getCurrentFrameNum()));
 						displayFrame();
 					}
 				}
@@ -95,14 +104,26 @@ public class PlayVideoController {
 		});
 	}
 
-	public void setVideo(Video chosenVideo) {
+	public void setUpVideo(Video chosenVideo) {
 		this.chosenVideo = chosenVideo;
 		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
 		System.out.println(chosenVideo);
+		
 		sliderBar.setMin(chosenVideo.getStartFrameNum());
 		sliderBar.setMax(chosenVideo.getEndFrameNum());
 		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
+		
+		currentTimeLabel.setText(getTime(chosenVideo.getStartFrameNum()));
+		endTimeLabel.setText(getTime(chosenVideo.getEndFrameNum()));
+		
 		displayFrame();
 	}
 
+	public String getTime(double frameNumber) {
+		DecimalFormat df = new DecimalFormat("00.00");
+		double seconds = frameNumber / chosenVideo.getFrameRate();
+		int minutes = (int) seconds / 60;
+		double remainingSeconds = seconds - (60 * minutes);
+		return minutes + ":" + df.format(remainingSeconds);
+	}
 }
