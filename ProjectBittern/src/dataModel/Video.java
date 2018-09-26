@@ -118,6 +118,7 @@ public class Video {
 	public String toString() {
 		return "File Path: " + this.getFilePath() + "\nStart Frame Number: " + this.getStartFrameNum() 
 				+ "\nEnd Frame Number: " + this.getEndFrameNum()
+				+ "\nCurrent Frame Number: " + this.getCurrentFrameNum()
 				+ "\nTotal Number Frames: " + this.getTotalNumFrames() 
 				+ "\n";
 	}

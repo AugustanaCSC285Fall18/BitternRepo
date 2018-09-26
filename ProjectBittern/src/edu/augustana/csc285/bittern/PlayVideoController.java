@@ -97,7 +97,7 @@ public class PlayVideoController {
 
 	public void setVideo(Video chosenVideo) {
 		this.chosenVideo = chosenVideo;
-		chosenVideo.resetToStart();
+		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
 		System.out.println(chosenVideo);
 		sliderBar.setMin(chosenVideo.getStartFrameNum());
 		sliderBar.setMax(chosenVideo.getEndFrameNum());
