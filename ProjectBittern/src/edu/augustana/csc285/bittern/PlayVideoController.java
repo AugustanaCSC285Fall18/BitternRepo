@@ -28,17 +28,22 @@ import javafx.stage.Stage;
 
 public class PlayVideoController {
 
-
-	
-	@FXML private Label timeLabel;
-	@FXML private AnchorPane wrapPane;
-	@FXML private ImageView myImageView;
-	@FXML private Slider sliderBar;
-	@FXML private Button playButton;
-	@FXML private Label currentTimeLabel;
-	@FXML private Label endTimeLabel;
-	@FXML private Button animalButton;
-	
+	@FXML
+	private Label timeLabel;
+	@FXML
+	private AnchorPane wrapPane;
+	@FXML
+	private ImageView myImageView;
+	@FXML
+	private Slider sliderBar;
+	@FXML
+	private Button playButton;
+	@FXML
+	private Label currentTimeLabel;
+	@FXML
+	private Label endTimeLabel;
+	@FXML
+	private Button animalButton;
 
 	private Video chosenVideo;
 	private ScheduledExecutorService timer;
@@ -74,10 +79,10 @@ public class PlayVideoController {
 			}
 		});
 	}
-	
+
 	@FXML
 	public void handleChicksButton() {
-		
+
 	}
 
 	public void startVideo() {
@@ -86,7 +91,7 @@ public class PlayVideoController {
 				public void run() {
 					if (chosenVideo.getCurrentFrameNum() <= chosenVideo.getEndFrameNum()) {
 						sliderBar.setValue(chosenVideo.getCurrentFrameNum());
-						//currentTimeLabel.setText(getTime(chosenVideo.getCurrentFrameNum()));
+						// currentTimeLabel.setText(getTime(chosenVideo.getCurrentFrameNum()));
 						displayFrame();
 					}
 				}
@@ -96,7 +101,6 @@ public class PlayVideoController {
 			this.timer.scheduleAtFixedRate(frameGrabber, 0, (int) chosenVideo.getFrameRate(), TimeUnit.MILLISECONDS);
 
 		}
-
 	}
 
 	public void displayFrame() {
@@ -116,18 +120,16 @@ public class PlayVideoController {
 		this.chosenVideo = chosenVideo;
 		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
 		System.out.println(chosenVideo);
-		
+
 		sliderBar.setMin(chosenVideo.getStartFrameNum());
 		sliderBar.setMax(chosenVideo.getEndFrameNum());
 		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
-		
+
 		currentTimeLabel.setText(getTime(chosenVideo.getStartFrameNum()));
 		endTimeLabel.setText(getTime(chosenVideo.getEndFrameNum()));
-		
+
 		displayFrame();
 	}
-
-
 
 	public String getTime(double frameNumber) {
 		DecimalFormat df = new DecimalFormat("00.00");
@@ -136,18 +138,26 @@ public class PlayVideoController {
 		double remainingSeconds = seconds - (60 * minutes);
 		return minutes + ":" + df.format(remainingSeconds);
 	}
-	
+
 	public void handleAnimalButton() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("NewAnimalWindow.fxml"));
-		AnchorPane root = (AnchorPane)loader.load();
-		
-		
-		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
-		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		Stage primary = (Stage) animalButton.getScene().getWindow();
-		primary.setScene(nextScene);
-		primary.show();		
+		AnchorPane root = (AnchorPane) loader.load();
+
+		Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+		Stage primaryStage = (Stage) animalButton.getScene().getWindow();
+		// primary.setScene(nextScene);
+		// primary.show();
+
+		Stage stage = new Stage();
+		stage.setScene(scene);
+		stage.show();
+		animalButton.getScene().getWindow();
+
+		primaryStage.setScene(scene);
+		primaryStage.show();
+
 	}
 
 }

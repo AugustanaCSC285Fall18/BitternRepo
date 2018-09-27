@@ -67,10 +67,10 @@ public class SecondWindowController {
 	public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("PlayVideoScreen.fxml"));
 		AnchorPane root = (AnchorPane) loader.load();
-
+		
 		PlayVideoController pvc = loader.getController();
 		pvc.setUpVideo(chosenVideo);
-
+		
 		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
