@@ -78,8 +78,7 @@ public class SecondWindowController {
 	}
 
 	public void displayFrame() {
-		Mat frame = new Mat();
-		chosenVideo.readFrame(frame);
+		Mat frame = chosenVideo.readFrame();
 		MatOfByte buffer = new MatOfByte();
 		Imgcodecs.imencode(".png", frame, buffer);
 		Image currentFrameImage = new Image(new ByteArrayInputStream(buffer.toArray()));

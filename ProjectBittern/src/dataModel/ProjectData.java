@@ -1,25 +1,31 @@
 package dataModel;
 
-import java.io.File;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProjectData {
-	
-	//fields
-	private List<AnimalTrack> tracks;
 	private Video video;
+	private List<AnimalTrack> tracks;
+	private List<AnimalTrack> unassignedSegments;
 	
-	//constructor
-	public ProjectData(List<AnimalTrack> tracks, Video video) {
-		this.tracks = tracks;
-		this.video = video;
+	public ProjectData(String videoFilePath) throws FileNotFoundException {
+		video = new Video(videoFilePath);
+		tracks = new ArrayList<>();
+		unassignedSegments = new ArrayList<>();
+	}
+
+	public Video getVideo() {
+		return video;
 	}
 	
-	public void exportCSVFile(File outFile) {
-		// export file
+	public List<AnimalTrack> getTracks() {
+		return tracks;
 	}
+
+	public List<AnimalTrack> getUnassignedSegments() {
+		return unassignedSegments;
+	}
+
 	
-	public void saveProject(File projectFile) {
-		//save
-	}
 }
