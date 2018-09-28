@@ -43,6 +43,7 @@ public class AutoTrackController implements AutoTrackListener {
 	@FXML private TextField textfieldEndFrame;
 	@FXML private Button btnAutotrack;
 	@FXML private ProgressBar progressAutoTrack;
+	@FXML private Video chosenVideo;
 
 	
 	private AutoTracker autotracker;
@@ -55,9 +56,9 @@ public class AutoTrackController implements AutoTrackListener {
 		//       is for debugging purposes only, since there's no way to specify
 		//       the settings in the GUI right now...
 		//loadVideo("/home/forrest/data/shara_chicks_tracking/sample1.mp4");
-		loadVideo("S:/class/cs/285/sample_videos/sample1.mp4");		
-		project.getVideo().setXPixelsPerCm(6.5); //  these are just rough estimates!
-		project.getVideo().setYPixelsPerCm(6.7);
+		//loadVideo("S:/class/cs/285/sample_videos/sample1.mp4");		
+		//project.getVideo().setXPixelsPerCm(6.5); //  these are just rough estimates!
+		//project.getVideo().setYPixelsPerCm(6.7);
 
 //		loadVideo("/home/forrest/data/shara_chicks_tracking/lowres/lowres2.avi");
 		//loadVideo("S:/class/cs/285/sample_videos/lowres2.mp4");		
@@ -66,7 +67,7 @@ public class AutoTrackController implements AutoTrackListener {
 		
 		sliderVideoTime.valueProperty().addListener((obs, oldV, newV) -> showFrameAt(newV.intValue())); 
 	}
-	
+
 	public void initializeWithStage(Stage stage) {
 		this.stage = stage;
 		
