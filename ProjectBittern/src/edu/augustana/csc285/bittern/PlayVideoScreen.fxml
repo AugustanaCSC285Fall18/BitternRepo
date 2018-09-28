@@ -14,5 +14,6 @@
       <Label fx:id="currentTimeLabel" layoutX="46.0" layoutY="353.0" prefHeight="17.0" prefWidth="56.0" text="Label" />
       <Label fx:id="endTimeLabel" layoutX="570.0" layoutY="353.0" prefHeight="17.0" prefWidth="56.0" text="Label" />
       <Button fx:id="animalButton" layoutX="31.0" layoutY="444.0" mnemonicParsing="false" onAction="#handleAnimalButton" text="Add Chicks" />
+      <Button fx:id="autoTrackButton" layoutX="556.0" layoutY="444.0" mnemonicParsing="false" onAction="#handleAutoTrackButton" text="AutoTrack" />
    </children>
 </AnchorPane>

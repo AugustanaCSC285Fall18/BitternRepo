@@ -24,6 +24,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class PlayVideoController {
@@ -44,6 +46,8 @@ public class PlayVideoController {
 	private Label endTimeLabel;
 	@FXML
 	private Button animalButton;
+	@FXML
+	private Button autoTrackButton;
 
 	private Video chosenVideo;
 	private ScheduledExecutorService timer;
@@ -78,11 +82,6 @@ public class PlayVideoController {
 				startVideo();
 			}
 		});
-	}
-
-	@FXML
-	public void handleChicksButton() {
-
 	}
 
 	public void startVideo() {
@@ -138,6 +137,7 @@ public class PlayVideoController {
 		return minutes + ":" + df.format(remainingSeconds);
 	}
 
+	@FXML
 	public void handleAnimalButton() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("NewAnimalWindow.fxml"));
 		AnchorPane root = (AnchorPane) loader.load();
@@ -145,17 +145,26 @@ public class PlayVideoController {
 		Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
-		Stage primaryStage = (Stage) animalButton.getScene().getWindow();
-		// primary.setScene(nextScene);
-		// primary.show();
+		Stage primary = (Stage) animalButton.getScene().getWindow();
+		primary.setScene(scene);
+		primary.show();
 
-		Stage stage = new Stage();
-		stage.setScene(scene);
-		stage.show();
-		animalButton.getScene().getWindow();
 
-		primaryStage.setScene(scene);
-		primaryStage.show();
+
+	}
+	
+
+	@FXML
+	public void handleAutoTrackButton() throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("AutoTrackWindow.fxml"));
+		BorderPane root = (BorderPane) loader.load();
+
+		Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+		Stage primary = (Stage) autoTrackButton.getScene().getWindow();
+		primary.setScene(scene);
+		primary.show();
 
 	}
 
