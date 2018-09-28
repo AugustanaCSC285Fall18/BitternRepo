@@ -159,10 +159,15 @@ public class PlayVideoController {
 		Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
-		Stage primary = (Stage) autoTrackButton.getScene().getWindow();
-		primary.setScene(scene);
-		primary.show();
+		Stage primaryStage = (Stage) autoTrackButton.getScene().getWindow();
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		
+		AutoTrackController atc = loader.getController();
+		atc.loadVideo(chosenVideo.getFilePath());
+		
 
+		
 	}
 
 }
