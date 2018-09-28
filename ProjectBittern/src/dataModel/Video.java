@@ -8,50 +8,74 @@ import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
 public class Video {
-
+	
 	private String filePath;
 	private VideoCapture vidCap;
+	private int emptyFrameNum;
 	private int startFrameNum;
 	private int endFrameNum;
-
+	
 	private double xPixelsPerCm;
 	private double yPixelsPerCm;
-	private Rectangle arenaBounds;
-
+	private Rectangle arenaBounds; 
+	
+		
 	public Video(String filePath) throws FileNotFoundException {
 		this.filePath = filePath;
-		vidCap = new VideoCapture(filePath);
-		vidCap.open(filePath);
+		this.vidCap = new VideoCapture(filePath);
 		if (!vidCap.isOpened()) {
 			throw new FileNotFoundException("Unable to open video file: " + filePath);
 		}
-		startFrameNum = 0;
-		endFrameNum = this.getTotalNumFrames() - 1;
+		//fill in some reasonable default/starting values for several fields
+		this.emptyFrameNum = 0;
+		this.startFrameNum = 0;
+		this.endFrameNum = this.getTotalNumFrames()-1;
+		
+		int frameWidth = (int)vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
+		int frameHeight = (int)vidCap.get(Videoio.CAP_PROP_FRAME_HEIGHT);
+		this.arenaBounds = new Rectangle(0,0,frameWidth,frameHeight);
 	}
-
+	
+	public void setCurrentFrameNum(int seekFrame) {
+		vidCap.set(Videoio.CV_CAP_PROP_POS_FRAMES, (double) seekFrame);
+	}
+	public int getCurrentFrameNum() {
+		return (int) vidCap.get(Videoio.CV_CAP_PROP_POS_FRAMES);
+	}
+	
+	public Mat readFrame() {
+		Mat frame = new Mat();
+		vidCap.read(frame);
+		return frame;
+	}
+	
 	public String getFilePath() {
 		return this.filePath;
 	}
-
+	/** 
+	 * @return frames per second
+	 */
 	public double getFrameRate() {
 		return vidCap.get(Videoio.CAP_PROP_FPS);
 	}
-
 	public int getTotalNumFrames() {
 		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_COUNT);
 	}
 
+	public int getEmptyFrameNum() {
+		return emptyFrameNum;
+	}
+
+	public void setEmptyFrameNum(int emptyFrameNum) {
+		this.emptyFrameNum = emptyFrameNum;
+	}
+		
 	public int getStartFrameNum() {
 		return startFrameNum;
 	}
-
+	
 	public void setStartFrameNum(int startFrameNum) {
-		if (startFrameNum < endFrameNum) {
-			this.startFrameNum = startFrameNum;
-		} else {
-			throw new IllegalArgumentException("The start time cannot be greater than the end time.");
-		}
-		
+		this.startFrameNum = startFrameNum;
 	}
 
 	public int getEndFrameNum() {
@@ -59,11 +83,7 @@ public class Video {
 	}
 
 	public void setEndFrameNum(int endFrameNum) {
-		if (endFrameNum > startFrameNum) {
-			this.endFrameNum = endFrameNum;
-		} else {
-			throw new IllegalArgumentException("End time cannot be less than the start time.");
-		}
+		this.endFrameNum = endFrameNum;
 	}
 
 	public double getXPixelsPerCm() {
@@ -82,6 +102,10 @@ public class Video {
 		this.yPixelsPerCm = yPixelsPerCm;
 	}
 
+	public double getAvgPixelsPerCm() {
+		return (xPixelsPerCm + yPixelsPerCm)/2;
+	}
+
 	public Rectangle getArenaBounds() {
 		return arenaBounds;
 	}
@@ -90,36 +114,16 @@ public class Video {
 		this.arenaBounds = arenaBounds;
 	}
 	
-	public void setCurrentFrameNum(int currentFrameNum) {
-		if (currentFrameNum >= 0 && currentFrameNum <= getTotalNumFrames()) {
-			vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
-		} else {
-			throw new IllegalArgumentException("Input out of range");
-		}
-	}
-	
-	public int getCurrentFrameNum() {
-		return (int) vidCap.get(Videoio.CAP_PROP_POS_FRAMES);
+	public double convertFrameNumsToSeconds(int numFrames) {
+		return numFrames / getFrameRate();
 	}
 
-	public void resetToStart() {
-		setCurrentFrameNum(0);
+	public int convertSecondsToFrameNums(double numSecs) {
+		return (int) Math.round(numSecs * getFrameRate());
 	}
-	
-	public void readFrame(Mat frame) {
-		vidCap.read(frame);
-	}
-	
+
 	public boolean isOpened() {
 		return vidCap.isOpened();
 	}
-	
-	@Override
-	public String toString() {
-		return "File Path: " + this.getFilePath() + "\nStart Frame Number: " + this.getStartFrameNum() 
-				+ "\nEnd Frame Number: " + this.getEndFrameNum()
-				+ "\nCurrent Frame Number: " + this.getCurrentFrameNum()
-				+ "\nTotal Number Frames: " + this.getTotalNumFrames() 
-				+ "\n";
-	}
+
 }
