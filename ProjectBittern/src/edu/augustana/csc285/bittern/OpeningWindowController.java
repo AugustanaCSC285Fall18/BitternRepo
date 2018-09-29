@@ -13,13 +13,18 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class OpeningScreenController {
+public class OpeningWindowController {
 
 	@FXML private Button browseButton;
 	@FXML private Label nameLabel;
 	@FXML private Label fileNameLabel;
 	@FXML private Button confirmButton;
 	private File chosenFile;
+	
+	public void setup(String filePath) {
+		chosenFile = new File(filePath);
+		fileNameLabel.setText("You selected " + filePath);	
+	}
 	
 	@FXML public void handleBrowse() {
 		FileChooser fileChooser = new FileChooser();
@@ -30,9 +35,8 @@ public class OpeningScreenController {
 	 }
 	
 	@FXML public void handleConfirm() throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("CalibrationWindow.fxml"));
 		BorderPane root = (BorderPane)loader.load();
-		loader.setRoot(root);
 		
 		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -41,8 +45,8 @@ public class OpeningScreenController {
 		primary.setScene(nextScene);
 		primary.show();		
 	
-		MainWindowController controller = loader.getController();
-		controller.initializeWithStage(primary);
-		controller.createVideo(chosenFile.getAbsolutePath());
+		CalibrationWindowController controller = loader.getController();
+		controller.initializeWithStage();
+		controller.createProject(chosenFile.getAbsolutePath());
 	}
 }

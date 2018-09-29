@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.OpeningScreenController">
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.OpeningWindowController">
    <center>
       <Pane prefHeight="500.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <children>
