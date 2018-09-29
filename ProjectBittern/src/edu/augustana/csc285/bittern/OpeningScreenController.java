@@ -8,7 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -30,11 +30,9 @@ public class OpeningScreenController {
 	 }
 	
 	@FXML public void handleConfirm() throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("SecondWindow.fxml"));
-		AnchorPane root = (AnchorPane)loader.load();
-		
-		SecondWindowController swc = loader.getController();
-		swc.createVideo(chosenFile.getAbsolutePath());
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+		BorderPane root = (BorderPane)loader.load();
+		loader.setRoot(root);
 		
 		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -42,5 +40,8 @@ public class OpeningScreenController {
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
 		primary.setScene(nextScene);
 		primary.show();		
+		
+		MainWindowController mwc = loader.getController();
+		mwc.createVideo(chosenFile.getAbsolutePath());
 	}
 }
