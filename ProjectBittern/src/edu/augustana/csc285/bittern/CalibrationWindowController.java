@@ -19,6 +19,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
@@ -36,6 +38,8 @@ public class CalibrationWindowController {
 	@FXML private Button widthButton;
 	private Point point;
 	private ProjectData project;
+	
+	@FXML  private BorderPane drawingBoard;
 	
 
 	@FXML private Label widthLabel;
@@ -69,7 +73,22 @@ public class CalibrationWindowController {
 			}
 		});
 	}
+	
+	@FXML
+	public void handleDrawingBoard(MouseEvent event) {
+		point = new Point((int) event.getX(), (int) event.getY());
+		System.out.println("BorderPane Point: " + point);
+		drawCircle(point);
+		
+		
+	}
 
+	public void drawCircle (Point p) {
+	   Circle c = new Circle(p.getX(), p.getY(),5, Color.RED);
+	   drawingBoard.getChildren().add(c);
+	  }
+
+	
 	@FXML 
 	private void handleBack() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("OpeningWindow.fxml"));

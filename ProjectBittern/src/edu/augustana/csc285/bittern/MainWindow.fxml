@@ -7,7 +7,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="800" prefWidth="761.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.MainWindowController">
@@ -24,11 +23,11 @@
    <center>
       <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
          <children>
-            <StackPane>
-               <children>
+            <BorderPane fx:id="drawingBoard" onMouseClicked="#handleDrawingBoard">
+               <center>
                   <ImageView fx:id="videoView" onMouseClicked="#getPoint" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </StackPane>
+               </center>
+            </BorderPane>
             <Slider fx:id="sliderBar" />
          </children>
       </VBox>
