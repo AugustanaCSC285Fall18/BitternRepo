@@ -22,7 +22,7 @@
       <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
          <children>
             <ImageView fx:id="videoView" onMouseClicked="#getPoint" pickOnBounds="true" preserveRatio="true" />
-            <Slider fx:id="sliderBar" onDragDetected="#handleSlider" />
+            <Slider fx:id="sliderBar" />
          </children>
       </VBox>
    </center>

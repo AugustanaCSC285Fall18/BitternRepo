@@ -92,7 +92,7 @@ public class CalibrationWindowController {
 	}
 	
 	@FXML 
-	private void handleConfirm() throws IOException {
+	public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
 		BorderPane root = (BorderPane)loader.load();
 		
@@ -109,17 +109,13 @@ public class CalibrationWindowController {
 	}
 	
 	@FXML 
-	private void handleLengthButton() {
+	public void handleLengthButton() {
 
 	}
 	
-	@FXML
-	public void handleSlider() {
-		
-	}
 	
 	@FXML 
-	private void handleWidthButton() {
+	public void handleWidthButton() {
 
 	}
 		
@@ -141,11 +137,13 @@ public class CalibrationWindowController {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 	
-	@FXML public void setActualLength() {
+	@FXML
+	public void setActualLength() {
 		
 	}
 	
-	@FXML public void setActualWidth() {
+	@FXML
+	public void setActualWidth() {
 		
 	}
 	
