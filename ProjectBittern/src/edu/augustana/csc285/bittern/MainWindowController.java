@@ -160,7 +160,7 @@ public class MainWindowController implements AutoTrackListener {
 	
 	public void initializeWithStage(Stage stage) {
 		//Stage stage = stage;
-		//videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());  
+		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());  
 	}
 	
 	public void startVideo() {
