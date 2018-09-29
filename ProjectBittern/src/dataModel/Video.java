@@ -2,6 +2,7 @@ package dataModel;
 
 import java.awt.Rectangle;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
@@ -27,22 +28,15 @@ public class Video {
 			throw new FileNotFoundException("Unable to open video file: " + filePath);
 		}
 		//fill in some reasonable default/starting values for several fields
-		this.emptyFrameNum = 0;
-		this.startFrameNum = 0;
+		this.emptyFrameNum = 1;
+		this.startFrameNum = 1;
 		this.endFrameNum = this.getTotalNumFrames()-1;
 		
 		int frameWidth = (int)vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
 		int frameHeight = (int)vidCap.get(Videoio.CAP_PROP_FRAME_HEIGHT);
 		this.arenaBounds = new Rectangle(0,0,frameWidth,frameHeight);
 	}
-	
-	public void setCurrentFrameNum(int seekFrame) {
-		vidCap.set(Videoio.CV_CAP_PROP_POS_FRAMES, (double) seekFrame);
-	}
-	public int getCurrentFrameNum() {
-		return (int) vidCap.get(Videoio.CV_CAP_PROP_POS_FRAMES);
-	}
-	
+		
 	public Mat readFrame() {
 		Mat frame = new Mat();
 		vidCap.read(frame);
@@ -52,12 +46,14 @@ public class Video {
 	public String getFilePath() {
 		return this.filePath;
 	}
+	
 	/** 
 	 * @return frames per second
 	 */
 	public double getFrameRate() {
 		return vidCap.get(Videoio.CAP_PROP_FPS);
 	}
+	
 	public int getTotalNumFrames() {
 		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_COUNT);
 	}
@@ -75,7 +71,11 @@ public class Video {
 	}
 	
 	public void setStartFrameNum(int startFrameNum) {
-		this.startFrameNum = startFrameNum;
+		if (startFrameNum < endFrameNum) {
+			this.startFrameNum = startFrameNum;
+		} else {
+			throw new IllegalArgumentException("The start time cannot be greater than the end time.");
+		}
 	}
 
 	public int getEndFrameNum() {
@@ -83,7 +83,11 @@ public class Video {
 	}
 
 	public void setEndFrameNum(int endFrameNum) {
-		this.endFrameNum = endFrameNum;
+		if (endFrameNum > startFrameNum) {
+			this.endFrameNum = endFrameNum;
+		} else {
+			throw new IllegalArgumentException("End time cannot be less than the start time.");
+		}
 	}
 
 	public double getXPixelsPerCm() {
@@ -114,6 +118,22 @@ public class Video {
 		this.arenaBounds = arenaBounds;
 	}
 	
+	public void setCurrentFrameNum(int currentFrameNum) {
+		vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
+	}
+	
+	public int getCurrentFrameNum() {
+		return (int) vidCap.get(Videoio.CAP_PROP_POS_FRAMES);
+	}
+
+	public void resetToStart() {
+		setCurrentFrameNum(1);
+	}
+	
+	public void readFrame(Mat frame) {
+		vidCap.read(frame);
+	}
+	
 	public double convertFrameNumsToSeconds(int numFrames) {
 		return numFrames / getFrameRate();
 	}
@@ -125,6 +145,15 @@ public class Video {
 	public boolean isOpened() {
 		return vidCap.isOpened();
 	}
+	
+	//take out double decimals
+	public String getTime(int frameNumber) {
+		DecimalFormat df = new DecimalFormat("00.00");
+		int seconds = (int) (frameNumber / this.getFrameRate());
+		int minutes = seconds / 60;
+		int remainingSeconds = (int) seconds - (60 * minutes);
+		return minutes + ":" + df.format(remainingSeconds);
+	} 
 	
 	@Override
 	public String toString() {

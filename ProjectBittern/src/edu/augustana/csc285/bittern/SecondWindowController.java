@@ -2,7 +2,6 @@ package edu.augustana.csc285.bittern;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -42,7 +41,7 @@ public class SecondWindowController {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
 					chosenVideo.setCurrentFrameNum(arg2.intValue());
-					timeLabel.setText(getTime(arg2.doubleValue()));
+					timeLabel.setText(chosenVideo.getTime(arg2.intValue()));
 					displayFrame();
 				}
 			}
@@ -51,16 +50,15 @@ public class SecondWindowController {
 
 	@FXML
 	public void handleStart() {
-		chosenVideo.setStartFrameNum((int) sliderBar.getValue());
-		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
-		startTimeLabel.setText("Start time: " + getTime(chosenVideo.getStartFrameNum()));
-
+		chosenVideo.setStartFrameNum(chosenVideo.getCurrentFrameNum());
+		startTimeLabel.setText("Start time: " + chosenVideo.getTime(chosenVideo.getStartFrameNum()));
+		System.out.println(chosenVideo);
 	}
 
 	@FXML
 	public void handleEnd() {
 		chosenVideo.setEndFrameNum((int) sliderBar.getValue());
-		endTimeLabel.setText("End Time: " + getTime(chosenVideo.getEndFrameNum()));
+		endTimeLabel.setText("End Time: " + chosenVideo.getTime(chosenVideo.getEndFrameNum()));
 	}
 
 	@FXML
@@ -95,23 +93,17 @@ public class SecondWindowController {
 	public void createVideo(String chosenFileName) {
 		try {
 			chosenVideo = new Video(chosenFileName);
+			sliderBar.setMin(1);
 			sliderBar.setMax(chosenVideo.getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 			timeLabel.setText("0:00");
-			startTimeLabel.setText("Start Time: " + getTime(0));
-			endTimeLabel.setText("End Time: " + getTime(chosenVideo.getTotalNumFrames()));
+			startTimeLabel.setText("Start Time: " + chosenVideo.getTime(0));
+			endTimeLabel.setText("End Time: " + chosenVideo.getTime(chosenVideo.getTotalNumFrames()));
 			displayFrame();
 			System.out.println(chosenVideo);
 		} catch (Exception e) {
 			System.out.println("File not found.");
 		}
 	}
-
-	public String getTime(double frameNumber) {
-		DecimalFormat df = new DecimalFormat("00.00");
-		double seconds = frameNumber / chosenVideo.getFrameRate();
-		int minutes = (int) seconds / 60;
-		double remainingSeconds = seconds - (60 * minutes);
-		return minutes + ":" + df.format(remainingSeconds);
-	}
+	
 }

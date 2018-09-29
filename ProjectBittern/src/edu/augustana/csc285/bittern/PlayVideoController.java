@@ -24,7 +24,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -110,22 +109,23 @@ public class PlayVideoController {
 		Platform.runLater(new Runnable() {
 			public void run() {
 				myImageView.setImage(currentFrameImage);
+				currentTimeLabel.setText(chosenVideo.getTime(chosenVideo.getCurrentFrameNum()));
 			}
 		});
 	}
 
 	public void setUpVideo(Video chosenVideo) {
 		this.chosenVideo = chosenVideo;
-		chosenVideo.setCurrentFrameNum(chosenVideo.getStartFrameNum());
+		chosenVideo.resetToStart();
 		System.out.println(chosenVideo);
 
 		sliderBar.setMin(chosenVideo.getStartFrameNum());
 		sliderBar.setMax(chosenVideo.getEndFrameNum());
 		sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
-
-		currentTimeLabel.setText(getTime(chosenVideo.getStartFrameNum()));
-		endTimeLabel.setText(getTime(chosenVideo.getEndFrameNum()));
-
+		
+		currentTimeLabel.setText(chosenVideo.getTime(chosenVideo.getCurrentFrameNum()));
+		endTimeLabel.setText(chosenVideo.getTime(chosenVideo.getEndFrameNum()));
+		
 		displayFrame();
 	}
 
@@ -148,9 +148,6 @@ public class PlayVideoController {
 		Stage primary = (Stage) animalButton.getScene().getWindow();
 		primary.setScene(scene);
 		primary.show();
-
-
-
 	}
 	
 
