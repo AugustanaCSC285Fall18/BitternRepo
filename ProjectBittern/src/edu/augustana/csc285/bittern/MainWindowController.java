@@ -49,19 +49,19 @@ public class MainWindowController implements AutoTrackListener {
 	public void createVideo(String filePath) {
 		try {
 			project = new ProjectData(filePath);
-			Video chosenVideo = project.getVideo(); //why
+			//Video chosenVideo = project.getVideo(); 
 			
 			project.getVideo().setXPixelsPerCm(6.5); 
 			project.getVideo().setYPixelsPerCm(6.7);
 			
-			sliderBar.setMax(chosenVideo.getTotalNumFrames() - 1);
-			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
+			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
+			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
-			startTimeLabel.setText("Start: " + chosenVideo.getStartFrameNum());
-			endTimeLabel.setText("End: " + chosenVideo.getEndFrameNum());
+			startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
+			endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
 
 			displayFrame();
-			System.out.println(chosenVideo);
+			System.out.println(project.getVideo());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -109,19 +109,6 @@ public class MainWindowController implements AutoTrackListener {
 		}
 	}
 
-	@FXML 
-	public void handleSlider() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame(); 
-				}
-			}
-		});
-		
-	}
-
 	@FXML
 	public void handleStart() {
 		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
@@ -155,7 +142,14 @@ public class MainWindowController implements AutoTrackListener {
 	}
 
 	@FXML public void initialize() {
-		
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					displayFrame(); 
+				}
+			}
+		});
 	}
 	
 	public void initializeWithStage(Stage stage) {
