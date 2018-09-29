@@ -1,5 +1,6 @@
 package edu.augustana.csc285.bittern;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -15,13 +16,17 @@ import dataModel.Video;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
@@ -42,12 +47,15 @@ public class MainWindowController implements AutoTrackListener {
 	private AutoTracker autotracker;
 	private ProjectData project;
 	private Stage stage;
-
+	
 	public void createVideo(String filePath) {
 		try {
 			project = new ProjectData(filePath);
-			Video chosenVideo = project.getVideo();
-
+			Video chosenVideo = project.getVideo(); //why
+			
+			project.getVideo().setXPixelsPerCm(6.5); 
+			project.getVideo().setYPixelsPerCm(6.7);
+			
 			sliderBar.setMax(chosenVideo.getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 
@@ -78,7 +86,6 @@ public class MainWindowController implements AutoTrackListener {
 
 	public void displayFrame() {
 		if (autotracker == null || !autotracker.isRunning()) {
-			//chosenVideo.setCurrentFrameNum(frameNum);
 			Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 			videoView.setImage(curFrame);
 			Platform.runLater(() -> {
@@ -97,6 +104,11 @@ public class MainWindowController implements AutoTrackListener {
 			}
 		});
 		
+	}
+	
+	public void initializeWithStage(Stage stage) {
+		this.stage = stage;
+		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());  
 	}
 
 	@FXML
@@ -146,20 +158,17 @@ public class MainWindowController implements AutoTrackListener {
 
 		for (AnimalTrack track: trackedSegments) {
 			System.out.println(track);
-//			System.out.println("  " + track.getPositions());
+			//System.out.println("  " + track.getPositions());
 		}
 		Platform.runLater(() -> { 
 			progressAutoTrack.setProgress(1.0);
 			autoTrackButton.setText("Start auto-tracking");
 		});	
-		
+		autotracker.cancelAnalysis();
 	}
 	
-	// this method will get called repeatedly by the Autotracker after it analyzes each frame
 	public void handleTrackedFrame(Mat frame, int frameNumber, double fractionComplete) {
 		Image imgFrame = UtilsForOpenCV.matToJavaFXImage(frame);
-		// this method is being run by the AutoTracker's thread, so we must
-		// ask the JavaFX UI thread to update some visual properties
 		Platform.runLater(() -> { 
 			videoView.setImage(imgFrame);
 			progressAutoTrack.setProgress(fractionComplete);
@@ -168,7 +177,19 @@ public class MainWindowController implements AutoTrackListener {
 		});		
 	}
 
-	
+	//doesn't work until you start playing video
+	@FXML
+	public void getPoint() throws IOException {
+		videoView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent event) {
+		        System.out.println(event.getSceneX());
+		        System.out.println(event.getSceneY());
+		    }
+		});
+		
+
+	}
 	
 
 }

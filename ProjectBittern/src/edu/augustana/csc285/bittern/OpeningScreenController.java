@@ -40,8 +40,9 @@ public class OpeningScreenController {
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
 		primary.setScene(nextScene);
 		primary.show();		
-		
-		MainWindowController mwc = loader.getController();
-		mwc.createVideo(chosenFile.getAbsolutePath());
+	
+		MainWindowController controller = loader.getController();
+		controller.initializeWithStage(primary);
+		controller.createVideo(chosenFile.getAbsolutePath());
 	}
 }
