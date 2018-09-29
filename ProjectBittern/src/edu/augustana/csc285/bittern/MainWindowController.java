@@ -18,7 +18,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -26,27 +25,26 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
 public class MainWindowController implements AutoTrackListener {
 
-	@FXML private Label currentFrameLabel;
-	@FXML private ImageView videoView;
-	@FXML private Slider sliderBar;
-	@FXML private Button startTimeButton;
-	@FXML private Button endTimeButton;
-	@FXML private Button playButton;
 	@FXML private Button autoTrackButton;
-	@FXML private ProgressBar progressAutoTrack;
-	@FXML private Label startTimeLabel;
-	@FXML private Label endTimeLabel;
-
-	private ScheduledExecutorService timer;
 	private AutoTracker autotracker;
+	@FXML private Label currentFrameLabel;
+	@FXML private Button endTimeButton;
+	@FXML private Label endTimeLabel;
+	@FXML private Button playButton;
+	@FXML private ProgressBar progressAutoTrack;
 	private ProjectData project;
-	private Stage stage;
+	@FXML private Slider sliderBar;
+	//private Stage stage;
+
+	@FXML private Button startTimeButton;
+	@FXML private Label startTimeLabel;
+	private ScheduledExecutorService timer;
+	@FXML private ImageView videoView;
 	
 	public void createVideo(String filePath) {
 		try {
@@ -69,21 +67,6 @@ public class MainWindowController implements AutoTrackListener {
 		}
 	}
 
-	public void startVideo() {
-		if (project.getVideo().isOpened()) {
-			Runnable frameGrabber = new Runnable() {
-				public void run() {
-					sliderBar.setValue(project.getVideo().getCurrentFrameNum());
-					displayFrame();
-				}
-			};
-
-			this.timer = Executors.newSingleThreadScheduledExecutor();
-			this.timer.scheduleAtFixedRate(frameGrabber, 0, (int) project.getVideo().getFrameRate(), TimeUnit.MILLISECONDS);
-
-		}
-	}
-
 	public void displayFrame() {
 		if (autotracker == null || !autotracker.isRunning()) {
 			Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
@@ -94,28 +77,18 @@ public class MainWindowController implements AutoTrackListener {
 		}	
 	}
 
-	@FXML public void initialize() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame(); 
-				}
-			}
+	//doesn't work until you start playing video
+	@FXML
+	public void getPoint() throws IOException {
+		videoView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent event) {
+		        System.out.println(event.getSceneX());
+		        System.out.println(event.getSceneY());
+		    }
 		});
 		
-	}
-	
-	public void initializeWithStage(Stage stage) {
-		this.stage = stage;
-		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());  
-	}
 
-	@FXML
-	public void handleStart() {
-		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
-		startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
-		System.out.println(project.getVideo());
 	}
 
 	@FXML
@@ -123,8 +96,7 @@ public class MainWindowController implements AutoTrackListener {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
 		endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
 	}
-
-
+	
 	@FXML
 	public void handlePlay() throws InterruptedException {
 		if (playButton.getText().equalsIgnoreCase("play video")) {
@@ -136,6 +108,27 @@ public class MainWindowController implements AutoTrackListener {
 			playButton.setText("Play Video");
 		}
 	}
+
+	@FXML 
+	public void handleSlider() {
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					displayFrame(); 
+				}
+			}
+		});
+		
+	}
+
+	@FXML
+	public void handleStart() {
+		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
+		startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
+		System.out.println(project.getVideo());
+	}
+
 
 	@FXML public void handleStartAutotracking() {
 		if (autotracker == null || !autotracker.isRunning()) {
@@ -151,6 +144,40 @@ public class MainWindowController implements AutoTrackListener {
 		}
 	}
 	
+	public void handleTrackedFrame(Mat frame, int frameNumber, double fractionComplete) {
+		Image imgFrame = UtilsForOpenCV.matToJavaFXImage(frame);
+		Platform.runLater(() -> { 
+			videoView.setImage(imgFrame);
+			progressAutoTrack.setProgress(fractionComplete);
+			sliderBar.setValue(frameNumber);
+			currentFrameLabel.setText("" + frameNumber);
+		});		
+	}
+
+	@FXML public void initialize() {
+		
+	}
+	
+	public void initializeWithStage(Stage stage) {
+		//Stage stage = stage;
+		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());  
+	}
+	
+	public void startVideo() {
+		if (project.getVideo().isOpened()) {
+			Runnable frameGrabber = new Runnable() {
+				public void run() {
+					sliderBar.setValue(project.getVideo().getCurrentFrameNum());
+					displayFrame();
+				}
+			};
+
+			this.timer = Executors.newSingleThreadScheduledExecutor();
+			this.timer.scheduleAtFixedRate(frameGrabber, 0, (int) project.getVideo().getFrameRate(), TimeUnit.MILLISECONDS);
+
+		}
+	}
+
 	@Override
 	public void trackingComplete(List<AnimalTrack> trackedSegments) {
 		project.getUnassignedSegments().clear();
@@ -165,30 +192,6 @@ public class MainWindowController implements AutoTrackListener {
 			autoTrackButton.setText("Start auto-tracking");
 		});	
 		autotracker.cancelAnalysis();
-	}
-	
-	public void handleTrackedFrame(Mat frame, int frameNumber, double fractionComplete) {
-		Image imgFrame = UtilsForOpenCV.matToJavaFXImage(frame);
-		Platform.runLater(() -> { 
-			videoView.setImage(imgFrame);
-			progressAutoTrack.setProgress(fractionComplete);
-			sliderBar.setValue(frameNumber);
-			currentFrameLabel.setText("" + frameNumber);
-		});		
-	}
-
-	//doesn't work until you start playing video
-	@FXML
-	public void getPoint() throws IOException {
-		videoView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-		    @Override
-		    public void handle(MouseEvent event) {
-		        System.out.println(event.getSceneX());
-		        System.out.println(event.getSceneY());
-		    }
-		});
-		
-
 	}
 	
 
