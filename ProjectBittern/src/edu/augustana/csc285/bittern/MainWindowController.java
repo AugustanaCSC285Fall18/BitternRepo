@@ -17,6 +17,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -24,6 +26,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
@@ -31,6 +34,7 @@ public class MainWindowController implements AutoTrackListener {
 
 	@FXML private Button autoTrackButton;
 	private AutoTracker autotracker;
+	@FXML private Button backButton;
 	@FXML private Label currentFrameLabel;
 	@FXML private Button endTimeButton;
 	@FXML private Label endTimeLabel;
@@ -38,18 +42,15 @@ public class MainWindowController implements AutoTrackListener {
 	@FXML private ProgressBar progressAutoTrack;
 	private ProjectData project;
 	@FXML private Slider sliderBar;
-	//private Stage stage;
 
 	@FXML private Button startTimeButton;
 	@FXML private Label startTimeLabel;
 	private ScheduledExecutorService timer;
 	@FXML private ImageView videoView;
 	
-	public void createVideo(String filePath) {
+	public void setup(ProjectData project) {
 		try {
-			project = new ProjectData(filePath);
-			//Video chosenVideo = project.getVideo(); 
-			
+			this.project = project;			
 			project.getVideo().setXPixelsPerCm(6.5); 
 			project.getVideo().setYPixelsPerCm(6.7);
 			
@@ -88,6 +89,23 @@ public class MainWindowController implements AutoTrackListener {
 		});
 	}
 
+	@FXML 
+	public void handleBack() throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("CalibrationWindow.fxml"));
+		BorderPane root = (BorderPane)loader.load();
+		
+		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
+		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		Stage primary = (Stage) backButton.getScene().getWindow();
+		primary.setScene(nextScene);
+		primary.show();		
+	
+		CalibrationWindowController controller = loader.getController();
+		controller.initializeWithStage();
+		controller.setProject(project);
+	}
+	
 	@FXML
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
@@ -98,6 +116,8 @@ public class MainWindowController implements AutoTrackListener {
 		project.getVideo().setCurrentFrameNum(project.getVideo().getStartFrameNum()); 
 	}
 	
+	
+	//Note fix slider and play ...
 	@FXML
 	public void handlePlay() throws InterruptedException {
 		if (playButton.getText().equalsIgnoreCase("play video")) {
@@ -152,8 +172,6 @@ public class MainWindowController implements AutoTrackListener {
 			}
 		});
 	}
-	
-	
 	
 	public void initializeWithStage(Stage stage) {
 		//Stage stage = stage;
