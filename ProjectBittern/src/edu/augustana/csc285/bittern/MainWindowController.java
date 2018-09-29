@@ -1,15 +1,15 @@
 package edu.augustana.csc285.bittern;
 
-import java.io.ByteArrayInputStream;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
 
+import autotracking.AutoTrackListener;
 import autotracking.AutoTracker;
+import dataModel.AnimalTrack;
 import dataModel.ProjectData;
 import dataModel.Video;
 import javafx.application.Platform;
@@ -25,7 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
-public class MainWindowController {
+public class MainWindowController implements AutoTrackListener {
 
 	@FXML private Label currentFrameLabel;
 	@FXML private ImageView videoView;
@@ -127,7 +127,49 @@ public class MainWindowController {
 	}
 
 	@FXML public void handleStartAutotracking() {
-
+		if (autotracker == null || !autotracker.isRunning()) {
+			
+			autotracker = new AutoTracker();
+			autotracker.addAutoTrackListener(this);
+			autotracker.startAnalysis(chosenVideo);
+			autoTrackButton.setText("CANCEL auto-tracking");
+			
+		} else {
+			autotracker.cancelAnalysis();
+			autoTrackButton.setText("Start auto-tracking");
+		}
 	}
+	
+	@Override
+	public void trackingComplete(List<AnimalTrack> trackedSegments) {
+		project.getUnassignedSegments().clear();
+		project.getUnassignedSegments().addAll(trackedSegments);
+
+		for (AnimalTrack track: trackedSegments) {
+			System.out.println(track);
+//			System.out.println("  " + track.getPositions());
+		}
+		Platform.runLater(() -> { 
+			progressAutoTrack.setProgress(1.0);
+			autoTrackButton.setText("Start auto-tracking");
+		});	
+		
+	}
+	
+	// this method will get called repeatedly by the Autotracker after it analyzes each frame
+	public void handleTrackedFrame(Mat frame, int frameNumber, double fractionComplete) {
+		Image imgFrame = UtilsForOpenCV.matToJavaFXImage(frame);
+		// this method is being run by the AutoTracker's thread, so we must
+		// ask the JavaFX UI thread to update some visual properties
+		Platform.runLater(() -> { 
+			videoView.setImage(imgFrame);
+			progressAutoTrack.setProgress(fractionComplete);
+			sliderBar.setValue(frameNumber);
+			currentFrameLabel.setText("" + frameNumber);
+		});		
+	}
+
+	
+	
 
 }
