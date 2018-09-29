@@ -11,8 +11,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -25,7 +27,10 @@ public class CalibrationWindowController {
 	@FXML private Button backButton;
 	@FXML private Button confirmButton;
 	@FXML private Button lengthButton;
+	@FXML private ComboBox<String> chicksComboBox;
 	@FXML private Label lengthLabel;
+	@FXML private TextField lengthTextField;
+	@FXML private TextField widthTextField;
 	@FXML private Slider sliderBar;
 	@FXML private ImageView videoView;
 	@FXML private Button widthButton;
@@ -41,6 +46,8 @@ public class CalibrationWindowController {
 			project.getVideo().setXPixelsPerCm(6.5); 
 			project.getVideo().setYPixelsPerCm(6.7);
 
+			sliderBar.setMax(project.getVideo().getTotalNumFrames()-1);
+			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 			displayFrame();
 			System.out.println(project.getVideo());
 		} catch (Exception e) {
@@ -58,6 +65,7 @@ public class CalibrationWindowController {
 		videoView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
 				point = new Point((int)event.getX(), (int)event.getY());
+				System.out.println(point);
 			}
 		});
 	}
@@ -78,6 +86,11 @@ public class CalibrationWindowController {
 		controller.setup(project.getVideo().getFilePath());
 	}
 
+	@FXML
+	public void handleComboBox() {
+		
+	}
+	
 	@FXML 
 	private void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
@@ -112,6 +125,8 @@ public class CalibrationWindowController {
 		
 	@FXML 
 	public void initialize() {
+		chicksComboBox.getItems().addAll("1", "2", "3");
+		
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
@@ -122,10 +137,16 @@ public class CalibrationWindowController {
 		});
 	}
 	
-	
-	
 	public void initializeWithStage() {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
+	}
+	
+	@FXML public void setActualLength() {
+		
+	}
+	
+	@FXML public void setActualWidth() {
+		
 	}
 	
 	public void setProject(ProjectData project) {
