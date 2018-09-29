@@ -38,17 +38,16 @@ public class MainWindowController implements AutoTrackListener {
 	@FXML private Label startTimeLabel;
 	@FXML private Label endTimeLabel;
 
-	private Video chosenVideo;
 	private ScheduledExecutorService timer;
 	private AutoTracker autotracker;
 	private ProjectData project;
 	private Stage stage;
 
-	public void createVideo(String chosenFileName) {
+	public void createVideo(String filePath) {
 		try {
-			chosenVideo = new Video(chosenFileName);
+			project = new ProjectData(filePath);
+			Video chosenVideo = project.getVideo();
 
-			sliderBar.setMin(chosenVideo.getStartFrameNum());
 			sliderBar.setMax(chosenVideo.getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
 
@@ -58,21 +57,21 @@ public class MainWindowController implements AutoTrackListener {
 			displayFrame();
 			System.out.println(chosenVideo);
 		} catch (Exception e) {
-			System.out.println("File not found.");
+			e.printStackTrace();
 		}
 	}
 
 	public void startVideo() {
-		if (chosenVideo.isOpened()) {
+		if (project.getVideo().isOpened()) {
 			Runnable frameGrabber = new Runnable() {
 				public void run() {
-					sliderBar.setValue(chosenVideo.getCurrentFrameNum());
+					sliderBar.setValue(project.getVideo().getCurrentFrameNum());
 					displayFrame();
 				}
 			};
 
 			this.timer = Executors.newSingleThreadScheduledExecutor();
-			this.timer.scheduleAtFixedRate(frameGrabber, 0, (int) chosenVideo.getFrameRate(), TimeUnit.MILLISECONDS);
+			this.timer.scheduleAtFixedRate(frameGrabber, 0, (int) project.getVideo().getFrameRate(), TimeUnit.MILLISECONDS);
 
 		}
 	}
@@ -80,10 +79,10 @@ public class MainWindowController implements AutoTrackListener {
 	public void displayFrame() {
 		if (autotracker == null || !autotracker.isRunning()) {
 			//chosenVideo.setCurrentFrameNum(frameNum);
-			Image curFrame = UtilsForOpenCV.matToJavaFXImage(chosenVideo.readFrame());
+			Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 			videoView.setImage(curFrame);
 			Platform.runLater(() -> {
-				currentFrameLabel.setText("" + chosenVideo.getCurrentFrameNum());
+				currentFrameLabel.setText("" + project.getVideo().getCurrentFrameNum());
 			});
 		}	
 	}
@@ -92,7 +91,7 @@ public class MainWindowController implements AutoTrackListener {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
-					chosenVideo.setCurrentFrameNum(arg2.intValue());
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
 					displayFrame(); 
 				}
 			}
@@ -102,15 +101,15 @@ public class MainWindowController implements AutoTrackListener {
 
 	@FXML
 	public void handleStart() {
-		chosenVideo.setStartFrameNum(chosenVideo.getCurrentFrameNum());
-		startTimeLabel.setText("Start: " + chosenVideo.getStartFrameNum());
-		System.out.println(chosenVideo);
+		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
+		startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
+		System.out.println(project.getVideo());
 	}
 
 	@FXML
 	public void handleEnd() {
-		chosenVideo.setEndFrameNum((int) sliderBar.getValue());
-		endTimeLabel.setText("End: " + chosenVideo.getEndFrameNum());
+		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
+		endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
 	}
 
 
@@ -131,7 +130,7 @@ public class MainWindowController implements AutoTrackListener {
 			
 			autotracker = new AutoTracker();
 			autotracker.addAutoTrackListener(this);
-			autotracker.startAnalysis(chosenVideo);
+			autotracker.startAnalysis(project.getVideo());
 			autoTrackButton.setText("CANCEL auto-tracking");
 			
 		} else {
