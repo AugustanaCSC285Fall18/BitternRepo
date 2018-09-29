@@ -12,7 +12,6 @@ import autotracking.AutoTrackListener;
 import autotracking.AutoTracker;
 import dataModel.AnimalTrack;
 import dataModel.ProjectData;
-import dataModel.Video;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -49,19 +48,19 @@ public class MainWindowController implements AutoTrackListener {
 	public void createVideo(String filePath) {
 		try {
 			project = new ProjectData(filePath);
-			Video chosenVideo = project.getVideo(); //why
+			//Video chosenVideo = project.getVideo(); 
 			
 			project.getVideo().setXPixelsPerCm(6.5); 
 			project.getVideo().setYPixelsPerCm(6.7);
 			
-			sliderBar.setMax(chosenVideo.getTotalNumFrames() - 1);
-			sliderBar.setBlockIncrement(chosenVideo.getFrameRate());
+			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
+			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
-			startTimeLabel.setText("Start: " + chosenVideo.getStartFrameNum());
-			endTimeLabel.setText("End: " + chosenVideo.getEndFrameNum());
+			startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
+			endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
 
 			displayFrame();
-			System.out.println(chosenVideo);
+			System.out.println(project.getVideo());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -87,14 +86,16 @@ public class MainWindowController implements AutoTrackListener {
 		        System.out.println(event.getSceneY());
 		    }
 		});
-		
-
 	}
 
 	@FXML
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
 		endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
+		//Note: without the following line after the user clicks endTimeButton,
+		//if they play video, the video starts from the endTime frame.
+		//line is currently a band-aid
+		project.getVideo().setCurrentFrameNum(project.getVideo().getStartFrameNum()); 
 	}
 	
 	@FXML
@@ -107,19 +108,6 @@ public class MainWindowController implements AutoTrackListener {
 			timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
 			playButton.setText("Play Video");
 		}
-	}
-
-	@FXML 
-	public void handleSlider() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame(); 
-				}
-			}
-		});
-		
 	}
 
 	@FXML
@@ -155,8 +143,17 @@ public class MainWindowController implements AutoTrackListener {
 	}
 
 	@FXML public void initialize() {
-		
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					displayFrame(); 
+				}
+			}
+		});
 	}
+	
+	
 	
 	public void initializeWithStage(Stage stage) {
 		//Stage stage = stage;

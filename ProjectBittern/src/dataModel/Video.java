@@ -37,11 +37,6 @@ public class Video {
 		this.arenaBounds = new Rectangle(0,0,frameWidth,frameHeight);
 	}
 		
-	public Mat readFrame() {
-		Mat frame = new Mat();
-		vidCap.read(frame);
-		return frame;
-	}
 	
 	public String getFilePath() {
 		return this.filePath;
@@ -127,11 +122,14 @@ public class Video {
 	}
 
 	public void resetToStart() {
-		setCurrentFrameNum(1);
+		this.setCurrentFrameNum(this.getStartFrameNum());
 	}
 	
-	public void readFrame(Mat frame) {
+	//method doing too much
+	public Mat readFrame() {
+		Mat frame = new Mat();
 		vidCap.read(frame);
+		return frame;
 	}
 	
 	public double convertFrameNumsToSeconds(int numFrames) {
@@ -145,6 +143,7 @@ public class Video {
 	public boolean isOpened() {
 		return vidCap.isOpened();
 	}
+	
 	
 	//take out double decimals
 	public String getTime(int frameNumber) {
