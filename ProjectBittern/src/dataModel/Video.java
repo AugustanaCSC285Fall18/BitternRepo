@@ -162,5 +162,9 @@ public class Video {
 				+ "\nTotal Number Frames: " + this.getTotalNumFrames() 
 				+ "\n";
 	}
+	
+	public Image getImage(int frame) {
+		return vidCap.get
+	}
 
 }
