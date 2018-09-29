@@ -122,7 +122,7 @@ public class Video {
 	}
 
 	public void resetToStart() {
-		setCurrentFrameNum(1);
+		this.setCurrentFrameNum(this.getStartFrameNum());
 	}
 	
 	//method doing too much
@@ -143,6 +143,7 @@ public class Video {
 	public boolean isOpened() {
 		return vidCap.isOpened();
 	}
+	
 	
 	//take out double decimals
 	public String getTime(int frameNumber) {

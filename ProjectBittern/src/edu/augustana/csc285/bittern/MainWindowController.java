@@ -12,7 +12,6 @@ import autotracking.AutoTrackListener;
 import autotracking.AutoTracker;
 import dataModel.AnimalTrack;
 import dataModel.ProjectData;
-import dataModel.Video;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -87,14 +86,16 @@ public class MainWindowController implements AutoTrackListener {
 		        System.out.println(event.getSceneY());
 		    }
 		});
-		
-
 	}
 
 	@FXML
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
 		endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
+		//Note: without the following line after the user clicks endTimeButton,
+		//if they play video, the video starts from the endTime frame.
+		//line is currently a band-aid
+		project.getVideo().setCurrentFrameNum(project.getVideo().getStartFrameNum()); 
 	}
 	
 	@FXML
@@ -151,6 +152,8 @@ public class MainWindowController implements AutoTrackListener {
 			}
 		});
 	}
+	
+	
 	
 	public void initializeWithStage(Stage stage) {
 		//Stage stage = stage;
