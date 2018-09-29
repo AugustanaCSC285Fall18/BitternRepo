@@ -28,8 +28,8 @@ public class Video {
 			throw new FileNotFoundException("Unable to open video file: " + filePath);
 		}
 		//fill in some reasonable default/starting values for several fields
-		this.emptyFrameNum = 1;
-		this.startFrameNum = 1;
+		this.emptyFrameNum = 0;
+		this.startFrameNum = 0;
 		this.endFrameNum = this.getTotalNumFrames()-1;
 		
 		int frameWidth = (int)vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
