@@ -6,12 +6,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import dataModel.AnimalTrack;
 import dataModel.ExportData;
 import dataModel.ProjectData;
+import dataModel.TimePoint;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,8 +25,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
@@ -50,6 +49,7 @@ public class ManualTrackWindowController {
 	private Stage popup;
 	private GraphicsContext gc;
 	private String name;
+	private AnimalTrack track;
 
 	@FXML
 	public void initialize() {
@@ -66,6 +66,10 @@ public class ManualTrackWindowController {
 		videoView.setOnMouseClicked((event) -> {
 			point = new Point((int) event.getX(), (int) event.getY());
 			System.out.println(point);
+			track = new AnimalTrack(name);
+			track.add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
+			System.out.println(track.getPositions());
+			
 		});
 	}
 
@@ -77,11 +81,6 @@ public class ManualTrackWindowController {
 		popup.setWidth(300);
 
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
-	}
-
-	@FXML
-	public void handleChick() {		
-
 	}
 
 	@FXML
