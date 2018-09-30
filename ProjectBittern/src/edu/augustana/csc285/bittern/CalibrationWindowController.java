@@ -165,6 +165,18 @@ public class CalibrationWindowController {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 
+	@FXML 
+	public void handleLengthButton() {
+
+	}
+	
+	
+	@FXML 
+	public void handleWidthButton() {
+
+	}
+		
+
 	@FXML
 	public void setActualLength() {
 		actualLength = Integer.parseInt(setActualLength.getText());
