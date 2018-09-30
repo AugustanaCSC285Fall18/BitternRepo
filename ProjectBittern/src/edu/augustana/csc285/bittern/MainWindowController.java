@@ -70,6 +70,8 @@ public class MainWindowController implements AutoTrackListener {
 	
 	@FXML
 	private ImageView videoView; 
+	private Stage stage;
+	private Stage popup;
 
 	public void displayFrame() {
 		if (autotracker == null || !autotracker.isRunning()) {
@@ -206,7 +208,12 @@ public class MainWindowController implements AutoTrackListener {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		// Stage stage = stage;
+		/*this.stage = stage;
+		popup = new Stage();
+		popup.initOwner(stage);
+		popup.setHeight(200);
+		popup.setWidth(200);*///code for later
+		
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 

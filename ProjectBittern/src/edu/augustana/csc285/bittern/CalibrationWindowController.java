@@ -44,6 +44,24 @@ public class CalibrationWindowController {
 
 	@FXML private Label widthLabel;
 
+	@FXML 
+	public void initialize() {
+		chicksComboBox.getItems().addAll("1", "2", "3");
+		
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					displayFrame(); 
+				}
+			}
+		});
+	}
+
+	public void initializeWithStage() {
+		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
+	}
+
 	public void createProject(String filePath) {
 		try {
 			project = new ProjectData(filePath);			
@@ -126,7 +144,7 @@ public class CalibrationWindowController {
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
 		primary.setScene(nextScene);
 		primary.show();		
-	
+		System.out.println(project.getVideo());
 		MainWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
 		controller.setup(project);
@@ -143,24 +161,6 @@ public class CalibrationWindowController {
 
 	}
 		
-	@FXML 
-	public void initialize() {
-		chicksComboBox.getItems().addAll("1", "2", "3");
-		
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame(); 
-				}
-			}
-		});
-	}
-	
-	public void initializeWithStage() {
-		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
-	}
-	
 	@FXML
 	public void setActualLength() {
 		
