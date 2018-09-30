@@ -69,6 +69,7 @@ public class ManualTrackWindowController {
 			track = new AnimalTrack(name);
 			track.add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
 			System.out.println(track.getPositions());
+			handleNext();
 			
 		});
 	}
@@ -118,6 +119,7 @@ public class ManualTrackWindowController {
 		export.processData();
 	}
 
+	//user must do this first
 	@FXML
 	public void handleName() {
 		name = nameField.getText();
