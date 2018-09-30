@@ -1,38 +1,27 @@
 package edu.augustana.csc285.bittern;
 
-import java.awt.Point;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
 
 import autotracking.AutoTrackListener;
 import autotracking.AutoTracker;
 import dataModel.AnimalTrack;
-import dataModel.ExportData;
 import dataModel.ProjectData;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
@@ -45,17 +34,12 @@ public class MainWindowController implements AutoTrackListener {
 	private Button backButton;
 	@FXML
 	private Label currentFrameLabel;
-	@FXML
-	private BorderPane drawingBoard;
+	
 	@FXML
 	private Button endTimeButton;
 	@FXML
 	private Label endTimeLabel;
-	@FXML private Button exportButton;
-	private GraphicsContext gc;
-	@FXML
-	private Button playButton;
-	private Point point;
+	@FXML private Button nextButton;
 
 	@FXML
 	private ProgressBar progressAutoTrack;
@@ -66,12 +50,9 @@ public class MainWindowController implements AutoTrackListener {
 	private Button startTimeButton;
 	@FXML
 	private Label startTimeLabel;
-	private ScheduledExecutorService timer;
-	
 	@FXML
 	private ImageView videoView; 
-	private Stage stage;
-	private Stage popup;
+	
 
 	public void displayFrame() {
 		if (autotracker == null || !autotracker.isRunning()) {
@@ -81,23 +62,6 @@ public class MainWindowController implements AutoTrackListener {
 				currentFrameLabel.setText("" + project.getVideo().getCurrentFrameNum());
 			});
 		}
-	}
-
-	public void drawCircle (Point p) {
-	   Circle c = new Circle(p.getX(), p.getY(),5, Color.RED);
-	   drawingBoard.getChildren().add(c);
-	  }
-
-	// doesn't work until you start playing video
-	@FXML
-	public void getPoint() throws IOException {
-		videoView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				point = new Point((int) event.getX(), (int) event.getY());
-				System.out.println(point);
-			}
-		});
 	}
 
 	@FXML
@@ -117,17 +81,27 @@ public class MainWindowController implements AutoTrackListener {
 		controller.setProject(project);
 	}
 
-	@FXML
-	public void handleDrawingBoard(MouseEvent event) {
-		point = new Point((int) event.getX(), (int) event.getY());
-		System.out.println("BorderPane Point: " + point);
-		drawCircle(point);
-		
-		
-	}
-
 	
-
+	@FXML
+	public void handleNext() throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("ManualTrackWindow.fxml"));
+		BorderPane root = (BorderPane)loader.load();
+		
+		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
+		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		Stage primary = (Stage) nextButton.getScene().getWindow();
+		primary.setScene(nextScene);
+		primary.show();		
+		
+		project.getVideo().resetToStart();
+		System.out.println(project.getVideo());
+		ManualTrackWindowController controller = loader.getController();
+		controller.initializeWithStage(primary);
+		controller.setup(project);
+	}
+	
+	
 	@FXML
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
@@ -138,24 +112,7 @@ public class MainWindowController implements AutoTrackListener {
 		project.getVideo().setCurrentFrameNum(project.getVideo().getStartFrameNum());
 	}
 
-	@FXML
-	public void handleExport() throws IOException {
-		ExportData export = new ExportData(project);
-		export.processData();
-	}
 	
-	// Note fix slider and play ...
-	@FXML
-	public void handlePlay() throws InterruptedException {
-		if (playButton.getText().equalsIgnoreCase("play video")) {
-			playButton.setText("Pause Video");
-			startVideo();
-		} else {
-			timer.shutdown();
-			timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
-			playButton.setText("Play Video");
-		}
-	}
 
 	@FXML
 	public void handleStart() {
@@ -179,10 +136,6 @@ public class MainWindowController implements AutoTrackListener {
 		}
 	}
 
-	public void handleManualTracking() {
-		
-	}
-	
 	@Override
 	public void handleTrackedFrame(Mat frame, int frameNumber, double fractionComplete) {
 		Image imgFrame = UtilsForOpenCV.matToJavaFXImage(frame);
@@ -194,7 +147,6 @@ public class MainWindowController implements AutoTrackListener {
 		});
 	}
 
-	@FXML
 	public void initialize() {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -208,12 +160,6 @@ public class MainWindowController implements AutoTrackListener {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		/*this.stage = stage;
-		popup = new Stage();
-		popup.initOwner(stage);
-		popup.setHeight(200);
-		popup.setWidth(200);*///code for later
-		
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 
@@ -233,23 +179,6 @@ public class MainWindowController implements AutoTrackListener {
 			System.out.println(project.getVideo());
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
-
-	public void startVideo() {
-		if (project.getVideo().isOpened()) {
-			Runnable frameGrabber = new Runnable() {
-				@Override
-				public void run() {
-					sliderBar.setValue(project.getVideo().getCurrentFrameNum());
-					displayFrame();
-				}
-			};
-
-			this.timer = Executors.newSingleThreadScheduledExecutor();
-			this.timer.scheduleAtFixedRate(frameGrabber, 0, (int) project.getVideo().getFrameRate(),
-					TimeUnit.MILLISECONDS);
-
 		}
 	}
 

@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800" prefWidth="761.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.MainWindowController">
+<BorderPane prefHeight="800" prefWidth="761.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.ManualTrackWindowController">
    <top>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
@@ -25,12 +22,7 @@
    <center>
       <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
          <children>
-            <StackPane fx:id="stackPane">
-               <children>
-                  <Canvas fx:id="drawingBoard" height="542.0" width="761.0" />
-                  <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </StackPane>
+            <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
             <Slider fx:id="sliderBar" />
          </children>
       </VBox>
@@ -38,14 +30,7 @@
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="startTimeButton" layoutX="147.0" layoutY="89.0" mnemonicParsing="false" onAction="#handleStart" text="Set Start Time" />
-            <Button fx:id="endTimeButton" layoutX="149.0" layoutY="136.0" mnemonicParsing="false" onAction="#handleEnd" text="Set End Time" />
             <Button fx:id="playButton" layoutX="338.0" layoutY="136.0" mnemonicParsing="false" onAction="#handlePlay" text="Play Video" />
-            <Button fx:id="autoTrackButton" layoutX="314.0" layoutY="88.0" mnemonicParsing="false" onAction="#handleStartAutotracking" text="Start Auto-Tracking" />
-            <Label layoutX="468.0" layoutY="93.0" text="Progress: " />
-            <ProgressBar fx:id="progressAutoTrack" layoutX="539.0" layoutY="92.0" prefWidth="200.0" progress="0.0" />
-            <Label fx:id="startTimeLabel" layoutX="56.0" layoutY="92.0" prefHeight="17.0" prefWidth="70.0" />
-            <Label fx:id="endTimeLabel" layoutX="60.0" layoutY="140.0" prefHeight="17.0" prefWidth="66.0" />
             <Button fx:id="backButton" layoutX="21.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
             <Button fx:id="exportButton" layoutX="687.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
          </children>
