@@ -19,6 +19,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -34,9 +35,13 @@ public class ManualTrackWindowController {
 	@FXML private Button playButton;
 	@FXML private Button exportButton;
 	@FXML private Button backButton;
+	@FXML private Button chicksButton;
 	@FXML private ImageView videoView;
 	@FXML private Label currentFrameLabel;
 	@FXML private Slider sliderBar;
+	@FXML private TextField nameField;
+	@FXML private Button previousButton;
+	@FXML private Button nextButton;
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -44,6 +49,7 @@ public class ManualTrackWindowController {
 	private Stage stage;
 	private Stage popup;
 	private GraphicsContext gc;
+	private String name;
 
 	@FXML
 	public void initialize() {
@@ -56,24 +62,28 @@ public class ManualTrackWindowController {
 				}
 			}
 		});
+
+		videoView.setOnMouseClicked((event) -> {
+			point = new Point((int) event.getX(), (int) event.getY());
+			System.out.println(point);
+		});
 	}
 
 	public void initializeWithStage(Stage stage) {
 		this.stage = stage;
 		popup = new Stage();
 		popup.initOwner(stage);
-		popup.setHeight(200);
-		popup.setWidth(200);
+		popup.setHeight(300);
+		popup.setWidth(300);
 
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 
 	@FXML
-	public void handleChick() {
-		popup.show();
-		
+	public void handleChick() {		
+
 	}
-	
+
 	@FXML
 	public void handleBack() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
@@ -90,7 +100,7 @@ public class ManualTrackWindowController {
 		controller.initializeWithStage(primary);
 		controller.setup(project);
 	}
-	
+
 	@FXML
 	public void handlePlay() throws InterruptedException {
 		if (playButton.getText().equalsIgnoreCase("play video")) {
@@ -107,6 +117,27 @@ public class ManualTrackWindowController {
 	public void handleExport() throws IOException {
 		ExportData export = new ExportData(project);
 		export.processData();
+	}
+
+	@FXML
+	public void handleName() {
+		name = nameField.getText();
+	}
+
+	@FXML
+	public void handlePrevious() {
+		jump(-1);
+	}
+
+	@FXML
+	public void handleNext() {
+		jump(1);
+	}
+
+	public void jump(int sth) {
+		project.getVideo().setCurrentFrameNum((project.getVideo().getCurrentFrameNum() + sth * (int)project.getVideo().getFrameRate()));
+		sliderBar.setValue(project.getVideo().getCurrentFrameNum());
+		displayFrame();
 	}
 
 	public void displayFrame() {
@@ -165,13 +196,7 @@ public class ManualTrackWindowController {
 	// doesn't work until you start playing video
 	@FXML
 	public void getPoint() throws IOException {
-		videoView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				point = new Point((int) event.getX(), (int) event.getY());
-				System.out.println(point);
-			}
-		});
+
 	}
 
 }
