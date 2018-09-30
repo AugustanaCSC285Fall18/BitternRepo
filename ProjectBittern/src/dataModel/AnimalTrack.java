@@ -42,6 +42,16 @@ public class AnimalTrack {
 		return positions.get(positions.size()-1);
 	}
 	
+	//print a String of positions per time
+	public String getPositions() {
+		String output = "";
+		for (int i = 0; i < positions.size(); i++) {
+			output += "Time: " + positions.get(i).getFrameNum() + ", Position: (" 
+					+ (int) positions.get(i).getX() + ", " + (int) positions.get(i).getY() + ")\n";
+		}
+		return output;
+	}
+	
 	public String toString() {
 		int startFrame = positions.get(0).getFrameNum();
 		int endFrame = getFinalTimePoint().getFrameNum();

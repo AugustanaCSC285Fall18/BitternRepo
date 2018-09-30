@@ -82,6 +82,11 @@ public class CalibrationWindowController {
 		
 		
 	}
+	
+	@FXML
+	public void handleSlider() {
+		
+	}
 
 	public void drawCircle (Point p) {
 	   Circle c = new Circle(p.getX(), p.getY(),5, Color.RED);

@@ -44,6 +44,7 @@
             <Label fx:id="startTimeLabel" layoutX="56.0" layoutY="92.0" prefHeight="17.0" prefWidth="70.0" />
             <Label fx:id="endTimeLabel" layoutX="60.0" layoutY="140.0" prefHeight="17.0" prefWidth="66.0" />
             <Button fx:id="backButton" layoutX="21.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
+            <Button fx:id="exportButton" layoutX="687.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
          </children>
       </AnchorPane>
    </bottom>

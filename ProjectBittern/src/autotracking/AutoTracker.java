@@ -28,6 +28,7 @@ public class AutoTracker {
 	
 	private final double maxTimeGapWithinSegment = 0.5; // end a segment after this many seconds with no point detected
 	private final double maxMovementSpeed = 80.0; // guess for chicks
+	private int numAnimals;
 
 	public AutoTracker() {
 		//TODO: pass in some thresholds/parameters for fine-tuning the auto-tracking 
@@ -128,6 +129,10 @@ public class AutoTracker {
 			currentSegments.add(bestMatch);
 		}
 		return bestMatch;		
+	}
+	
+	public void setNumAnimals(int numAnimals) {
+		this.numAnimals = numAnimals;
 	}
 	
 	public void cancelAnalysis() {
