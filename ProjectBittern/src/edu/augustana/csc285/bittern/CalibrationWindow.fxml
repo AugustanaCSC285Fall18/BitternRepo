@@ -34,9 +34,12 @@
          <children>
             <Button fx:id="confirmButton" layoutX="673.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleConfirm" text="Confirm" />
             <Button fx:id="backButton" layoutX="35.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-            <Label layoutX="430.0" layoutY="104.0" text="Actual Length : " />
-            <TextField fx:id="setActualLength" layoutX="527.0" layoutY="100.0" onAction="#setActualLength" prefHeight="25.0" prefWidth="46.0" promptText="in cm" />
-            <Button fx:id="XAxisButton" layoutX="154.0" layoutY="100.0" mnemonicParsing="false" onAction="#handleCalibrationTool" text="Calibration Tool" />
+            <Label layoutX="433.0" layoutY="113.0" text="Actual Length : " />
+            <TextField fx:id="setActualLengthY" layoutX="538.0" layoutY="109.0" onAction="#setActualLengthY" prefHeight="25.0" prefWidth="46.0" promptText="in cm" />
+            <Button fx:id="setX" layoutX="152.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleSetX" text="Set X" />
+            <Button fx:id="setY" layoutX="153.0" layoutY="109.0" mnemonicParsing="false" onAction="#handleSetY" text="Set Y" />
+            <Label layoutX="433.0" layoutY="56.0" text="Actual Length : " />
+            <TextField fx:id="setActualLengthX" layoutX="538.0" layoutY="52.0" onAction="#setActualLengthX" prefHeight="25.0" prefWidth="46.0" promptText="in cm" />
          </children>
       </AnchorPane>
    </bottom>

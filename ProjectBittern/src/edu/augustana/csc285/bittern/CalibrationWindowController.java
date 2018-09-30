@@ -39,16 +39,26 @@ public class CalibrationWindowController {
 	@FXML
 	private ImageView videoView;
 	@FXML
-	private Button XAxisButton;
+	private Button setX;
+	@FXML
+	private Button setY;
 	@FXML
 	private BorderPane drawingBoard;
 	@FXML
-	private TextField setActualLength;
+	private TextField setActualLengthX;
+	@FXML
+	private TextField setActualLengthY;
+	
 
 	private ArrayList<Point> calibration = new ArrayList();
 	private ProjectData project;
-	private int actualLength;
-	private double pixelLength;
+	
+	private double pixelLengthX; 
+	private double pixelLengthY; 
+	
+	public static double ratioX;
+	public static double ratioY;
+	
 
 	public void createProject(String filePath) {
 		try {
@@ -87,15 +97,27 @@ public class CalibrationWindowController {
 	}
 
 	@FXML
-	public void handleCalibrationTool() {
+	public void handleSetX() {
 		Point p1 = calibration.get(calibration.size() - 2);
 		Point p2 = calibration.get(calibration.size() - 1);
-		pixelLength = Point2D.distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-		System.out.println(pixelLength);
+		pixelLengthX = Point2D.distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+		System.out.println(pixelLengthX);
 		System.out.println("Point1: " + p1 + " Point 2: " + p2);
 		drawLine(p1, p2);
 
 	}
+	
+	@FXML
+	public void handleSetY() {
+		Point p1 = calibration.get(calibration.size() - 2);
+		Point p2 = calibration.get(calibration.size() - 1);
+		pixelLengthY = Point2D.distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+		System.out.println(pixelLengthY);
+		System.out.println("Point1: " + p1 + " Point 2: " + p2);
+		drawLine(p1, p2);
+
+	}
+
 
 	@FXML
 	public void handleSlider() {
@@ -165,21 +187,19 @@ public class CalibrationWindowController {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 
-	@FXML 
-	public void handleLengthButton() {
-
-	}
-	
-	
-	@FXML 
-	public void handleWidthButton() {
-
-	}
-		
 
 	@FXML
-	public void setActualLength() {
-		actualLength = Integer.parseInt(setActualLength.getText());
+	public void setActualLengthX() {
+		int actualLengthX = Integer.parseInt(setActualLengthX.getText());
+		ratioX = actualLengthX/pixelLengthX;
+		System.out.println(ratioX);
+	}
+	
+	@FXML
+	public void setActualLengthY() {
+		int actualLength = Integer.parseInt(setActualLengthY.getText());
+		ratioY = actualLength/pixelLengthY;
+		System.out.println(ratioY );
 	}
 
 	public void setProject(ProjectData project) {
