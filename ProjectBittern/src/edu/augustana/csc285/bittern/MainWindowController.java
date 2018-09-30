@@ -253,7 +253,7 @@ public class MainWindowController implements AutoTrackListener {
 
 		for (AnimalTrack track : trackedSegments) {
 			System.out.println(track);
-			System.out.println(" " + track.getPositions());
+			//System.out.println(" " + track.getPositions());
 		}
 		Platform.runLater(() -> {
 			progressAutoTrack.setProgress(1.0);
