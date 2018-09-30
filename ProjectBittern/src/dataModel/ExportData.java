@@ -21,7 +21,7 @@ public class ExportData {
 	}
 	
 	//fix name
-	public File processData() throws IOException {
+	public void processData() throws IOException {
 		bWriter.write("Time, Point");
 		bWriter.newLine();
 		
@@ -32,7 +32,6 @@ public class ExportData {
 		
 		bWriter.close();
 		fWriter.close();
-		return output;
 	}
 
 }

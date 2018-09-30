@@ -139,7 +139,7 @@ public class MainWindowController implements AutoTrackListener {
 	@FXML
 	public void handleExport() throws IOException {
 		ExportData export = new ExportData(project);
-		File output = export.processData();
+		export.processData();
 	}
 	
 	// Note fix slider and play ...
