@@ -67,11 +67,10 @@ public class ManualTrackWindowController {
 
 		videoView.setOnMouseClicked((event) -> {
 			point = new Point((int) event.getX(), (int) event.getY());
-			//System.out.println(point);
-			track = new AnimalTrack(name);
-			track.add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
-			System.out.println(track.getPositions());
-			handleNext();
+			project.getAnimalTrackInTracks((String)chicksBox.getValue()).add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
+//			track = chicksBox.getItems().
+			System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue()));//.getPositions());
+//			handleNext();
 			
 		});
 		
@@ -130,7 +129,8 @@ public class ManualTrackWindowController {
 		String name = nameField.getText();
 		//String sth = name + " track";
 		project.getTracks().add(new AnimalTrack(name));
-		chicksBox.getItems().add("Chick named " + name);
+		chicksBox.getItems().add((String) name);
+		nameField.setText("");
 	}
 
 	
