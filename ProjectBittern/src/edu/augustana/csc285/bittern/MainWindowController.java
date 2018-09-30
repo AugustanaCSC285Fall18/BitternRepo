@@ -51,7 +51,8 @@ public class MainWindowController implements AutoTrackListener {
 	private Button endTimeButton;
 	@FXML
 	private Label endTimeLabel;
-	@FXML private Button exportButton;
+	@FXML
+	private Button exportButton;
 	private GraphicsContext gc;
 	@FXML
 	private Button playButton;
@@ -67,9 +68,9 @@ public class MainWindowController implements AutoTrackListener {
 	@FXML
 	private Label startTimeLabel;
 	private ScheduledExecutorService timer;
-	
+
 	@FXML
-	private ImageView videoView; 
+	private ImageView videoView;
 
 	public void displayFrame() {
 		if (autotracker == null || !autotracker.isRunning()) {
@@ -81,10 +82,10 @@ public class MainWindowController implements AutoTrackListener {
 		}
 	}
 
-	public void drawCircle (Point p) {
-	   Circle c = new Circle(p.getX(), p.getY(),5, Color.RED);
-	   drawingBoard.getChildren().add(c);
-	  }
+	public void drawCircle(Point p) {
+		Circle c = new Circle(p.getX(), p.getY(), 5, Color.RED);
+		drawingBoard.getChildren().add(c);
+	}
 
 	// doesn't work until you start playing video
 	@FXML
@@ -120,11 +121,8 @@ public class MainWindowController implements AutoTrackListener {
 		point = new Point((int) event.getX(), (int) event.getY());
 		System.out.println("BorderPane Point: " + point);
 		drawCircle(point);
-		
-		
-	}
 
-	
+	}
 
 	@FXML
 	public void handleEnd() {
@@ -141,7 +139,7 @@ public class MainWindowController implements AutoTrackListener {
 		ExportData export = new ExportData(project);
 		File output = export.processData();
 	}
-	
+
 	// Note fix slider and play ...
 	@FXML
 	public void handlePlay() throws InterruptedException {
@@ -178,9 +176,9 @@ public class MainWindowController implements AutoTrackListener {
 	}
 
 	public void handleManualTracking() {
-		
+
 	}
-	
+
 	@Override
 	public void handleTrackedFrame(Mat frame, int frameNumber, double fractionComplete) {
 		Image imgFrame = UtilsForOpenCV.matToJavaFXImage(frame);
@@ -248,13 +246,17 @@ public class MainWindowController implements AutoTrackListener {
 
 	@Override
 	public void trackingComplete(List<AnimalTrack> trackedSegments) {
+
+		System.out.println("Untrack segment: " + project.getUnassignedSegments());
+
 		project.getUnassignedSegments().clear();
 		project.getUnassignedSegments().addAll(trackedSegments);
 
 		for (AnimalTrack track : trackedSegments) {
 			System.out.println(track);
-			System.out.println(" " + track.getPositions());
+			// System.out.println(" " + track.getPositions());
 		}
+
 		Platform.runLater(() -> {
 			progressAutoTrack.setProgress(1.0);
 			autoTrackButton.setText("Start auto-tracking");
