@@ -33,6 +33,7 @@
             <Button fx:id="playButton" layoutX="338.0" layoutY="136.0" mnemonicParsing="false" onAction="#handlePlay" text="Play Video" />
             <Button fx:id="backButton" layoutX="21.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
             <Button fx:id="exportButton" layoutX="687.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
+            <Button fx:id="chickButton" layoutX="676.0" layoutY="25.0" mnemonicParsing="false" onAction="#handleChick" text="Add Chick" />
          </children>
       </AnchorPane>
    </bottom>

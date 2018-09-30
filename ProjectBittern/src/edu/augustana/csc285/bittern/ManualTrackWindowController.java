@@ -59,15 +59,21 @@ public class ManualTrackWindowController {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		/*this.stage = stage;
+		this.stage = stage;
 		popup = new Stage();
 		popup.initOwner(stage);
 		popup.setHeight(200);
-		popup.setWidth(200);*///code for later
+		popup.setWidth(200);
 
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 
+	@FXML
+	public void handleChick() {
+		popup.show();
+		
+	}
+	
 	@FXML
 	public void handleBack() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
