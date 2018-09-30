@@ -6,17 +6,19 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import dataModel.AnimalTrack;
 import dataModel.ExportData;
 import dataModel.ProjectData;
+import dataModel.TimePoint;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -24,8 +26,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
@@ -42,6 +42,7 @@ public class ManualTrackWindowController {
 	@FXML private TextField nameField;
 	@FXML private Button previousButton;
 	@FXML private Button nextButton;
+	@FXML private ComboBox<String> chicksBox;
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -50,6 +51,7 @@ public class ManualTrackWindowController {
 	private Stage popup;
 	private GraphicsContext gc;
 	private String name;
+	private AnimalTrack track;
 
 	@FXML
 	public void initialize() {
@@ -65,8 +67,15 @@ public class ManualTrackWindowController {
 
 		videoView.setOnMouseClicked((event) -> {
 			point = new Point((int) event.getX(), (int) event.getY());
-			System.out.println(point);
+			//System.out.println(point);
+			track = new AnimalTrack(name);
+			track.add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
+			System.out.println(track.getPositions());
+			handleNext();
+			
 		});
+		
+		
 	}
 
 	public void initializeWithStage(Stage stage) {
@@ -77,11 +86,6 @@ public class ManualTrackWindowController {
 		popup.setWidth(300);
 
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
-	}
-
-	@FXML
-	public void handleChick() {		
-
 	}
 
 	@FXML
@@ -119,11 +123,17 @@ public class ManualTrackWindowController {
 		export.processData();
 	}
 
+	//user must do this first
 	@FXML
 	public void handleName() {
-		name = nameField.getText();
+		
+		String name = nameField.getText();
+		//String sth = name + " track";
+		project.getTracks().add(new AnimalTrack(name));
+		chicksBox.getItems().add("Chick named " + name);
 	}
 
+	
 	@FXML
 	public void handlePrevious() {
 		jump(-1);
