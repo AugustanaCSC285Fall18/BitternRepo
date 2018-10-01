@@ -14,7 +14,7 @@
    <top>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <Label prefHeight="17.0" prefWidth="88.0" text="Current Frame: " BorderPane.alignment="CENTER_RIGHT" />
+            <Label prefHeight="17.0" prefWidth="88.0" text="Current TIme: " BorderPane.alignment="CENTER_RIGHT" />
          </center>
          <right>
             <Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="85.0" BorderPane.alignment="CENTER" />

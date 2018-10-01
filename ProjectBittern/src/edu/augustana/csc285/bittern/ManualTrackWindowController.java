@@ -2,6 +2,7 @@ package edu.augustana.csc285.bittern;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -66,6 +67,9 @@ public class ManualTrackWindowController {
 				}
 			}
 		});
+		
+	
+		
 
 		videoView.setOnMouseClicked((event) -> {
 			point = new Point((int) event.getX(), (int) event.getY());
@@ -79,6 +83,14 @@ public class ManualTrackWindowController {
 		
 		
 	}
+	
+	public String getTime(int frameNumber) {
+		DecimalFormat df = new DecimalFormat("00.00");
+		int seconds = (int) (frameNumber /project.getVideo().getFrameRate());
+		int minutes = seconds / 60;
+		int remainingSeconds = (int) seconds - (60 * minutes);
+		return minutes + ":" + df.format(remainingSeconds);
+	} 
 
 	public void initializeWithStage(Stage stage) {
 		this.stage = stage;
@@ -157,8 +169,9 @@ public class ManualTrackWindowController {
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		videoView.setImage(curFrame);
 		Platform.runLater(() -> {
-			currentFrameLabel.setText("" + project.getVideo().getCurrentFrameNum());
+			currentFrameLabel.setText("" + getTime(project.getVideo().getCurrentFrameNum()));
 		});
+		
 	}
 
 	public void startVideo() {
