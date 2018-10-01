@@ -24,6 +24,7 @@ public class ExportData {
 		try {
 			for (int i = 0; i < this.project.getTracks().size(); i++) {
 				fWriter.append(this.project.getTracks().get(i).getID());
+				fWriter.append("\n");
 				fWriter.append(this.project.getTracks().get(i).getPositions());
 			}
 			System.out.println("CSV file was created successfully !!!");
@@ -42,10 +43,5 @@ public class ExportData {
 		}
 
 	}
-	
-	public void readData() {
-		
-	}
-	
 	
 }
