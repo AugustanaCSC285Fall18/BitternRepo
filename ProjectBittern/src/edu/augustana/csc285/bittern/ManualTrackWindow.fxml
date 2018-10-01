@@ -24,7 +24,11 @@
    <center>
       <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
+            <BorderPane fx:id="drawingBoard" onMouseClicked="#handleDrawingBoard">
+               <center>
+                  <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
+               </center>
+            </BorderPane>
             <Slider fx:id="sliderBar" />
          </children>
       </VBox>

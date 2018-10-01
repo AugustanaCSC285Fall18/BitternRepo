@@ -26,6 +26,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
@@ -69,8 +71,9 @@ public class ManualTrackWindowController {
 			point = new Point((int) event.getX(), (int) event.getY());
 			project.getAnimalTrackInTracks((String)chicksBox.getValue()).add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
 //			track = chicksBox.getItems().
-			System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue()));//.getPositions());
-//			handleNext();
+			System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue())) ;// getPositions());
+			handleNext();
+			
 			
 		});
 		
@@ -193,14 +196,14 @@ public class ManualTrackWindowController {
 	public void handleDrawingBoard(MouseEvent event) {
 		point = new Point((int) event.getX(), (int) event.getY());
 		System.out.println("BorderPane Point: " + point);
-		drawCircle(point);
+		//drawCircle(point);
 
 
 	}
 
 	public void drawCircle (Point p) {
-		//Circle c = new Circle(p.getX(), p.getY(),5, Color.RED);
-		//drawingBoard.getChildren().add(c);
+		Circle c = new Circle(p.getX(), p.getY(),5, Color.RED);
+		drawingBoard.getChildren().add(c);
 	}
 
 	// doesn't work until you start playing video

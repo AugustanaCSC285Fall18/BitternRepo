@@ -48,17 +48,15 @@ public class CalibrationWindowController {
 	private TextField setActualLengthX;
 	@FXML
 	private TextField setActualLengthY;
-	
 
 	private ArrayList<Point> calibration = new ArrayList();
 	private ProjectData project;
-	
-	private double pixelLengthX; 
-	private double pixelLengthY; 
-	
+
+	private double pixelLengthX;
+	private double pixelLengthY;
+
 	public static double ratioX;
 	public static double ratioY;
-	
 
 	public void createProject(String filePath) {
 		try {
@@ -100,13 +98,12 @@ public class CalibrationWindowController {
 	public void handleSetX() {
 		Point p1 = calibration.get(calibration.size() - 2);
 		Point p2 = calibration.get(calibration.size() - 1);
-		pixelLengthX = Point2D.distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 		System.out.println(pixelLengthX);
 		System.out.println("Point1: " + p1 + " Point 2: " + p2);
 		drawLine(p1, p2);
 
 	}
-	
+
 	@FXML
 	public void handleSetY() {
 		Point p1 = calibration.get(calibration.size() - 2);
@@ -117,7 +114,6 @@ public class CalibrationWindowController {
 		drawLine(p1, p2);
 
 	}
-
 
 	@FXML
 	public void handleSlider() {
@@ -153,23 +149,23 @@ public class CalibrationWindowController {
 		controller.setup(project.getVideo().getFilePath());
 	}
 
-	@FXML 
+	@FXML
 	public void handleConfirm() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
-		BorderPane root = (BorderPane)loader.load();
-		
-		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
+		BorderPane root = (BorderPane) loader.load();
+
+		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
+
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
 		primary.setScene(nextScene);
-		primary.show();		
+		primary.show();
 		System.out.println(project.getVideo());
 		MainWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
 		controller.setup(project);
 	}
-	
+
 	@FXML
 	public void initialize() {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
@@ -182,24 +178,22 @@ public class CalibrationWindowController {
 		});
 	}
 
-	
 	public void initializeWithStage() {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 
-
 	@FXML
 	public void setActualLengthX() {
 		int actualLengthX = Integer.parseInt(setActualLengthX.getText());
-		ratioX = actualLengthX/pixelLengthX;
+		ratioX = actualLengthX / pixelLengthX;
 		System.out.println(ratioX);
 	}
-	
+
 	@FXML
 	public void setActualLengthY() {
 		int actualLength = Integer.parseInt(setActualLengthY.getText());
-		ratioY = actualLength/pixelLengthY;
-		System.out.println(ratioY );
+		ratioY = actualLength / pixelLengthY;
+		System.out.println(ratioY);
 	}
 
 	public void setProject(ProjectData project) {
