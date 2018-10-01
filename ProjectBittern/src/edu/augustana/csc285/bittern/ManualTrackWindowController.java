@@ -119,10 +119,11 @@ public class ManualTrackWindowController {
 		controller.setup(project);
 	}
 
+	//messes up when slider moves
 	@FXML
 	public void handlePlay() throws InterruptedException {
-		if (playButton.getText().equalsIgnoreCase("play video")) {
-			playButton.setText("Pause Video");
+		if (playButton.getText().equalsIgnoreCase("play")) {
+			playButton.setText("Pause");
 			startVideo();
 		} else {
 			timer.shutdown();
@@ -130,7 +131,7 @@ public class ManualTrackWindowController {
 			playButton.setText("Play Video");
 		}
 	}
-
+	
 	@FXML
 	public void handleExport() throws IOException {
 		ExportData export = new ExportData(project);

@@ -1,3 +1,4 @@
+
 package edu.augustana.csc285.bittern;
 	
 import org.opencv.core.Core;

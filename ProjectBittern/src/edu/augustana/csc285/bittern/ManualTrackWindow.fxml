@@ -38,6 +38,7 @@
             <Button fx:id="previousButton" layoutX="21.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePrevious" text="Previous Sec" />
             <Button fx:id="nextButton" layoutX="695.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleNext" text="Next Sec" />
             <ComboBox fx:id="chicksBox" layoutX="18.0" layoutY="54.0" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
+            <Button fx:id="playButton" layoutX="21.0" layoutY="101.0" mnemonicParsing="false" onAction="#handlePlay" text="Play" />
          </children>
       </AnchorPane>
    </bottom>
