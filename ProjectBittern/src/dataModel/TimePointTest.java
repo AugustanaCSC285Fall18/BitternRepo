@@ -13,6 +13,7 @@ class TimePointTest {
 	
 	TimePoint a = new TimePoint(0, 0, 19);
 	TimePoint b = new TimePoint(4, 3, 19);
+	TimePoint c = new TimePoint(1, 2, 3);
 	
 	@Test
 	public void test() {
