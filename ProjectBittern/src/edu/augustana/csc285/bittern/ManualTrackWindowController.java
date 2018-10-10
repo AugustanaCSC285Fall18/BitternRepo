@@ -8,7 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import dataModel.AnimalTrack;
-import dataModel.ExportData;
+import dataModel.DataExporter;
 import dataModel.ProjectData;
 import dataModel.TimePoint;
 import javafx.application.Platform;
@@ -134,8 +134,8 @@ public class ManualTrackWindowController {
 	
 	@FXML
 	public void handleExport() throws IOException {
-		ExportData export = new ExportData(project);
-		export.processData();
+		//ExportData export = new ExportData(project);
+		DataExporter.exportToCSV(project);
 	}
 
 	//user must do this first
