@@ -13,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -38,16 +40,22 @@ public class CalibrationWindowController {
 	private Slider sliderBar;
 	@FXML
 	private ImageView videoView;
-	@FXML
-	private Button setX;
-	@FXML
-	private Button setY;
+	//@FXML
+	//private Button setX;
+	//@FXML
+	//private Button setY;
 	@FXML
 	private BorderPane drawingBoard;
 	@FXML
 	private TextField setActualLengthX;
 	@FXML
 	private TextField setActualLengthY;
+	@FXML
+	private ColorPicker colorChoice;
+	@FXML
+	private CheckBox setX;
+	@FXML
+	private CheckBox setY;
 
 	private ArrayList<Point> calibration = new ArrayList();
 	private ProjectData project;
@@ -57,6 +65,8 @@ public class CalibrationWindowController {
 
 	public static double ratioX;
 	public static double ratioY;
+	
+	public Color chosenColor;
 
 	public void createProject(String filePath) {
 		try {
@@ -86,6 +96,10 @@ public class CalibrationWindowController {
 			}
 		});
 	}
+	
+	@FXML  public void handleColorChoice () {
+		chosenColor = colorChoice.getValue();
+	}
 
 	@FXML
 	public void handleDrawingBoard(MouseEvent event) {
@@ -96,12 +110,12 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void handleSetX() {
-		Point p1 = calibration.get(calibration.size() - 2);
-		Point p2 = calibration.get(calibration.size() - 1);
-		System.out.println(pixelLengthX);
-		System.out.println("Point1: " + p1 + " Point 2: " + p2);
-		drawLine(p1, p2);
-
+//		Point p1 = calibration.get(calibration.size() - 2);
+//		Point p2 = calibration.get(calibration.size() - 1);
+//		System.out.println(pixelLengthX);
+//		System.out.println("Point1: " + p1 + " Point 2: " + p2);
+//		drawLine(p1, p2);
+		
 	}
 
 	@FXML
@@ -121,13 +135,13 @@ public class CalibrationWindowController {
 	}
 
 	public void drawCircle(Point p) {
-		Circle c = new Circle(p.getX(), p.getY(), 5, Color.RED);
+		Circle c = new Circle(p.getX(), p.getY(), 5, chosenColor);
 		drawingBoard.getChildren().add(c);
 	}
 
 	public void drawLine(Point p1, Point p2) {
 		Line line = new Line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-		line.setStroke(Color.RED);
+		line.setStroke(chosenColor);
 		line.setStrokeWidth(5.0f);
 		drawingBoard.getChildren().add(line);
 
