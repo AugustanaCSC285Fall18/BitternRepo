@@ -1,6 +1,7 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import org.opencv.core.Mat;
@@ -105,7 +106,8 @@ public class MainWindowController implements AutoTrackListener {
 	@FXML
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
-		endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
+//		endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
+		endTimeLabel.setText("End: " + getTime(project.getVideo().getEndFrameNum()));
 		// Note: without the following line after the user clicks endTimeButton,
 		// if they play video, the video starts from the endTime frame.
 		// line is currently a band-aid
@@ -117,7 +119,8 @@ public class MainWindowController implements AutoTrackListener {
 	@FXML
 	public void handleStart() {
 		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
-		startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
+//		startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
+		startTimeLabel.setText("Start: " + getTime(project.getVideo().getStartFrameNum()));
 		System.out.println(project.getVideo());
 	}
 
@@ -162,6 +165,14 @@ public class MainWindowController implements AutoTrackListener {
 	public void initializeWithStage(Stage stage) {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
+	
+	public String getTime(int frameNumber) {
+		DecimalFormat df = new DecimalFormat("00.00");
+		int seconds = (int) (frameNumber /project.getVideo().getFrameRate());
+		int minutes = seconds / 60;
+		int remainingSeconds = (int) seconds - (60 * minutes);
+		return minutes + ":" + df.format(remainingSeconds);
+	} 
 
 	public void setup(ProjectData project) {
 		try {
@@ -172,8 +183,11 @@ public class MainWindowController implements AutoTrackListener {
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
-			startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
-			endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
+//			startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
+//			endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
+			
+			startTimeLabel.setText("Start: " + getTime(project.getVideo().getStartFrameNum()));
+			endTimeLabel.setText("End: " + getTime(project.getVideo().getEndFrameNum()));
 
 			displayFrame();
 			System.out.println(project.getVideo());
@@ -197,5 +211,6 @@ public class MainWindowController implements AutoTrackListener {
 		});
 		autotracker.cancelAnalysis();
 	}
+	
 
 }
