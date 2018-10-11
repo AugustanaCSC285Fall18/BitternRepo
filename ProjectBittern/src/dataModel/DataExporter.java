@@ -28,7 +28,7 @@ public class DataExporter {
 			for (int i = 0; i < project.getTracks().size(); i++) {
 				fWriter.append(project.getTracks().get(i).getID());
 				fWriter.append("\n");
-				fWriter.append(project.getTracks().get(i).getPositions());
+				fWriter.append(project.getTracks().get(i).getPositionsBySecond(project.getVideo()));
 			}
 			System.out.println("CSV file was created successfully !!!");
 		} catch (Exception e) {
@@ -46,5 +46,6 @@ public class DataExporter {
 		}
 
 	}
+	
 	
 }

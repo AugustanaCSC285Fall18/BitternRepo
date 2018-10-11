@@ -163,9 +163,6 @@ public class ManualTrackWindowController {
 		displayFrame();
 	}
 	
-	public void handleInterval() {
-		
-	}
 
 	public void displayFrame() {
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
