@@ -14,6 +14,7 @@ import dataModel.TimePoint;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -46,6 +47,7 @@ public class ManualTrackWindowController {
 	@FXML private Button previousButton;
 	@FXML private Button nextButton;
 	@FXML private ComboBox<String> chicksBox;
+	@FXML private ComboBox<Integer> intervalBox;
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -67,21 +69,16 @@ public class ManualTrackWindowController {
 				}
 			}
 		});
-		
-	
-		
 
 		videoView.setOnMouseClicked((event) -> {
 			point = new Point((int) event.getX(), (int) event.getY());
 			project.getAnimalTrackInTracks((String)chicksBox.getValue()).add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
 //			track = chicksBox.getItems().
 			System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue())) ;// getPositions());
-			handleNext();
-			
-			
+//			handleNext();
 		});
-		
-		
+		intervalBox.getItems().addAll(1, 5);
+//		intervalBox.setValue(1);
 	}
 	
 	public String getTime(int frameNumber) {
@@ -152,18 +149,22 @@ public class ManualTrackWindowController {
 	
 	@FXML
 	public void handlePrevious() {
-		jump(-1);
+		jump(-intervalBox.getValue());
 	}
 
 	@FXML
 	public void handleNext() {
-		jump(1);
+		jump(intervalBox.getValue());
 	}
 
 	public void jump(int sth) {
 		project.getVideo().setCurrentFrameNum((project.getVideo().getCurrentFrameNum() + sth * (int)project.getVideo().getFrameRate()));
 		sliderBar.setValue(project.getVideo().getCurrentFrameNum());
 		displayFrame();
+	}
+	
+	public void handleInterval() {
+		
 	}
 
 	public void displayFrame() {
