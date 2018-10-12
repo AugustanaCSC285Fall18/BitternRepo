@@ -20,7 +20,7 @@
       </BorderPane>
    </top>
    <center>
-      <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="chosenColor" prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
          <children>
             <BorderPane fx:id="drawingBoard" onMouseClicked="#handleDrawingBoard">
                <center>
@@ -42,7 +42,7 @@
             <Button fx:id="setY" layoutX="248.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleSetY" text="Set Y" />
             <Label layoutX="433.0" layoutY="56.0" text="Actual Length : " />
             <TextField fx:id="setActualLengthX" layoutX="538.0" layoutY="52.0" onAction="#setActualLengthX" prefHeight="25.0" prefWidth="46.0" promptText="in cm" />
-            <CheckBox layoutX="269.0" layoutY="56.0" mnemonicParsing="false" text="Set X" />
+            <CheckBox fx:id="setX" layoutX="269.0" layoutY="56.0" mnemonicParsing="false" onAction="#handleSetX" text="Set X" />
             <CheckBox layoutX="269.0" layoutY="83.0" mnemonicParsing="false" text="Set Y" />
             <ColorPicker fx:id="colorChoice" editable="true" layoutX="35.0" layoutY="52.0" onAction="#handleColorChoice" />
             <CheckBox layoutX="269.0" layoutY="113.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="69.0" text="Origin" />
