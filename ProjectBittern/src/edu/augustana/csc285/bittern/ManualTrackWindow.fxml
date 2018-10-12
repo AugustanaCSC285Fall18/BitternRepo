@@ -37,7 +37,7 @@
             <Button fx:id="exportButton" layoutX="687.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
             <Button fx:id="previousButton" layoutX="274.0" layoutY="14.0" minWidth="60.0" mnemonicParsing="false" onAction="#handlePrevious" prefWidth="50.0" text="Back" />
             <Button fx:id="nextButton" layoutX="424.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="60.0" text="Forward" />
-            <ComboBox fx:id="chicksBox" layoutX="304.0" layoutY="56.0" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
+            <ComboBox fx:id="chicksBox" layoutX="304.0" layoutY="56.0" onAction="#handleChicksBox" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
             <Button fx:id="playButton" layoutX="349.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="60.0" text="Play" />
          </children>
       </AnchorPane>

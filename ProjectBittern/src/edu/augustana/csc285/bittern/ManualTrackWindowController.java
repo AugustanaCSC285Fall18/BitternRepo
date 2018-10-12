@@ -62,11 +62,9 @@ public class ManualTrackWindowController {
 	@FXML
 	public void initialize() {
 		
-		handleSlider();
-		handleClick();
-		progressCanvas.setWidth(videoView.getFitWidth());
-		
-				
+		setupSlider();
+		setupClick();
+		progressCanvas.setWidth(videoView.getFitWidth());		
 		
 	}
 
@@ -130,7 +128,8 @@ public class ManualTrackWindowController {
 	}
 
 	public void jump(int stepSize) {
-		project.getVideo().setCurrentFrameNum((project.getVideo().getCurrentFrameNum() + stepSize * (int)project.getVideo().getFrameRate()));
+		project.getVideo().setCurrentFrameNum((project.getVideo().getCurrentFrameNum() 
+				+ stepSize * (int)project.getVideo().getFrameRate()));
 		sliderBar.setValue(project.getVideo().getCurrentFrameNum());
 		displayFrame();
 	}
@@ -169,20 +168,19 @@ public class ManualTrackWindowController {
 			project.getVideo().resetToStart();
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
-
+			for (int i = 0; i < project.getTracks().size(); i++) {
+				chicksBox.getItems().add(project.getTracks().get(i).getID());
+			}
 			displayFrame();
 			System.out.println(project.getVideo());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		for (int i = 0; i < project.getTracks().size(); i++) {
-			chicksBox.getItems().add(project.getTracks().get(i).getID());
-		}
-
+		
 	}
 	
-	public void handleSlider() {
+	public void setupSlider() {
 		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
@@ -195,7 +193,7 @@ public class ManualTrackWindowController {
 		
 	}
 	
-	public void handleClick() {
+	public void setupClick() {
 		videoView.setOnMouseClicked((event) -> {
 			popup.close();
 			if (chicksBox.getValue() == null) {
@@ -223,6 +221,11 @@ public class ManualTrackWindowController {
 		drawingBoard.getChildren().add(c);
 	}
 
+	@FXML
+	public void handleChicksBox() {
+		
+	}
+	
 	//method will be specific to unassignedTracks
 	public void handleProgress() {
 		int conversionRate = (int) (sliderBar.getMax() / progressCanvas.getWidth());
