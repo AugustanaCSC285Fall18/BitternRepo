@@ -7,12 +7,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import dataModel.AnimalTrack;
-import dataModel.ExportData;
+import dataModel.DataExporter;
 import dataModel.ProjectData;
 import dataModel.TimePoint;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -46,7 +47,11 @@ public class ManualTrackWindowController {
 	@FXML private Button previousButton;
 	@FXML private Button nextButton;
 	@FXML private ComboBox<String> chicksBox;
+<<<<<<< HEAD
 	@FXML private Canvas progressCanvas;
+=======
+	@FXML private ComboBox<Integer> intervalBox;
+>>>>>>> ff0f838e92909d97cb56e143577e7d683d67b281
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -68,23 +73,23 @@ public class ManualTrackWindowController {
 				}
 			}
 		});
-		
-	
-		
 
 		videoView.setOnMouseClicked((event) -> {
 			point = new Point((int) event.getX(), (int) event.getY());
 			project.getAnimalTrackInTracks((String)chicksBox.getValue()).add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
 //			track = chicksBox.getItems().
 			System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue())) ;// getPositions());
-			handleNext();
-			
-			
+//			handleNext();
 		});
+<<<<<<< HEAD
 		
 		gc = progressCanvas.getGraphicsContext2D();
 		
 		
+=======
+		intervalBox.getItems().addAll(1, 5);
+//		intervalBox.setValue(1);
+>>>>>>> ff0f838e92909d97cb56e143577e7d683d67b281
 	}
 
 	public void initializeWithStage(Stage stage) {
@@ -130,8 +135,8 @@ public class ManualTrackWindowController {
 	
 	@FXML
 	public void handleExport() throws IOException {
-		ExportData export = new ExportData(project);
-		export.processData();
+		//ExportData export = new ExportData(project);
+		DataExporter.exportToCSV(project);
 	}
 
 	//user must do this first
@@ -148,12 +153,12 @@ public class ManualTrackWindowController {
 	
 	@FXML
 	public void handlePrevious() {
-		jump(-1);
+		jump(-intervalBox.getValue());
 	}
 
 	@FXML
 	public void handleNext() {
-		jump(1);
+		jump(intervalBox.getValue());
 	}
 
 	public void jump(int sth) {
@@ -161,6 +166,7 @@ public class ManualTrackWindowController {
 		sliderBar.setValue(project.getVideo().getCurrentFrameNum());
 		displayFrame();
 	}
+	
 
 	public void displayFrame() {
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());

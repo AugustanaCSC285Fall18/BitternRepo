@@ -1,6 +1,10 @@
 package dataModel;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +12,7 @@ public class ProjectData {
 	private Video video;
 	private List<AnimalTrack> tracks;
 	private List<AnimalTrack> unassignedSegments;
-	
+
 	public ProjectData(String videoFilePath) throws FileNotFoundException {
 		video = new Video(videoFilePath);
 		tracks = new ArrayList<>();
@@ -18,7 +22,7 @@ public class ProjectData {
 	public Video getVideo() {
 		return video;
 	}
-	
+
 	public List<AnimalTrack> getTracks() {
 		return tracks;
 	}
@@ -28,11 +32,12 @@ public class ProjectData {
 	}
 
 	public AnimalTrack getAnimalTrackInTracks(String id) {
-		for(AnimalTrack animal : tracks) {
-			if(animal.getID().equals(id)) {
+		for (AnimalTrack animal : tracks) {
+			if (animal.getID().equals(id)) {
 				return animal;
 			}
 		}
 		return null;
 	}
+
 }

@@ -1,7 +1,9 @@
 package dataModel;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class AnimalTrack {
 	private String animalID;
@@ -55,11 +57,29 @@ public class AnimalTrack {
 		return output;
 	}
 	
+	public String getPositionsBySecond(Video video) {
+		String output = "";
+		for (int i = 0; i < positions.size(); i++) {
+			int frameNum = positions.get(i).getFrameNum();
+			output += "Time: " + getTime(frameNum, video) + ", Position: (" 
+					+ (int) positions.get(i).getX() + ", " + (int) positions.get(i).getY() + ")\n";
+		}
+		return output;
+	}
+	
 	public String toString() {
 		int startFrame = positions.get(0).getFrameNum();
 		int endFrame = getFinalTimePoint().getFrameNum();
 		return "AnimalTrack[id="+ animalID + ",numPts=" + positions.size()+" start=" + startFrame + " end=" + endFrame +"]" ; 
 	}
+	
+	public String getTime(int frameNumber, Video video) {
+		DecimalFormat df = new DecimalFormat("00.00");
+		int seconds = (int) (frameNumber / video.getFrameRate());
+		int minutes = seconds / 60;
+		int remainingSeconds = (int) seconds - (60 * minutes);
+		return minutes + ":" + df.format(remainingSeconds);
+	} 
 	
 	
 }

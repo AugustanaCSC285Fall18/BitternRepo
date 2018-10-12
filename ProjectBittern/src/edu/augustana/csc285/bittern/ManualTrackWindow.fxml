@@ -11,11 +11,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
+
 <BorderPane prefHeight="850" prefWidth="761.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.ManualTrackWindowController">
    <top>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <Label prefHeight="17.0" prefWidth="88.0" text="Current TIme: " BorderPane.alignment="CENTER_RIGHT" />
+            <Label prefHeight="17.0" prefWidth="88.0" text="Current Time: " BorderPane.alignment="CENTER_RIGHT" />
          </center>
          <right>
             <Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="85.0" BorderPane.alignment="CENTER" />
@@ -37,10 +38,11 @@
             <Button fx:id="backButton" layoutX="21.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
             <Button fx:id="exportButton" layoutX="687.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
             <TextField fx:id="nameField" layoutX="563.0" layoutY="88.0" onAction="#handleName" promptText="Name of  tracked chick" />
-            <Button fx:id="previousButton" layoutX="21.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePrevious" text="Previous Sec" />
-            <Button fx:id="nextButton" layoutX="695.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleNext" text="Next Sec" />
+            <Button fx:id="previousButton" layoutX="21.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePrevious" text="Previous" />
+            <Button fx:id="nextButton" layoutX="695.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleNext" text="Next" />
             <ComboBox fx:id="chicksBox" layoutX="18.0" layoutY="54.0" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
             <Button fx:id="playButton" layoutX="21.0" layoutY="101.0" mnemonicParsing="false" onAction="#handlePlay" text="Play" />
+            <ComboBox fx:id="intervalBox" layoutX="257.0" layoutY="14.0" prefHeight="27.0" prefWidth="191.0" promptText="Set Interval in Seconds" visibleRowCount="3" />
          </children>
       </AnchorPane>
    </bottom>
