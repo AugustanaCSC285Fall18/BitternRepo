@@ -32,6 +32,7 @@ public class Video {
 		this.emptyFrameNum = 0;
 		this.startFrameNum = 0;
 		this.endFrameNum = this.getTotalNumFrames()-1;
+		this.stepSize = 1;
 		
 		int frameWidth = (int)vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
 		int frameHeight = (int)vidCap.get(Videoio.CAP_PROP_FRAME_HEIGHT);
