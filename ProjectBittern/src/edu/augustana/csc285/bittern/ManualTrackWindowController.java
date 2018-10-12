@@ -2,7 +2,6 @@ package edu.augustana.csc285.bittern;
 
 import java.awt.Point;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +16,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -46,6 +46,7 @@ public class ManualTrackWindowController {
 	@FXML private Button previousButton;
 	@FXML private Button nextButton;
 	@FXML private ComboBox<String> chicksBox;
+	@FXML private Canvas progressCanvas;
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -81,16 +82,10 @@ public class ManualTrackWindowController {
 			
 		});
 		
+		gc = progressCanvas.getGraphicsContext2D();
+		
 		
 	}
-	
-	public String getTime(int frameNumber) {
-		DecimalFormat df = new DecimalFormat("00.00");
-		int seconds = (int) (frameNumber /project.getVideo().getFrameRate());
-		int minutes = seconds / 60;
-		int remainingSeconds = (int) seconds - (60 * minutes);
-		return minutes + ":" + df.format(remainingSeconds);
-	} 
 
 	public void initializeWithStage(Stage stage) {
 		this.stage = stage;
@@ -100,6 +95,7 @@ public class ManualTrackWindowController {
 		popup.setWidth(300);
 
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
+		//add code to bind progressCanvas to the videoView
 	}
 
 	@FXML
@@ -170,7 +166,8 @@ public class ManualTrackWindowController {
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		videoView.setImage(curFrame);
 		Platform.runLater(() -> {
-			currentFrameLabel.setText("" + getTime(project.getVideo().getCurrentFrameNum()));
+			currentFrameLabel.setText("" 
+					+ project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
 		});
 		
 	}
@@ -220,10 +217,14 @@ public class ManualTrackWindowController {
 		drawingBoard.getChildren().add(c);
 	}
 
-	// doesn't work until you start playing video
-	@FXML
-	public void getPoint() throws IOException {
-
+	//method will be specific to unassignedTracks
+	public void handleProgress() {
+		int conversionRate = (int) (sliderBar.getMax() / progressCanvas.getWidth());
+		for (int i = 0; i < project.getUnassignedSegments().size(); i++) {
+			for () {
+				gc.fillRect(i, progressCanvas.getLayoutY(), conversionRate, progressCanvas.getHeight());
+			}
+		}
 	}
 
 }

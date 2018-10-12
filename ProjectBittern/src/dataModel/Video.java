@@ -45,11 +45,11 @@ public class Video {
 	/** 
 	 * @return frames per second
 	 */
-	public double getFrameRate() {
+	public synchronized double getFrameRate() {
 		return vidCap.get(Videoio.CAP_PROP_FPS);
 	}
 	
-	public int getTotalNumFrames() {
+	public synchronized int getTotalNumFrames() {
 		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_COUNT);
 	}
 
@@ -113,11 +113,11 @@ public class Video {
 		this.arenaBounds = arenaBounds;
 	}
 	
-	public void setCurrentFrameNum(int currentFrameNum) {
+	public synchronized void setCurrentFrameNum(int currentFrameNum) {
 		vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
 	}
 	
-	public int getCurrentFrameNum() {
+	public synchronized int getCurrentFrameNum() {
 		return (int) vidCap.get(Videoio.CAP_PROP_POS_FRAMES);
 	}
 
@@ -125,8 +125,7 @@ public class Video {
 		this.setCurrentFrameNum(this.getStartFrameNum());
 	}
 	
-	//method doing too much
-	public Mat readFrame() {
+	public synchronized Mat readFrame() {
 		Mat frame = new Mat();
 		vidCap.read(frame);
 		return frame;
@@ -140,7 +139,7 @@ public class Video {
 		return (int) Math.round(numSecs * getFrameRate());
 	}
 
-	public boolean isOpened() {
+	public synchronized boolean isOpened() {
 		return vidCap.isOpened();
 	}
 	
