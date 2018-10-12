@@ -39,11 +39,9 @@ public class ManualTrackWindowController {
 	@FXML private Button playButton;
 	@FXML private Button exportButton;
 	@FXML private Button backButton;
-	@FXML private Button chicksButton;
 	@FXML private ImageView videoView;
 	@FXML private Label currentFrameLabel;
 	@FXML private Slider sliderBar;
-	@FXML private TextField nameField;
 	@FXML private Button previousButton;
 	@FXML private Button nextButton;
 	@FXML private ComboBox<String> chicksBox;
@@ -52,48 +50,32 @@ public class ManualTrackWindowController {
 
 	@FXML private ComboBox<Integer> intervalBox;
 
+	private Stage popup;
 	private ProjectData project;
 	private ScheduledExecutorService timer;
 	private Point point;
 	private Stage stage;
-	private Stage popup;
 	private GraphicsContext gc;
 	private String name;
 	private AnimalTrack track;
 
 	@FXML
 	public void initialize() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame();
-				}
-			}
-		});
-
-		videoView.setOnMouseClicked((event) -> {
-			point = new Point((int) event.getX(), (int) event.getY());
-			project.getAnimalTrackInTracks((String)chicksBox.getValue()).add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
-//			track = chicksBox.getItems().
-			System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue())) ;// getPositions());
-//			handleNext();
-		});
-
+		
+		handleSlider();
+		handleClick();
 		progressCanvas.setWidth(videoView.getFitWidth());
 		
-
-		intervalBox.getItems().addAll(1, 5);
-//		intervalBox.setValue(1);
-
+				
+		
 	}
 
 	public void initializeWithStage(Stage stage) {
 		this.stage = stage;
+		
 		popup = new Stage();
 		popup.initOwner(stage);
-		popup.setHeight(300);
+		popup.setHeight(100);
 		popup.setWidth(300);
 		
 		gc = progressCanvas.getGraphicsContext2D();
@@ -120,7 +102,6 @@ public class ManualTrackWindowController {
 		controller.setup(project);
 	}
 
-	//messes up when slider moves
 	@FXML
 	public void handlePlay() throws InterruptedException {
 		if (playButton.getText().equalsIgnoreCase("play")) {
@@ -129,7 +110,7 @@ public class ManualTrackWindowController {
 		} else {
 			timer.shutdown();
 			timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
-			playButton.setText("Play Video");
+			playButton.setText("Play");
 		}
 	}
 	
@@ -138,34 +119,22 @@ public class ManualTrackWindowController {
 		DataExporter.exportToCSV(project);
 	}
 
-	//user must do this first
-	@FXML
-	public void handleName() {
-		
-		String name = nameField.getText();
-		project.getTracks().add(new AnimalTrack(name));
-		chicksBox.getItems().add((String) name);
-		nameField.setText("");
-	}
-
-	
 	@FXML
 	public void handlePrevious() {
-		jump(-intervalBox.getValue());
+		jump(-project.getVideo().getStepSize());
 	}
 
 	@FXML
 	public void handleNext() {
-		jump(intervalBox.getValue());
+		jump(project.getVideo().getStepSize());
 	}
 
-	public void jump(int sth) {
-		project.getVideo().setCurrentFrameNum((project.getVideo().getCurrentFrameNum() + sth * (int)project.getVideo().getFrameRate()));
+	public void jump(int stepSize) {
+		project.getVideo().setCurrentFrameNum((project.getVideo().getCurrentFrameNum() + stepSize * (int)project.getVideo().getFrameRate()));
 		sliderBar.setValue(project.getVideo().getCurrentFrameNum());
 		displayFrame();
 	}
 	
-
 	public void displayFrame() {
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		videoView.setImage(curFrame);
@@ -197,6 +166,7 @@ public class ManualTrackWindowController {
 		try {
 			this.project = project;
 			project.getVideo().setXPixelsPerCm(6.5);
+			project.getVideo().resetToStart();
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
@@ -205,6 +175,40 @@ public class ManualTrackWindowController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		for (int i = 0; i < project.getTracks().size(); i++) {
+			chicksBox.getItems().add(project.getTracks().get(i).getID());
+		}
+
+	}
+	
+	public void handleSlider() {
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					displayFrame();
+				}
+			}
+		});
+		
+	}
+	
+	public void handleClick() {
+		videoView.setOnMouseClicked((event) -> {
+			popup.close();
+			if (chicksBox.getValue() == null) {
+				popup.show();
+			} else {
+				point = new Point((int) event.getX(), (int) event.getY());
+				project.getAnimalTrackInTracks((String)chicksBox.getValue()).add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
+				//			track = chicksBox.getItems().
+				System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue())) ;// getPositions());
+				jump(1);
+			}
+			
+		});
 	}
 
 	@FXML
