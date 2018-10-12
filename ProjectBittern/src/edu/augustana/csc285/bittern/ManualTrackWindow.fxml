@@ -33,12 +33,12 @@
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="backButton" layoutX="21.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-            <Button fx:id="exportButton" layoutX="687.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
-            <Button fx:id="previousButton" layoutX="274.0" layoutY="14.0" minWidth="60.0" mnemonicParsing="false" onAction="#handlePrevious" prefWidth="50.0" text="Back" />
-            <Button fx:id="nextButton" layoutX="424.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="60.0" text="Forward" />
-            <ComboBox fx:id="chicksBox" layoutX="304.0" layoutY="56.0" onAction="#handleChicksBox" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
-            <Button fx:id="playButton" layoutX="349.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="60.0" text="Play" />
+            <ComboBox fx:id="chicksBox" layoutX="307.0" layoutY="49.0" onAction="#handleChicksBox" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
+            <Button fx:id="previousButton" layoutX="273.0" layoutY="14.0" minWidth="60.0" mnemonicParsing="false" onAction="#handlePrevious" prefWidth="50.0" text="Back" />
+            <Button fx:id="playButton" layoutX="352.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="60.0" text="Play" />
+            <Button fx:id="nextButton" layoutX="430.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="60.0" text="Forward" />
+            <Button fx:id="exportButton" layoutX="699.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
+            <Button fx:id="backButton" layoutX="14.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
          </children>
       </AnchorPane>
    </bottom>
