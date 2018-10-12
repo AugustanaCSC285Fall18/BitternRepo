@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import dataModel.AnimalTrack;
 import dataModel.ProjectData;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -30,24 +30,18 @@ import utils.UtilsForOpenCV;
 
 public class CalibrationWindowController {
 
-	@FXML
-	private Button backButton;
-	@FXML
-	private Button confirmButton;
-	@FXML
-	private Slider sliderBar;
-	@FXML
-	private ImageView videoView;
-	@FXML
-	private Button setX;
-	@FXML
-	private Button setY;
-	@FXML
-	private BorderPane drawingBoard;
-	@FXML
-	private TextField setActualLengthX;
-	@FXML
-	private TextField setActualLengthY;
+	@FXML private Button backButton;
+	@FXML private Button confirmButton;
+	@FXML private Slider sliderBar;
+	@FXML private ImageView videoView;
+	@FXML private Button setX;
+	@FXML private Button setY;
+	@FXML private BorderPane drawingBoard;
+	@FXML private TextField setActualLengthX;
+	@FXML private TextField setActualLengthY;
+	@FXML private ComboBox<Integer> stepBox;
+	@FXML private ComboBox<String> chicksBox;
+	@FXML private TextField nameField;
 
 	private ArrayList<Point> calibration = new ArrayList();
 	private ProjectData project;
@@ -119,6 +113,7 @@ public class CalibrationWindowController {
 	public void handleSlider() {
 
 	}
+	
 
 	public void drawCircle(Point p) {
 		Circle c = new Circle(p.getX(), p.getY(), 5, Color.RED);
@@ -176,7 +171,26 @@ public class CalibrationWindowController {
 				}
 			}
 		});
+		
+		stepBox.getItems().addAll(1,2,3,4,5);
+	
 	}
+	
+	@FXML
+	public void handleName() {
+		
+		String name = nameField.getText();
+		project.getTracks().add(new AnimalTrack(name));
+		chicksBox.getItems().add(name);
+		nameField.setText("");
+		
+	}
+	
+	@FXML 
+	public void handleStepBox() {
+		project.getVideo().setStepSize(stepBox.getValue());
+	}
+	
 
 	public void initializeWithStage() {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());

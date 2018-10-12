@@ -19,6 +19,7 @@ public class Video {
 	private double xPixelsPerCm;
 	private double yPixelsPerCm;
 	private Rectangle arenaBounds; 
+	private int stepSize;
 	
 		
 	public Video(String filePath) throws FileNotFoundException {
@@ -38,44 +39,80 @@ public class Video {
 	}
 		
 	
+	public Rectangle getArenaBounds() {
+		return arenaBounds;
+	}
+
+	public double getAvgPixelsPerCm() {
+		return (xPixelsPerCm + yPixelsPerCm)/2;
+	}
+
+	public synchronized int getCurrentFrameNum() {
+		return (int) vidCap.get(Videoio.CAP_PROP_POS_FRAMES);
+	}
+		
+	public int getEmptyFrameNum() {
+		return emptyFrameNum;
+	}
+	
+	public int getEndFrameNum() {
+		return endFrameNum;
+	}
+
 	public String getFilePath() {
 		return this.filePath;
 	}
-	
+
 	/** 
 	 * @return frames per second
 	 */
 	public synchronized double getFrameRate() {
 		return vidCap.get(Videoio.CAP_PROP_FPS);
 	}
-	
+
+	public int getStartFrameNum() {
+		return startFrameNum;
+	}
+
+	public int getStepSize() {
+		return stepSize;
+	}
+
+	//take out double decimals
+	public String getTime(int frameNumber) {
+		DecimalFormat df = new DecimalFormat("00.00");
+		int seconds = (int) (frameNumber / this.getFrameRate());
+		int minutes = seconds / 60;
+		int remainingSeconds = (int) seconds - (60 * minutes);
+		return minutes + ":" + df.format(remainingSeconds);
+	}
+
 	public synchronized int getTotalNumFrames() {
 		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_COUNT);
 	}
 
-	public int getEmptyFrameNum() {
-		return emptyFrameNum;
+	public double getXPixelsPerCm() {
+		return xPixelsPerCm;
 	}
+
+	public double getYPixelsPerCm() {
+		return yPixelsPerCm;
+	}
+
+	public void setArenaBounds(Rectangle arenaBounds) {
+		this.arenaBounds = arenaBounds;
+	}
+
+
+	public synchronized void setCurrentFrameNum(int currentFrameNum) {
+		vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
+	}
+
 
 	public void setEmptyFrameNum(int emptyFrameNum) {
 		this.emptyFrameNum = emptyFrameNum;
 	}
-		
-	public int getStartFrameNum() {
-		return startFrameNum;
-	}
-	
-	public void setStartFrameNum(int startFrameNum) {
-		if (startFrameNum < endFrameNum) {
-			this.startFrameNum = startFrameNum;
-		} else {
-			throw new IllegalArgumentException("The start time cannot be greater than the end time.");
-		}
-	}
 
-	public int getEndFrameNum() {
-		return endFrameNum;
-	}
 
 	public void setEndFrameNum(int endFrameNum) {
 		if (endFrameNum > startFrameNum) {
@@ -85,44 +122,43 @@ public class Video {
 		}
 	}
 
-	public double getXPixelsPerCm() {
-		return xPixelsPerCm;
+
+	public void setStartFrameNum(int startFrameNum) {
+		if (startFrameNum < endFrameNum) {
+			this.startFrameNum = startFrameNum;
+		} else {
+			throw new IllegalArgumentException("The start time cannot be greater than the end time.");
+		}
 	}
+
+
+	public void setStepSize(int stepSize) {
+		this.stepSize = stepSize;
+	}
+
 
 	public void setXPixelsPerCm(double xPixelsPerCm) {
 		this.xPixelsPerCm = xPixelsPerCm;
 	}
 
-	public double getYPixelsPerCm() {
-		return yPixelsPerCm;
-	}
 
 	public void setYPixelsPerCm(double yPixelsPerCm) {
 		this.yPixelsPerCm = yPixelsPerCm;
 	}
 
-	public double getAvgPixelsPerCm() {
-		return (xPixelsPerCm + yPixelsPerCm)/2;
+
+	public double convertFrameNumsToSeconds(int numFrames) {
+		return numFrames / getFrameRate();
 	}
 
-	public Rectangle getArenaBounds() {
-		return arenaBounds;
+
+	public int convertSecondsToFrameNums(double numSecs) {
+		return (int) Math.round(numSecs * getFrameRate());
 	}
 
-	public void setArenaBounds(Rectangle arenaBounds) {
-		this.arenaBounds = arenaBounds;
-	}
-	
-	public synchronized void setCurrentFrameNum(int currentFrameNum) {
-		vidCap.set(Videoio.CAP_PROP_POS_FRAMES, currentFrameNum);
-	}
-	
-	public synchronized int getCurrentFrameNum() {
-		return (int) vidCap.get(Videoio.CAP_PROP_POS_FRAMES);
-	}
 
-	public void resetToStart() {
-		this.setCurrentFrameNum(this.getStartFrameNum());
+	public synchronized boolean isOpened() {
+		return vidCap.isOpened();
 	}
 	
 	public synchronized Mat readFrame() {
@@ -131,28 +167,10 @@ public class Video {
 		return frame;
 	}
 	
-	public double convertFrameNumsToSeconds(int numFrames) {
-		return numFrames / getFrameRate();
+	public void resetToStart() {
+		this.setCurrentFrameNum(0);
 	}
 
-	public int convertSecondsToFrameNums(double numSecs) {
-		return (int) Math.round(numSecs * getFrameRate());
-	}
-
-	public synchronized boolean isOpened() {
-		return vidCap.isOpened();
-	}
-	
-	
-	//take out double decimals
-	public String getTime(int frameNumber) {
-		DecimalFormat df = new DecimalFormat("00.00");
-		int seconds = (int) (frameNumber / this.getFrameRate());
-		int minutes = seconds / 60;
-		int remainingSeconds = (int) seconds - (60 * minutes);
-		return minutes + ":" + df.format(remainingSeconds);
-	} 
-	
 	@Override
 	public String toString() {
 		return "File Path: " + this.getFilePath() + "\nStart Frame Number: " + this.getStartFrameNum() 
