@@ -47,11 +47,10 @@ public class ManualTrackWindowController {
 	@FXML private Button previousButton;
 	@FXML private Button nextButton;
 	@FXML private ComboBox<String> chicksBox;
-<<<<<<< HEAD
+
 	@FXML private Canvas progressCanvas;
-=======
+
 	@FXML private ComboBox<Integer> intervalBox;
->>>>>>> ff0f838e92909d97cb56e143577e7d683d67b281
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -81,15 +80,13 @@ public class ManualTrackWindowController {
 			System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue())) ;// getPositions());
 //			handleNext();
 		});
-<<<<<<< HEAD
+
+		progressCanvas.setWidth(videoView.getFitWidth());
 		
-		gc = progressCanvas.getGraphicsContext2D();
-		
-		
-=======
+
 		intervalBox.getItems().addAll(1, 5);
 //		intervalBox.setValue(1);
->>>>>>> ff0f838e92909d97cb56e143577e7d683d67b281
+
 	}
 
 	public void initializeWithStage(Stage stage) {
@@ -98,9 +95,12 @@ public class ManualTrackWindowController {
 		popup.initOwner(stage);
 		popup.setHeight(300);
 		popup.setWidth(300);
-
+		
+		gc = progressCanvas.getGraphicsContext2D();
+		gc.setFill(Color.AQUA);
+		gc.fill();
+		
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
-		//add code to bind progressCanvas to the videoView
 	}
 
 	@FXML
@@ -135,7 +135,6 @@ public class ManualTrackWindowController {
 	
 	@FXML
 	public void handleExport() throws IOException {
-		//ExportData export = new ExportData(project);
 		DataExporter.exportToCSV(project);
 	}
 
@@ -144,7 +143,6 @@ public class ManualTrackWindowController {
 	public void handleName() {
 		
 		String name = nameField.getText();
-		//String sth = name + " track";
 		project.getTracks().add(new AnimalTrack(name));
 		chicksBox.getItems().add((String) name);
 		nameField.setText("");
@@ -214,8 +212,6 @@ public class ManualTrackWindowController {
 		point = new Point((int) event.getX(), (int) event.getY());
 		System.out.println("BorderPane Point: " + point);
 		//drawCircle(point);
-
-
 	}
 
 	public void drawCircle (Point p) {
@@ -227,9 +223,9 @@ public class ManualTrackWindowController {
 	public void handleProgress() {
 		int conversionRate = (int) (sliderBar.getMax() / progressCanvas.getWidth());
 		for (int i = 0; i < project.getUnassignedSegments().size(); i++) {
-			for () {
+			/*for () {
 				gc.fillRect(i, progressCanvas.getLayoutY(), conversionRate, progressCanvas.getHeight());
-			}
+			}*/
 		}
 	}
 
