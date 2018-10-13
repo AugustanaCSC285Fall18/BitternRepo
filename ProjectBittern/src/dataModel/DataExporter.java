@@ -1,6 +1,5 @@
 package dataModel;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,14 +9,15 @@ public class DataExporter {
 	public static void exportToCSV(ProjectData project ) throws IOException {
 		File projectFile = new File(project.getVideo().getFilePath());
 		File output = new File("output." + projectFile.getName() + ".csv");
-		FileWriter  fWriter = new FileWriter(output);
+		FileWriter fWriter = new FileWriter(output);
+		
 		try {
-			for (int i = 0; i < project.getTracks().size(); i++) {
-				fWriter.append(project.getTracks().get(i).getID());
+			for (AnimalTrack track : project.getTracks()) {
+				fWriter.append(track.getID());
 				fWriter.append("\n");
-				fWriter.append(project.getTracks().get(i).getPositionsBySecond(project.getVideo()));
+				fWriter.append(getPositionsPerSecond(track, project.getVideo()));
 			}
-			System.out.println("CSV file was created successfully !!!");
+			System.out.println("CSV file was created successfully !!!");	
 		} catch (Exception e) {
 			System.out.println("Error in CsvFileWriter !!!");
 			e.printStackTrace();
@@ -29,10 +29,18 @@ public class DataExporter {
 				System.out.println("Error while flushing/closing fileWriter !!!");
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 	
+	public static String getPositionsPerSecond(AnimalTrack tracks, Video video) {
+		String output = "";
+		for (int i = 0; i < tracks.getPositions().size(); i++) {
+			int frameNum = tracks.getPositions().get(i).getFrameNum();
+			output += "Time: " + video.getTime(frameNum) + ", Position: (" 
+					+ (int) tracks.getPositions().get(i).getX() + ", " 
+					+ (int) tracks.getPositions().get(i).getY() + ")\n";
+		}
+		return output;
+	}
 	
 }

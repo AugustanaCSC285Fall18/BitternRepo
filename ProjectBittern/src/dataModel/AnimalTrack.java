@@ -26,11 +26,6 @@ public class AnimalTrack {
 	public String getID() {
 		return animalID;
 	}
-	/**
-	 * Returns the TimePoint at the specified time, or null
-	 * @param frameNum
-	 * @return
-	 */
 	
 	public TimePoint getTimePointAtTime(int frameNum) {
 		//TODO: This method's implementation is inefficient [linear search is O(N)]
@@ -43,43 +38,19 @@ public class AnimalTrack {
 		return null;
 	}
 	
+	public List<TimePoint> getPositions() {
+		return this.positions;
+	}
+	
 	public TimePoint getFinalTimePoint() {
 		return positions.get(positions.size()-1);
 	}
-	
-	//print a String of positions per time
-	public String getPositions() {
-		String output = "";
-		for (int i = 0; i < positions.size(); i++) {
-			output += "Time: " + positions.get(i).getFrameNum() + ", Position: (" 
-					+ (int) positions.get(i).getX() + ", " + (int) positions.get(i).getY() + ")\n";
-		}
-		return output;
-	}
-	
-	public String getPositionsBySecond(Video video) {
-		String output = "";
-		for (int i = 0; i < positions.size(); i++) {
-			int frameNum = positions.get(i).getFrameNum();
-			output += "Time: " + getTime(frameNum, video) + ", Position: (" 
-					+ (int) positions.get(i).getX() + ", " + (int) positions.get(i).getY() + ")\n";
-		}
-		return output;
-	}
-	
+		
 	public String toString() {
 		int startFrame = positions.get(0).getFrameNum();
 		int endFrame = getFinalTimePoint().getFrameNum();
 		return "AnimalTrack[id="+ animalID + ",numPts=" + positions.size()+" start=" + startFrame + " end=" + endFrame +"]" ; 
 	}
-	
-	public String getTime(int frameNumber, Video video) {
-		DecimalFormat df = new DecimalFormat("00.00");
-		int seconds = (int) (frameNumber / video.getFrameRate());
-		int minutes = seconds / 60;
-		int remainingSeconds = (int) seconds - (60 * minutes);
-		return minutes + ":" + df.format(remainingSeconds);
-	} 
-	
+		
 	
 }
