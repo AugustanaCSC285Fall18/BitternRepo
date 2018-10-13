@@ -49,6 +49,7 @@ public class ManualTrackWindowController {
 	private Stage popup;
 	private ProjectData project;
 	private ScheduledExecutorService timer;
+	private TimePoint currentTimePoint;
 	private Point point;
 	private Stage stage;
 	private GraphicsContext gc;
@@ -85,23 +86,38 @@ public class ManualTrackWindowController {
 		
 	}
 
+	//need to refactor this method
 	public void setupClick() {
 		videoView.setOnMouseClicked((event) -> {
 			popup.close();
 			if (chicksBox.getValue() == null) {
 				popup.show();
 			} else {
-				point = new Point((int) event.getX(), (int) event.getY());
+				currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
+
+				for (AnimalTrack track : project.getTracks()) {
+					//this may be wrong; should probably check for the frameNumber, and not the TimePoint
+					//...yup, it's wrong
+					if (! track.getPositions().contains(currentTimePoint)) {
+						project.getAnimal(chicksBox.getValue()).add(currentTimePoint);
+						updateCanvas(project.getVideo().getCurrentFrameNum());	
+						jump(1);
+					} 
+				}
 				
-				updateCanvas(project.getVideo().getCurrentFrameNum());		
-				project.getAnimalTrackInTracks(chicksBox.getValue())
-					.add(new TimePoint(point.getX(), point.getY(), project.getVideo().getCurrentFrameNum()));
-				System.out.println(project.getAnimalTrackInTracks(chicksBox.getValue())) ;// getPositions());
-				jump(1);
-				
+				for (AnimalTrack track : project.getUnassignedSegments()) {
+					if (track.getPositions().contains(currentTimePoint)) {
+						suggestAutoTracks();
+					}	
+				}
 			}
-			
+
 		});
+	}
+
+	//how we connect auto to manual tracking
+	public void suggestAutoTracks() {
+
 	}
 
 	public void setup(ProjectData project) {

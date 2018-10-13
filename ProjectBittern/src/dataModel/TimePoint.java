@@ -1,11 +1,17 @@
 package dataModel;
 
+import java.awt.Point;
+
 import dataModel.TimePoint;
 
 public class TimePoint implements Comparable<TimePoint> {
 	private double x;     // location
 	private double y;      
 	private int frameNum; // time (measured in frames)
+	
+	public TimePoint(Point point, int frameNum) {
+		this(point.getX(), point.getY(), frameNum);
+	}
 	
 	public TimePoint(double x, double y, int frameNum) {
 		this.x = x;
@@ -67,5 +73,15 @@ public class TimePoint implements Comparable<TimePoint> {
 	@Override
 	public int compareTo(TimePoint other) {		
 		return this.getTimeDiffAfter(other);
+	}
+	
+	public boolean equals(Object object) {
+		if (object instanceof TimePoint) {
+			TimePoint other = (TimePoint) object;
+			return (this.x == other.getX() && this.y == other.getY()
+					&& this.frameNum == other.getFrameNum());
+		} else {
+			return false;
+		}
 	}
 }

@@ -31,7 +31,7 @@ public class ProjectData {
 		return unassignedSegments;
 	}
 
-	public AnimalTrack getAnimalTrackInTracks(String id) {
+	public AnimalTrack getAnimal(String id) {
 		for (AnimalTrack animal : tracks) {
 			if (animal.getID().equals(id)) {
 				return animal;
