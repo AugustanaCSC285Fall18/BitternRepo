@@ -6,10 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.opencv.core.MatOfPoint;
-
 import autotracking.AutoTracker;
-import autotracking.DetectedShape;
 import dataModel.AnimalTrack;
 import dataModel.DataExporter;
 import dataModel.ProjectData;
@@ -49,7 +46,6 @@ public class ManualTrackWindowController {
 	@FXML private ComboBox<String> chicksBox;
 	@FXML private Canvas progressCanvas;
 
-	private AutoTracker autoTracker;
 	private Stage popup;
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -92,64 +88,73 @@ public class ManualTrackWindowController {
 		
 	}
 
-	//need to refactor this method
+	/*
+	 * Note:
+	 * does other() update point at time when true
+	 * should frameNumber be the only variable to check for in check()
+	 * reduce complexity 
+	 * add gui stuff for suggesting autotracks
+	 * have the point be recorded if user rejects the autotracks
+	 * refactor names and clean code
+	 */
 	public void setupClick(MouseEvent event) {
 		popup.close();
 		if (chicksBox.getValue() == null) {
 			popup.show();
 		} else {
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
-
+					
 			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPointAWT())) {
-				track.getPositions().add(currentTimePoint);	
-				updateCanvas(currentTimePoint.getFrameNum());
-				jump(1);
+				if (track.getPositions().size() == 0) {
+					track.getPositions().add(currentTimePoint);	
+					updateCanvas(currentTimePoint.getFrameNum());
+					jump(1);
+				} else {
+					addTimePoint();
+				}
+				
 			}
-
-			
 		}
 
 	}
 	
-	public void sth() {
-		for (int i = 0; i < track.getPositions().size(); i++) {
-			if (track.getPositions().get(i).getFrameNum() == currentTimePoint.getFrameNum()) {
-				TimePoint pnt = track.getPositions().get(i);
-				track.getPositions().remove(pnt);
-				track.getPositions().add(i, currentTimePoint);
-			} else {
-				track.getPositions().add(currentTimePoint);
-			}
-			updateCanvas(currentTimePoint.getFrameNum());
-			jump(1);
+	public void addTimePoint() {
+		if (check()) {
+			suggestAutoTracks();
+		} else if (!other()){
+			track.getPositions().add(currentTimePoint);
 		}
-		
 	}
 	
-	public void check() {
+	public boolean check() {
 		for (AnimalTrack track : project.getUnassignedSegments()) {
-			MatOfPoint contour = new MatOfPoint();
-			DetectedShape shape = new DetectedShape(contour);
-
 			for (TimePoint position : track.getPositions()) {
-				if (position.getFrameNum() == currentTimePoint.getFrameNum() 
-						&& shape.getArea() >= autoTracker.getMinShapePixelArea() 
-						&& shape.getArea() <= autoTracker.getMaxShapePixelArea()) {
-					suggestAutoTracks(shape);
+				if (position.getFrameNum() == currentTimePoint.getFrameNum()) {
+					return true;
 				}
 			}
-		}
+		}		
+		return false;
 	}
 
-	//how we connect auto to manual tracking
-	public void suggestAutoTracks(DetectedShape shape) {
+	public void suggestAutoTracks() {
 		System.out.println("Possible track");
 	}
 
-	public void setup(ProjectData project, AutoTracker autoTracker) {
+	
+	public boolean other() {
+		for (int i = 0; i < track.getPositions().size(); i++) {
+			if (track.getPositions().get(i).getFrameNum() == currentTimePoint.getFrameNum()) {
+				track.updatePointAtTime(i);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void setup(ProjectData project) {
 		try {
 			this.project = project;
-			this.autoTracker = autoTracker;
 			//project.getVideo().setXPixelsPerCm(6.5);
 			project.getVideo().resetToStart();
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
@@ -207,6 +212,7 @@ public class ManualTrackWindowController {
 	@FXML
 	public void handleChicksBox() {
 		track = project.getAnimal(chicksBox.getValue());
+		sliderBar.setValue(project.getVideo().getStartFrameNum());
 	}
 
 	@FXML

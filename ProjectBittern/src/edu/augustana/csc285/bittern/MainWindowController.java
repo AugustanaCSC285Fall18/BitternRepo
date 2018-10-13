@@ -88,7 +88,7 @@ public class MainWindowController implements AutoTrackListener {
 		System.out.println(project.getVideo());
 		ManualTrackWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
-		controller.setup(project, autotracker);
+		controller.setup(project);
 	}
 	
 	

@@ -38,6 +38,12 @@ public class AnimalTrack {
 		return null;
 	}
 	
+	public void updatePointAtTime(int index) {
+		TimePoint pnt = positions.get(index);
+		positions.remove(index);
+		positions.add(index, pnt);
+	}
+	
 	public List<TimePoint> getPositions() {
 		return this.positions;
 	}
