@@ -2,10 +2,16 @@ package edu.augustana.csc285.bittern;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.opencv.core.MatOfPoint;
+
+import autotracking.AutoTracker;
+import autotracking.DetectedShape;
 import dataModel.AnimalTrack;
 import dataModel.DataExporter;
 import dataModel.ProjectData;
@@ -25,7 +31,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -46,6 +51,7 @@ public class ManualTrackWindowController {
 	@FXML private ComboBox<String> chicksBox;
 	@FXML private Canvas progressCanvas;
 
+	private AutoTracker autoTracker;
 	private Stage popup;
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -96,34 +102,48 @@ public class ManualTrackWindowController {
 				currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
 
 				for (AnimalTrack track : project.getTracks()) {
-					//this may be wrong; should probably check for the frameNumber, and not the TimePoint
-					//...yup, it's wrong
 					if (! track.getPositions().contains(currentTimePoint)) {
 						project.getAnimal(chicksBox.getValue()).add(currentTimePoint);
 						updateCanvas(project.getVideo().getCurrentFrameNum());	
 						jump(1);
 					} 
+					
 				}
 				
 				for (AnimalTrack track : project.getUnassignedSegments()) {
-					if (track.getPositions().contains(currentTimePoint)) {
-						suggestAutoTracks();
-					}	
+					MatOfPoint contour = new MatOfPoint();
+					DetectedShape shape = new DetectedShape(contour);
+
+					for (TimePoint position : track.getPositions()) {
+						if (position.getFrameNum() == currentTimePoint.getFrameNum() 
+								&& shape.getArea() >= autoTracker.getMinShapePixelArea() 
+								&& shape.getArea() <= autoTracker.getMaxShapePixelArea()) {
+							suggestAutoTracks(shape);
+						}
+					}
 				}
+
 			}
 
 		});
 	}
 
 	//how we connect auto to manual tracking
-	public void suggestAutoTracks() {
-
+	public void suggestAutoTracks(DetectedShape shape) {
+		TimePoint tpt = new TimePoint(shape.getCentroidX(), shape.getCentroidY(), project.getVideo().getCurrentFrameNum());
+		if (project.getVideo().getArenaBounds().contains(tpt.getX(),tpt.getY())) {
+			//double maxPixelMovementPerFrame = maxMovementSpeed * vid.getAvgPixelsPerCm() / vid.getFrameRate();
+			//AnimalTrack track = getMatchOrCreateAnimalTrackForPoint(tpt, currentlyTrackingSegments, maxPixelMovementPerFrame);
+			//track.add(tpt);
+		}
+		System.out.println("Possible track");
 	}
 
-	public void setup(ProjectData project) {
+	public void setup(ProjectData project, AutoTracker autoTracker) {
 		try {
 			this.project = project;
-			project.getVideo().setXPixelsPerCm(6.5);
+			this.autoTracker = autoTracker;
+			//project.getVideo().setXPixelsPerCm(6.5);
 			project.getVideo().resetToStart();
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
@@ -131,9 +151,12 @@ public class ManualTrackWindowController {
 			frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 			System.out.println("Frame Width Ratio: " + frameWidthRatio + " width: " + progressCanvas.getWidth());
 			
-			for (int i = 0; i < project.getTracks().size(); i++) {
-				chicksBox.getItems().add(project.getTracks().get(i).getID());
+			if (!(project.getTracks() == null)) {
+				for (AnimalTrack track : project.getTracks()) {
+					chicksBox.getItems().add(track.getID());
+				}
 			}
+			
 			System.out.println(project.getVideo());
 			displayFrame();
 			
@@ -176,7 +199,7 @@ public class ManualTrackWindowController {
 
 	@FXML
 	public void handleChicksBox() {
-		
+		track = project.getAnimal(chicksBox.getValue());
 	}
 
 	@FXML
@@ -230,10 +253,14 @@ public class ManualTrackWindowController {
 	}
 
 	public void jump(int stepSize) {
-		project.getVideo().setCurrentFrameNum((project.getVideo().getCurrentFrameNum() 
-				+ stepSize * (int)project.getVideo().getFrameRate()));
-		sliderBar.setValue(project.getVideo().getCurrentFrameNum());
-		displayFrame();
+		double frameNum = project.getVideo().getCurrentFrameNum() 
+				+ stepSize * project.getVideo().getFrameRate();
+		if (frameNum < project.getVideo().getEndFrameNum()) {
+			project.getVideo().setCurrentFrameNum((int)frameNum);
+			sliderBar.setValue(project.getVideo().getCurrentFrameNum());
+			displayFrame();
+		}
+	
 	}
 
 	public void refillCanvas() {
