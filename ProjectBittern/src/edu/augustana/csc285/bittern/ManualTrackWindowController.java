@@ -102,7 +102,6 @@ public class ManualTrackWindowController {
 				currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
 
 				for (AnimalTrack track : project.getTracks()) {
-					
 					if (! track.getPositions().contains(currentTimePoint)) {
 						project.getAnimal(chicksBox.getValue()).add(currentTimePoint);
 						updateCanvas(project.getVideo().getCurrentFrameNum());	
@@ -152,9 +151,12 @@ public class ManualTrackWindowController {
 			frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 			System.out.println("Frame Width Ratio: " + frameWidthRatio + " width: " + progressCanvas.getWidth());
 			
-			for (int i = 0; i < project.getTracks().size(); i++) {
-				chicksBox.getItems().add(project.getTracks().get(i).getID());
+			if (!(project.getTracks() == null)) {
+				for (AnimalTrack track : project.getTracks()) {
+					chicksBox.getItems().add(track.getID());
+				}
 			}
+			
 			System.out.println(project.getVideo());
 			displayFrame();
 			
@@ -197,7 +199,7 @@ public class ManualTrackWindowController {
 
 	@FXML
 	public void handleChicksBox() {
-		
+		track = project.getAnimal(chicksBox.getValue());
 	}
 
 	@FXML

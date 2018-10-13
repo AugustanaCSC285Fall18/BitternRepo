@@ -212,6 +212,13 @@ public class CalibrationWindowController {
 
 	public void setProject(ProjectData project) {
 		this.project = project;
+		
+		if (!(project.getTracks() == null)) {
+			for (AnimalTrack track : project.getTracks()) {
+				chicksBox.getItems().add(track.getID());
+			}
+		}
+		
 		project.getVideo().setCurrentFrameNum(0);
 		displayFrame();
 		System.out.println(project.getVideo());
