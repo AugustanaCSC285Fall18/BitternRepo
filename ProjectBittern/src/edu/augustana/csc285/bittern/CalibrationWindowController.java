@@ -30,18 +30,30 @@ import utils.UtilsForOpenCV;
 
 public class CalibrationWindowController {
 
-	@FXML private Button backButton;
-	@FXML private Button confirmButton;
-	@FXML private Slider sliderBar;
-	@FXML private ImageView videoView;
-	@FXML private Button setX;
-	@FXML private Button setY;
-	@FXML private BorderPane drawingBoard;
-	@FXML private TextField setActualLengthX;
-	@FXML private TextField setActualLengthY;
-	@FXML private ComboBox<Integer> stepBox;
-	@FXML private ComboBox<String> chicksBox;
-	@FXML private TextField nameField;
+	@FXML
+	private Button backButton;
+	@FXML
+	private Button confirmButton;
+	@FXML
+	private Slider sliderBar;
+	@FXML
+	private ImageView videoView;
+	@FXML
+	private Button setX;
+	@FXML
+	private Button setY;
+	@FXML
+	private BorderPane drawingBoard;
+	@FXML
+	private TextField setActualLengthX;
+	@FXML
+	private TextField setActualLengthY;
+	@FXML
+	private ComboBox<Integer> stepBox;
+	@FXML
+	private ComboBox<String> chicksBox;
+	@FXML
+	private TextField nameField;
 
 	private ArrayList<Point> calibration = new ArrayList();
 	private ProjectData project;
@@ -86,6 +98,7 @@ public class CalibrationWindowController {
 		Point point = new Point((int) event.getX(), (int) event.getY());
 		calibration.add(point);
 		drawCircle(point);
+
 	}
 
 	@FXML
@@ -113,7 +126,6 @@ public class CalibrationWindowController {
 	public void handleSlider() {
 
 	}
-	
 
 	public void drawCircle(Point p) {
 		Circle c = new Circle(p.getX(), p.getY(), 5, Color.RED);
@@ -171,26 +183,25 @@ public class CalibrationWindowController {
 				}
 			}
 		});
-		
-		stepBox.getItems().addAll(1,2,3,4,5);
-	
+
+		stepBox.getItems().addAll(1, 2, 3, 4, 5);
+
 	}
-	
+
 	@FXML
 	public void handleName() {
-		
+
 		String name = nameField.getText();
 		project.getTracks().add(new AnimalTrack(name));
 		chicksBox.getItems().add(name);
 		nameField.setText("");
-		
+
 	}
-	
-	@FXML 
+
+	@FXML
 	public void handleStepBox() {
 		project.getVideo().setStepSize(stepBox.getValue());
 	}
-	
 
 	public void initializeWithStage() {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
@@ -208,6 +219,67 @@ public class CalibrationWindowController {
 		int actualLength = Integer.parseInt(setActualLengthY.getText());
 		ratioY = actualLength / pixelLengthY;
 		System.out.println(ratioY);
+	}
+
+	@FXML
+	public void handleCalibration() {
+		
+		
+//		drawingBoard.setOnMousePressed(new EventHandler<MouseEvent>() {
+//			public void handle(MouseEvent event) {
+//				drawingBoard.setMouseTransparent(true);
+//				System.out.println("Event on Source: mouse pressed");
+//				event.setDragDetect(true);
+//			}
+//		});
+//
+//		drawingBoard.setOnMouseReleased(new EventHandler<MouseEvent>() {
+//			public void handle(MouseEvent event) {
+//				System.out.println("Event on Source: mouse released");
+//			}
+//		});
+
+	drawingBoard.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+			drawLine(new Point( (int) event.getX(),(int) event.getY()), new Point (100,200));
+			System.out.println("Event on Source: mouse dragged");
+			event.setDragDetect(false);
+			}
+	});
+//
+//		sourceFld.setOnDragDetected(new EventHandler<MouseEvent>() {
+//			public void handle(MouseEvent event) {
+//				sourceFld.startFullDrag();
+//				writelog("Event on Source: drag detected");
+//			}
+//		});
+//
+//		// Add mouse event handlers for the target
+//		targetFld.setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
+//			public void handle(MouseDragEvent event) {
+//				writelog("Event on Target: mouse dragged");
+//			}
+//		});
+//
+//		targetFld.setOnMouseDragOver(new EventHandler<MouseDragEvent>() {
+//			public void handle(MouseDragEvent event) {
+//				writelog("Event on Target: mouse drag over");
+//			}
+//		});
+//
+//		targetFld.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
+//			public void handle(MouseDragEvent event) {
+//				targetFld.setText(sourceFld.getSelectedText());
+//				writelog("Event on Target: mouse drag released");
+//			}
+//		});
+//
+//		targetFld.setOnMouseDragExited(new EventHandler<MouseDragEvent>() {
+//			public void handle(MouseDragEvent event) {
+//				writelog("Event on Target: mouse drag exited");
+//			}
+//		});
+//
 	}
 
 	public void setProject(ProjectData project) {
