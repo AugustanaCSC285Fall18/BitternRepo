@@ -21,7 +21,7 @@
    <center>
       <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
          <children>
-            <BorderPane fx:id="drawingBoard" onMouseClicked="#handleDrawingBoard">
+            <BorderPane fx:id="drawingBoard" onMouseClicked="#handleDrawingBoard" onMouseDragged="#handleCalibration">
                <center>
                   <ImageView fx:id="videoView" onMouseClicked="#getPoint" pickOnBounds="true" preserveRatio="true" />
                </center>
