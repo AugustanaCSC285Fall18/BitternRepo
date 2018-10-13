@@ -2,8 +2,6 @@ package edu.augustana.csc285.bittern;
 
 import java.awt.Point;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +65,9 @@ public class ManualTrackWindowController {
 	public void initialize() {
 		
 		setupSlider();
-		setupClick();
+		videoView.setOnMouseClicked((event) -> {
+			setupClick(event);
+		});
 		setupCanvas();
 				
 	}
@@ -93,49 +93,56 @@ public class ManualTrackWindowController {
 	}
 
 	//need to refactor this method
-	public void setupClick() {
-		videoView.setOnMouseClicked((event) -> {
-			popup.close();
-			if (chicksBox.getValue() == null) {
-				popup.show();
-			} else {
-				currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
+	public void setupClick(MouseEvent event) {
+		popup.close();
+		if (chicksBox.getValue() == null) {
+			popup.show();
+		} else {
+			currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
 
-				for (AnimalTrack track : project.getTracks()) {
-					if (! track.getPositions().contains(currentTimePoint)) {
-						project.getAnimal(chicksBox.getValue()).add(currentTimePoint);
-						updateCanvas(project.getVideo().getCurrentFrameNum());	
-						jump(1);
-					} 
-					
-				}
-				
-				for (AnimalTrack track : project.getUnassignedSegments()) {
-					MatOfPoint contour = new MatOfPoint();
-					DetectedShape shape = new DetectedShape(contour);
-
-					for (TimePoint position : track.getPositions()) {
-						if (position.getFrameNum() == currentTimePoint.getFrameNum() 
-								&& shape.getArea() >= autoTracker.getMinShapePixelArea() 
-								&& shape.getArea() <= autoTracker.getMaxShapePixelArea()) {
-							suggestAutoTracks(shape);
-						}
-					}
-				}
-
+			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPointAWT())) {
+				track.getPositions().add(currentTimePoint);	
+				updateCanvas(currentTimePoint.getFrameNum());
+				jump(1);
 			}
 
-		});
+			
+		}
+
+	}
+	
+	public void sth() {
+		for (int i = 0; i < track.getPositions().size(); i++) {
+			if (track.getPositions().get(i).getFrameNum() == currentTimePoint.getFrameNum()) {
+				TimePoint pnt = track.getPositions().get(i);
+				track.getPositions().remove(pnt);
+				track.getPositions().add(i, currentTimePoint);
+			} else {
+				track.getPositions().add(currentTimePoint);
+			}
+			updateCanvas(currentTimePoint.getFrameNum());
+			jump(1);
+		}
+		
+	}
+	
+	public void check() {
+		for (AnimalTrack track : project.getUnassignedSegments()) {
+			MatOfPoint contour = new MatOfPoint();
+			DetectedShape shape = new DetectedShape(contour);
+
+			for (TimePoint position : track.getPositions()) {
+				if (position.getFrameNum() == currentTimePoint.getFrameNum() 
+						&& shape.getArea() >= autoTracker.getMinShapePixelArea() 
+						&& shape.getArea() <= autoTracker.getMaxShapePixelArea()) {
+					suggestAutoTracks(shape);
+				}
+			}
+		}
 	}
 
 	//how we connect auto to manual tracking
 	public void suggestAutoTracks(DetectedShape shape) {
-		TimePoint tpt = new TimePoint(shape.getCentroidX(), shape.getCentroidY(), project.getVideo().getCurrentFrameNum());
-		if (project.getVideo().getArenaBounds().contains(tpt.getX(),tpt.getY())) {
-			//double maxPixelMovementPerFrame = maxMovementSpeed * vid.getAvgPixelsPerCm() / vid.getFrameRate();
-			//AnimalTrack track = getMatchOrCreateAnimalTrackForPoint(tpt, currentlyTrackingSegments, maxPixelMovementPerFrame);
-			//track.add(tpt);
-		}
 		System.out.println("Possible track");
 	}
 
