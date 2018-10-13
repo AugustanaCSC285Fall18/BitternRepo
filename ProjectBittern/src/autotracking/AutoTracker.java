@@ -29,10 +29,22 @@ public class AutoTracker {
 	private final double maxTimeGapWithinSegment = 0.5; // end a segment after this many seconds with no point detected
 	private final double maxMovementSpeed = 80.0; // guess for chicks
 	private int numAnimals;
+	
+	private double minShapePixelArea;
+	private double maxShapePixelArea;
 
 	public AutoTracker() {
 		//TODO: pass in some thresholds/parameters for fine-tuning the auto-tracking 
 		//        instead of declaring them all as constants up above....
+	}
+	
+	
+	public double getMinShapePixelArea() {
+		return minShapePixelArea;
+	}
+
+	public double getMaxShapePixelArea() {
+		return maxShapePixelArea;
 	}
 	
 	/**
@@ -60,8 +72,12 @@ public class AutoTracker {
 		Mat emptyFrame = vid.readFrame();
 
 
-		double minShapePixelArea= 0.5*targetShapeArea*vid.getXPixelsPerCm()*vid.getYPixelsPerCm();
-		double maxShapePixelArea= 1.5*targetShapeArea*vid.getXPixelsPerCm()*vid.getYPixelsPerCm();
+		//double minShapePixelArea= 0.5*targetShapeArea*vid.getXPixelsPerCm()*vid.getYPixelsPerCm();
+		//double maxShapePixelArea= 1.5*targetShapeArea*vid.getXPixelsPerCm()*vid.getYPixelsPerCm();
+		
+		minShapePixelArea= 0.5*targetShapeArea*vid.getXPixelsPerCm()*vid.getYPixelsPerCm();
+		maxShapePixelArea= 1.5*targetShapeArea*vid.getXPixelsPerCm()*vid.getYPixelsPerCm();
+		
 		SingleFrameShapeFinder frameAnalyzer = new SingleFrameShapeFinder(emptyFrame, brightnessTheshold, minShapePixelArea, maxShapePixelArea);
 		
 		vid.setCurrentFrameNum(vid.getStartFrameNum());

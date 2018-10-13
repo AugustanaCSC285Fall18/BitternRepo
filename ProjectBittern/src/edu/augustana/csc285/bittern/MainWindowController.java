@@ -28,39 +28,28 @@ import utils.UtilsForOpenCV;
 
 public class MainWindowController implements AutoTrackListener {
 
-	@FXML
-	private Button autoTrackButton;
-	private AutoTracker autotracker;
-	@FXML
-	private Button backButton;
-	@FXML
-	private Label currentFrameLabel;
-	
-	@FXML
-	private Button endTimeButton;
-	@FXML
-	private Label endTimeLabel;
+	@FXML private Button autoTrackButton;
+	@FXML private Button backButton;
+	@FXML private Label currentFrameLabel;
+	@FXML private Button endTimeButton;
+	@FXML private Label endTimeLabel;
 	@FXML private Button nextButton;
-
-	@FXML
-	private ProgressBar progressAutoTrack;
-	private ProjectData project;
-	@FXML
-	private Slider sliderBar;
-	@FXML
-	private Button startTimeButton;
-	@FXML
-	private Label startTimeLabel;
-	@FXML
-	private ImageView videoView; 
+	@FXML private ProgressBar progressAutoTrack;
+	@FXML private Slider sliderBar;
+	@FXML private Button startTimeButton;
+	@FXML private Label startTimeLabel;
+	@FXML private ImageView videoView; 
 	
-
+	private AutoTracker autotracker;	
+	private ProjectData project;
+	
 	public void displayFrame() {
 		if (autotracker == null || !autotracker.isRunning()) {
 			Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 			videoView.setImage(curFrame);
 			Platform.runLater(() -> {
-				currentFrameLabel.setText("" + project.getVideo().getCurrentFrameNum());
+				currentFrameLabel.setText("" 
+						+ project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
 			});
 		}
 	}
@@ -99,18 +88,14 @@ public class MainWindowController implements AutoTrackListener {
 		System.out.println(project.getVideo());
 		ManualTrackWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
-		controller.setup(project);
+		controller.setup(project, autotracker);
 	}
 	
 	
 	@FXML
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
-//		endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
-		endTimeLabel.setText("End: " + getTime(project.getVideo().getEndFrameNum()));
-		// Note: without the following line after the user clicks endTimeButton,
-		// if they play video, the video starts from the endTime frame.
-		// line is currently a band-aid
+		endTimeLabel.setText("End: " + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 		project.getVideo().setCurrentFrameNum(project.getVideo().getStartFrameNum());
 	}
 
@@ -119,8 +104,7 @@ public class MainWindowController implements AutoTrackListener {
 	@FXML
 	public void handleStart() {
 		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
-//		startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
-		startTimeLabel.setText("Start: " + getTime(project.getVideo().getStartFrameNum()));
+		startTimeLabel.setText("Start: " + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 		System.out.println(project.getVideo());
 	}
 
@@ -165,14 +149,6 @@ public class MainWindowController implements AutoTrackListener {
 	public void initializeWithStage(Stage stage) {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
-	
-	public String getTime(int frameNumber) {
-		DecimalFormat df = new DecimalFormat("00.00");
-		int seconds = (int) (frameNumber /project.getVideo().getFrameRate());
-		int minutes = seconds / 60;
-		int remainingSeconds = (int) seconds - (60 * minutes);
-		return minutes + ":" + df.format(remainingSeconds);
-	} 
 
 	public void setup(ProjectData project) {
 		try {
@@ -183,11 +159,8 @@ public class MainWindowController implements AutoTrackListener {
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
-//			startTimeLabel.setText("Start: " + project.getVideo().getStartFrameNum());
-//			endTimeLabel.setText("End: " + project.getVideo().getEndFrameNum());
-			
-			startTimeLabel.setText("Start: " + getTime(project.getVideo().getStartFrameNum()));
-			endTimeLabel.setText("End: " + getTime(project.getVideo().getEndFrameNum()));
+			startTimeLabel.setText("Start: " + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
+			endTimeLabel.setText("End: " + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 
 			displayFrame();
 			System.out.println(project.getVideo());
@@ -203,8 +176,8 @@ public class MainWindowController implements AutoTrackListener {
 
 		for (AnimalTrack track : trackedSegments) {
 			System.out.println(track);
-			//System.out.println(" " + track.getPositions());
 		}
+		
 		Platform.runLater(() -> {
 			progressAutoTrack.setProgress(1.0);
 			autoTrackButton.setText("Start auto-tracking");

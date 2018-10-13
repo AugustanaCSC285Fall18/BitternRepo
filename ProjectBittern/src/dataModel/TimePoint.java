@@ -75,6 +75,10 @@ public class TimePoint implements Comparable<TimePoint> {
 		return this.getTimeDiffAfter(other);
 	}
 	
+	//public boolean around() {
+		
+	//}
+	
 	public boolean equals(Object object) {
 		if (object instanceof TimePoint) {
 			TimePoint other = (TimePoint) object;
