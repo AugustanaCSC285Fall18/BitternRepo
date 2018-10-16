@@ -13,12 +13,15 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -221,76 +224,46 @@ public class CalibrationWindowController {
 		System.out.println(ratioY);
 	}
 
-	@FXML
-	public void handleCalibration() {
-		
-		
-//		drawingBoard.setOnMousePressed(new EventHandler<MouseEvent>() {
-//			public void handle(MouseEvent event) {
-//				drawingBoard.setMouseTransparent(true);
-//				System.out.println("Event on Source: mouse pressed");
-//				event.setDragDetect(true);
-//			}
-//		});
-//
-//		drawingBoard.setOnMouseReleased(new EventHandler<MouseEvent>() {
-//			public void handle(MouseEvent event) {
-//				System.out.println("Event on Source: mouse released");
-//			}
-//		});
+	private Line mouseDragLine;
 
-	drawingBoard.setOnMouseDragged(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-			drawLine(new Point( (int) event.getX(),(int) event.getY()), new Point (100,200));
-			System.out.println("Event on Source: mouse dragged");
-			event.setDragDetect(false);
-			}
-	});
-//
-//		sourceFld.setOnDragDetected(new EventHandler<MouseEvent>() {
-//			public void handle(MouseEvent event) {
-//				sourceFld.startFullDrag();
-//				writelog("Event on Source: drag detected");
-//			}
-//		});
-//
-//		// Add mouse event handlers for the target
-//		targetFld.setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
-//			public void handle(MouseDragEvent event) {
-//				writelog("Event on Target: mouse dragged");
-//			}
-//		});
-//
-//		targetFld.setOnMouseDragOver(new EventHandler<MouseDragEvent>() {
-//			public void handle(MouseDragEvent event) {
-//				writelog("Event on Target: mouse drag over");
-//			}
-//		});
-//
-//		targetFld.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
-//			public void handle(MouseDragEvent event) {
-//				targetFld.setText(sourceFld.getSelectedText());
-//				writelog("Event on Target: mouse drag released");
-//			}
-//		});
-//
-//		targetFld.setOnMouseDragExited(new EventHandler<MouseDragEvent>() {
-//			public void handle(MouseDragEvent event) {
-//				writelog("Event on Target: mouse drag exited");
-//			}
-//		});
-//
+	@FXML
+	public void handleMousePressed(MouseEvent event) {
+		System.out.println("pressed: " + event.getX() + " " + event.getY());
+		if (mouseDragLine != null) {
+			drawingBoard.getChildren().remove(mouseDragLine);
+		}
+		mouseDragLine = new Line(event.getX(), event.getY(), event.getX(), event.getY());
+		mouseDragLine.setStroke(Color.RED);
+		mouseDragLine.setStrokeWidth(5.0f);
+		drawingBoard.getChildren().add(mouseDragLine);
+
+	}
+
+	@FXML
+	public void handleMouseDragged(MouseEvent event) {
+		System.out.println("dragged: " + event.getX() + " " + event.getY());
+		mouseDragLine.setEndX(event.getX());
+		mouseDragLine.setEndY(event.getY());
+
+	}
+
+	@FXML
+	public void handleMouseReleased(MouseEvent event) {
+		System.out.println("released: " + event.getX() + " " + event.getY());
+		Alert alert = new Alert(AlertType.INFORMATION, "This is a message for the user");
+		alert.showAndWait();
+
 	}
 
 	public void setProject(ProjectData project) {
 		this.project = project;
-		
+
 		if (!(project.getTracks() == null)) {
 			for (AnimalTrack track : project.getTracks()) {
 				chicksBox.getItems().add(track.getID());
 			}
 		}
-		
+
 		project.getVideo().setCurrentFrameNum(0);
 		displayFrame();
 		System.out.println(project.getVideo());

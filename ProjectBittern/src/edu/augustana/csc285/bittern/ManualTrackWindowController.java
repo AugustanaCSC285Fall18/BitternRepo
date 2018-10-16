@@ -19,10 +19,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -46,7 +48,6 @@ public class ManualTrackWindowController {
 	@FXML private ComboBox<String> chicksBox;
 	@FXML private Canvas progressCanvas;
 
-	private Stage popup;
 	private ProjectData project;
 	private ScheduledExecutorService timer;
 	private TimePoint currentTimePoint;
@@ -69,13 +70,6 @@ public class ManualTrackWindowController {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		this.stage = stage;
-		
-		popup = new Stage();
-		popup.initOwner(stage);
-		popup.setHeight(100);
-		popup.setWidth(300);
-		
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
@@ -98,9 +92,9 @@ public class ManualTrackWindowController {
 	 * refactor names and clean code
 	 */
 	public void setupClick(MouseEvent event) {
-		popup.close();
 		if (chicksBox.getValue() == null) {
-			popup.show();
+			Alert alert = new Alert(AlertType.INFORMATION, "You have to choose the chick that you want to track!");
+			alert.showAndWait();
 		} else {
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
 					
