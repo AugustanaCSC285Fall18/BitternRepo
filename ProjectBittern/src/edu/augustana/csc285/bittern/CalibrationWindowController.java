@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import dataModel.AnimalTrack;
 import dataModel.ProjectData;
@@ -16,9 +17,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
@@ -42,27 +46,25 @@ public class CalibrationWindowController {
 	@FXML
 	private ImageView videoView;
 	@FXML
-	private Button setX;
-	@FXML
-	private Button setY;
-	@FXML
 	private BorderPane drawingBoard;
-	@FXML
-	private TextField setActualLengthX;
-	@FXML
-	private TextField setActualLengthY;
 	@FXML
 	private ComboBox<Integer> stepBox;
 	@FXML
 	private ComboBox<String> chicksBox;
 	@FXML
 	private TextField nameField;
+	@FXML
+	private Label showActualLengthX;
+	@FXML
+	private Label showActualLengthY;
 
-	private ArrayList<Point> calibration = new ArrayList();
+	private Line mouseDragLine;
 	private ProjectData project;
 
 	private double pixelLengthX;
 	private double pixelLengthY;
+	private int actualLengthX;
+	private int actualLengthY;
 
 	public static double ratioX;
 	public static double ratioY;
@@ -99,35 +101,19 @@ public class CalibrationWindowController {
 	@FXML
 	public void handleDrawingBoard(MouseEvent event) {
 		Point point = new Point((int) event.getX(), (int) event.getY());
-		calibration.add(point);
-		drawCircle(point);
-
-	}
-
-	@FXML
-	public void handleSetX() {
-		Point p1 = calibration.get(calibration.size() - 2);
-		Point p2 = calibration.get(calibration.size() - 1);
-		System.out.println(pixelLengthX);
-		System.out.println("Point1: " + p1 + " Point 2: " + p2);
-		drawLine(p1, p2);
-
-	}
-
-	@FXML
-	public void handleSetY() {
-		Point p1 = calibration.get(calibration.size() - 2);
-		Point p2 = calibration.get(calibration.size() - 1);
-		pixelLengthY = Point2D.distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-		System.out.println(pixelLengthY);
-		System.out.println("Point1: " + p1 + " Point 2: " + p2);
-		drawLine(p1, p2);
 
 	}
 
 	@FXML
 	public void handleSlider() {
-
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					displayFrame();
+				}
+			}
+		});
 	}
 
 	public void drawCircle(Point p) {
@@ -178,14 +164,14 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void initialize() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame();
-				}
-			}
-		});
+//		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+//			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+//				if (sliderBar.isValueChanging()) {
+//					project.getVideo().setCurrentFrameNum(arg2.intValue());
+//					displayFrame();
+//				}
+//			}
+//		});
 
 		stepBox.getItems().addAll(1, 2, 3, 4, 5);
 
@@ -193,12 +179,10 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void handleName() {
-
 		String name = nameField.getText();
 		project.getTracks().add(new AnimalTrack(name));
 		chicksBox.getItems().add(name);
 		nameField.setText("");
-
 	}
 
 	@FXML
@@ -210,21 +194,17 @@ public class CalibrationWindowController {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 
-	@FXML
-	public void setActualLengthX() {
-		int actualLengthX = Integer.parseInt(setActualLengthX.getText());
+	public void setActualLengthX(String inputX) {
+		actualLengthX = Integer.parseInt(inputX);
 		ratioX = actualLengthX / pixelLengthX;
 		System.out.println(ratioX);
 	}
 
-	@FXML
-	public void setActualLengthY() {
-		int actualLength = Integer.parseInt(setActualLengthY.getText());
-		ratioY = actualLength / pixelLengthY;
+	public void setActualLengthY(String inputY) {
+		actualLengthY = Integer.parseInt(inputY);
+		ratioY = actualLengthY / pixelLengthY;
 		System.out.println(ratioY);
 	}
-
-	private Line mouseDragLine;
 
 	@FXML
 	public void handleMousePressed(MouseEvent event) {
@@ -244,15 +224,33 @@ public class CalibrationWindowController {
 		System.out.println("dragged: " + event.getX() + " " + event.getY());
 		mouseDragLine.setEndX(event.getX());
 		mouseDragLine.setEndY(event.getY());
-
 	}
 
 	@FXML
 	public void handleMouseReleased(MouseEvent event) {
-		System.out.println("released: " + event.getX() + " " + event.getY());
-		Alert alert = new Alert(AlertType.INFORMATION, "This is a message for the user");
-		alert.showAndWait();
+		ArrayList<String> choices = new ArrayList();
+		choices.add("Vertical");
+		choices.add("Horizon");
 
+		ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
+		dialog.setHeaderText("Set up actual length");
+		dialog.showAndWait();
+		dialog.setHeaderText(null);
+
+		while (dialog.getResult().equals("")) {
+			Alert alert = new Alert(AlertType.INFORMATION, "You must choose something :)");
+			alert.setHeaderText(null);
+			alert.showAndWait();
+			dialog.showAndWait();
+		}
+
+		if (dialog.getResult().equals("Vertical")) {
+			askForYValue();
+		} else if (dialog.getResult().equals("Horizon")) {
+			askForXValue();
+		}
+
+		System.out.println("released: " + event.getX() + " " + event.getY());
 	}
 
 	public void setProject(ProjectData project) {
@@ -268,4 +266,28 @@ public class CalibrationWindowController {
 		displayFrame();
 		System.out.println(project.getVideo());
 	}
+
+	public void askForXValue() {
+		TextInputDialog horizontalValue = new TextInputDialog("cm");
+		horizontalValue.setHeaderText("Set up horizontal length");
+		horizontalValue.setContentText("Please enter actual horizontal length:");
+		horizontalValue.showAndWait();
+		pixelLengthX = Point2D.distance(mouseDragLine.getStartX(), mouseDragLine.getStartY(), mouseDragLine.getEndX(),
+				mouseDragLine.getEndY());
+		setActualLengthX(horizontalValue.getResult());
+		showActualLengthX.setText("Actual Horizontal Length: " + actualLengthX + " cm");
+	}
+
+	public void askForYValue() {
+		TextInputDialog verticalValue = new TextInputDialog("cm");
+		verticalValue.setHeaderText("Set up vertical length");
+		verticalValue.setContentText("Please enter actual vertical length:");
+		verticalValue.showAndWait();
+		pixelLengthY = Point2D.distance(mouseDragLine.getStartX(), mouseDragLine.getStartY(), mouseDragLine.getEndX(),
+				mouseDragLine.getEndY());
+		setActualLengthY(verticalValue.getResult());
+		showActualLengthY.setText("Actual Vertical Length: " + actualLengthY + " cm");
+
+	}
+
 }

@@ -94,6 +94,7 @@ public class ManualTrackWindowController {
 	public void setupClick(MouseEvent event) {
 		if (chicksBox.getValue() == null) {
 			Alert alert = new Alert(AlertType.INFORMATION, "You have to choose the chick that you want to track!");
+			alert.setHeaderText(null);
 			alert.showAndWait();
 		} else {
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
