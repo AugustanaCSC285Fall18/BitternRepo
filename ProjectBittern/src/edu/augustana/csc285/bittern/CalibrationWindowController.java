@@ -147,7 +147,7 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void handleConfirm() throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("AutoTrackWindowController.fxml"));
 		BorderPane root = (BorderPane) loader.load();
 
 		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
@@ -157,7 +157,7 @@ public class CalibrationWindowController {
 		primary.setScene(nextScene);
 		primary.show();
 		System.out.println(project.getVideo());
-		MainWindowController controller = loader.getController();
+		AutoTrackWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
 		controller.setup(project);
 	}

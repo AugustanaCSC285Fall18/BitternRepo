@@ -26,7 +26,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
-public class MainWindowController implements AutoTrackListener {
+public class AutoTrackWindowController implements AutoTrackListener {
 
 	@FXML private Button autoTrackButton;
 	@FXML private Button backButton;

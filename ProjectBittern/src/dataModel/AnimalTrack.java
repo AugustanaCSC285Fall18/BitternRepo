@@ -55,8 +55,8 @@ public class AnimalTrack {
 	}
 	
 	public boolean containsPointAtTime(int frameNum) {
-		for (TimePoint point : positions) {
-			if (point.sameTime(frameNum)) {
+		for (TimePoint position : positions) {
+			if (position.sameTime(frameNum)) {
 				return true;
 			}
 		}

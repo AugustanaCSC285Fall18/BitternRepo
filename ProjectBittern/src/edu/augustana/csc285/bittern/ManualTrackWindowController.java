@@ -94,6 +94,8 @@ public class ManualTrackWindowController {
 					suggestAutoTracks();
 				}
 			}
+			
+			jump(1);
 		});
 
 
@@ -114,12 +116,14 @@ public class ManualTrackWindowController {
 			frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 			System.out.println("Frame Width Ratio: " + frameWidthRatio + " width: " + progressCanvas.getWidth());
 			
-			if (!(project.getTracks() == null)) {
+			if (project.getTracks().size() > 0) {
 				for (AnimalTrack track : project.getTracks()) {
 					chicksBox.getItems().add(track.getID());
 				}
 				chicksBox.setValue(project.getTracks().get(0).getID());
 				currentTrack = project.getTracks().get(0);
+			} else {
+				//We'll have an empty chicksbox and errors when mouseClicks. We need code to prevent this
 			}
 			
 			System.out.println(project.getVideo());
@@ -147,7 +151,7 @@ public class ManualTrackWindowController {
 
 	@FXML
 	public void handleBack() throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("AutoTrackWindowController.fxml"));
 		BorderPane root = (BorderPane) loader.load();
 
 		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
@@ -157,7 +161,7 @@ public class ManualTrackWindowController {
 		primary.setScene(nextScene);
 		primary.show();
 
-		MainWindowController controller = loader.getController();
+		AutoTrackWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
 		controller.setup(project);
 	}
