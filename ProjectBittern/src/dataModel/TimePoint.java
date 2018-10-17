@@ -75,15 +75,15 @@ public class TimePoint implements Comparable<TimePoint> {
 		return this.getTimeDiffAfter(other);
 	}
 	
-	//public boolean around() {
-		
-	//}
+	public boolean sameTime(int frameNum) {
+		return (this.getFrameNum() == frameNum);
+	}
 	
 	public boolean equals(Object object) {
 		if (object instanceof TimePoint) {
 			TimePoint other = (TimePoint) object;
 			return (this.x == other.getX() && this.y == other.getY()
-					&& this.frameNum == other.getFrameNum());
+					&& sameTime(other.getFrameNum()));
 		} else {
 			return false;
 		}

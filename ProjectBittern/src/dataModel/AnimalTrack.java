@@ -1,6 +1,5 @@
 package dataModel;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +37,13 @@ public class AnimalTrack {
 		return null;
 	}
 	
-	public void updatePointAtTime(int index) {
-		TimePoint pnt = positions.get(index);
-		positions.remove(index);
-		positions.add(index, pnt);
+	public void updatePointAtTime(TimePoint newPoint) {
+		for (TimePoint position : positions) {
+			if (position.sameTime(newPoint.getFrameNum())) {
+				positions.remove(position);
+				positions.add(newPoint);
+			}
+		}
 	}
 	
 	public List<TimePoint> getPositions() {
@@ -51,11 +53,21 @@ public class AnimalTrack {
 	public TimePoint getFinalTimePoint() {
 		return positions.get(positions.size()-1);
 	}
+	
+	public boolean containsPointAtTime(int frameNum) {
+		for (TimePoint point : positions) {
+			if (point.sameTime(frameNum)) {
+				return true;
+			}
+		}
+		return false;
+	}
 		
 	public String toString() {
 		int startFrame = positions.get(0).getFrameNum();
 		int endFrame = getFinalTimePoint().getFrameNum();
-		return "AnimalTrack[id="+ animalID + ",numPts=" + positions.size()+" start=" + startFrame + " end=" + endFrame +"]" ; 
+		return "AnimalTrack[id="+ animalID + ",numPts=" + positions.size() 
+			+" start=" + startFrame + " end=" + endFrame +"]" ; 
 	}
 		
 	

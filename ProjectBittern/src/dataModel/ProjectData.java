@@ -26,7 +26,40 @@ public class ProjectData {
 	public List<AnimalTrack> getUnassignedSegments() {
 		return unassignedSegments;
 	}
-
+	
+	public boolean containsAutoTracksAtTime(int frameNum) {
+		for (AnimalTrack track : unassignedSegments) {
+			if (track.containsPointAtTime(frameNum)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
+		List<AnimalTrack> applicableTracks = new ArrayList<>();
+		for (AnimalTrack track : unassignedSegments) {
+			if (track.containsPointAtTime(frameNum)) {
+				applicableTracks.add(track);
+			}
+		}
+		return applicableTracks;
+	}
+	
+	// go through unassigned segments, finding each time point at frameNum
+	public List<TimePoint> getUnassignedTimePointsAtTime(int frameNum) {
+		List<TimePoint> pointsAtTime = new ArrayList<>();
+		for (AnimalTrack track : unassignedSegments) {
+			for (TimePoint point : track.getPositions()) {
+				if (point.sameTime(frameNum)) {
+					pointsAtTime.add(point);
+				}
+			}
+			
+		}
+		return pointsAtTime;
+	}
+		
 	public AnimalTrack getAnimal(String id) {
 		for (AnimalTrack animal : tracks) {
 			if (animal.getID().equals(id)) {

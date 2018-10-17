@@ -54,16 +54,14 @@ public class ManualTrackWindowController {
 	private Stage stage;
 	private GraphicsContext gc;
 	private String name;
-	private AnimalTrack track;
+	private AnimalTrack currentTrack;
 	private double frameWidthRatio; //refactor
 
 	@FXML
 	public void initialize() {
 		
 		setupSlider();
-		videoView.setOnMouseClicked((event) -> {
-			setupClick(event);
-		});
+		setupClick();
 		setupCanvas();
 				
 	}
@@ -88,68 +86,29 @@ public class ManualTrackWindowController {
 		
 	}
 
-	/*
-	 * Note:
-	 * does other() update point at time when true
-	 * should frameNumber be the only variable to check for in check()
-	 * reduce complexity 
-	 * add gui stuff for suggesting autotracks
-	 * have the point be recorded if user rejects the autotracks
-	 * refactor names and clean code
-	 */
-	public void setupClick(MouseEvent event) {
-		popup.close();
-		if (chicksBox.getValue() == null) {
-			popup.show();
-		} else {
-			currentTimePoint = new TimePoint(event.getX(), event.getY(), project.getVideo().getCurrentFrameNum());
-					
+	public void setupClick() {
+		videoView.setOnMouseClicked((event) -> {
+			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
+					project.getVideo().getCurrentFrameNum());
 			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPointAWT())) {
-				if (track.getPositions().size() == 0) {
-					track.getPositions().add(currentTimePoint);	
-					updateCanvas(currentTimePoint.getFrameNum());
-					jump(1);
+				if (currentTrack.containsPointAtTime(currentTimePoint.getFrameNum())) {
+					currentTrack.updatePointAtTime(currentTimePoint);
 				} else {
-					addTimePoint();
+					currentTrack.add(currentTimePoint);
 				}
+				updateCanvas(project.getVideo().getCurrentFrameNum());
 				
-			}
-		}
-
-	}
-	
-	public void addTimePoint() {
-		if (check()) {
-			suggestAutoTracks();
-		} else if (!other()){
-			track.getPositions().add(currentTimePoint);
-		}
-	}
-	
-	public boolean check() {
-		for (AnimalTrack track : project.getUnassignedSegments()) {
-			for (TimePoint position : track.getPositions()) {
-				if (position.getFrameNum() == currentTimePoint.getFrameNum()) {
-					return true;
+				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
+					suggestAutoTracks();
 				}
 			}
-		}		
-		return false;
+		});
+
+
 	}
 
 	public void suggestAutoTracks() {
 		System.out.println("Possible track");
-	}
-
-	
-	public boolean other() {
-		for (int i = 0; i < track.getPositions().size(); i++) {
-			if (track.getPositions().get(i).getFrameNum() == currentTimePoint.getFrameNum()) {
-				track.updatePointAtTime(i);
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public void setup(ProjectData project) {
@@ -167,6 +126,8 @@ public class ManualTrackWindowController {
 				for (AnimalTrack track : project.getTracks()) {
 					chicksBox.getItems().add(track.getID());
 				}
+				chicksBox.setValue(project.getTracks().get(0).getID());
+				currentTrack = project.getTracks().get(0);
 			}
 			
 			System.out.println(project.getVideo());
@@ -211,7 +172,8 @@ public class ManualTrackWindowController {
 
 	@FXML
 	public void handleChicksBox() {
-		track = project.getAnimal(chicksBox.getValue());
+		project.getTracks().add(currentTrack);
+		currentTrack = project.getAnimal(chicksBox.getValue());
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 	}
 
