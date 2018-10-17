@@ -14,18 +14,22 @@ public class AnimalTrack {
 		positions = new ArrayList<TimePoint>();
 	}
 	
-	public void add(TimePoint pt) {
-		positions.add(pt);
-	}
-	
-	public TimePoint getTimePointAtIndex(int index) {
-		return positions.get(index);
-	}
-	
 	public String getID() {
 		return animalID;
 	}
-	
+
+	public TimePoint getFinalTimePoint() {
+		return positions.get(positions.size()-1);
+	}
+
+	public List<TimePoint> getPositions() {
+		return this.positions;
+	}
+
+	public TimePoint getTimePointAtIndex(int index) {
+		return positions.get(index);
+	}
+
 	public TimePoint getTimePointAtTime(int frameNum) {
 		//TODO: This method's implementation is inefficient [linear search is O(N)]
 		//      Replace this with binary search (O(log n)] or use a Map for fast access
@@ -36,33 +40,29 @@ public class AnimalTrack {
 		}
 		return null;
 	}
+
+	public void add(TimePoint pt) {
+		positions.add(pt);
+	}
 	
+	public boolean containsPointAtTime(int frameNum) {
+		for (TimePoint position : positions) {
+			if (position.atSameTime(frameNum)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void updatePointAtTime(TimePoint newPoint) {
 		for (TimePoint position : positions) {
-			if (position.sameTime(newPoint.getFrameNum())) {
+			if (position.atSameTime(newPoint.getFrameNum())) {
 				positions.remove(position);
 				positions.add(newPoint);
 			}
 		}
 	}
 	
-	public List<TimePoint> getPositions() {
-		return this.positions;
-	}
-	
-	public TimePoint getFinalTimePoint() {
-		return positions.get(positions.size()-1);
-	}
-	
-	public boolean containsPointAtTime(int frameNum) {
-		for (TimePoint position : positions) {
-			if (position.sameTime(frameNum)) {
-				return true;
-			}
-		}
-		return false;
-	}
-		
 	public String toString() {
 		int startFrame = positions.get(0).getFrameNum();
 		int endFrame = getFinalTimePoint().getFrameNum();
