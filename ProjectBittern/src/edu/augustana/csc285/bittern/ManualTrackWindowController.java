@@ -6,7 +6,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import autotracking.AutoTracker;
 import dataModel.AnimalTrack;
 import dataModel.DataExporter;
 import dataModel.ProjectData;
@@ -46,7 +45,6 @@ public class ManualTrackWindowController {
 	@FXML private ComboBox<String> chicksBox;
 	@FXML private Canvas progressCanvas;
 
-	private Stage popup;
 	private ProjectData project;
 	private ScheduledExecutorService timer;
 	private TimePoint currentTimePoint;
@@ -67,13 +65,6 @@ public class ManualTrackWindowController {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		this.stage = stage;
-		
-		popup = new Stage();
-		popup.initOwner(stage);
-		popup.setHeight(100);
-		popup.setWidth(300);
-		
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
@@ -85,6 +76,7 @@ public class ManualTrackWindowController {
 		gc.fillRect(0, progressCanvas.getLayoutY(), progressCanvas.getWidth(), progressCanvas.getHeight());
 		
 	}
+
 
 	public void setupClick() {
 		videoView.setOnMouseClicked((event) -> {

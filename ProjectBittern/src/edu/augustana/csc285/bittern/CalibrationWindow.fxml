@@ -21,7 +21,7 @@
    <center>
       <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
          <children>
-            <BorderPane fx:id="drawingBoard" onMouseClicked="#handleDrawingBoard" onMouseDragged="#handleCalibration">
+            <BorderPane fx:id="drawingBoard" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased">
                <center>
                   <ImageView fx:id="videoView" onMouseClicked="#getPoint" pickOnBounds="true" preserveRatio="true" />
                </center>
@@ -35,12 +35,8 @@
          <children>
             <Button fx:id="confirmButton" layoutX="673.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleConfirm" text="Confirm" />
             <Button fx:id="backButton" layoutX="35.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-            <Label layoutX="433.0" layoutY="113.0" text="Actual Length : " />
-            <TextField fx:id="setActualLengthY" layoutX="538.0" layoutY="109.0" onAction="#setActualLengthY" prefHeight="25.0" prefWidth="46.0" promptText="in cm" />
-            <Button fx:id="setX" layoutX="629.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleSetX" text="Set X" />
-            <Button fx:id="setY" layoutX="630.0" layoutY="109.0" mnemonicParsing="false" onAction="#handleSetY" text="Set Y" />
-            <Label layoutX="433.0" layoutY="56.0" text="Actual Length : " />
-            <TextField fx:id="setActualLengthX" layoutX="538.0" layoutY="52.0" onAction="#setActualLengthX" prefHeight="25.0" prefWidth="46.0" promptText="in cm" />
+            <Label fx:id="showActualLengthY" layoutX="432.0" layoutY="77.0" prefHeight="17.0" prefWidth="202.0" text="Actual Vertical Length : " />
+            <Label fx:id="showActualLengthX" layoutX="432.0" layoutY="31.0" prefHeight="14.0" prefWidth="203.0" text="Actual Horizontal Length: " />
             <ComboBox fx:id="stepBox" layoutX="56.0" layoutY="27.0" onAction="#handleStepBox" prefHeight="25.0" prefWidth="105.0" promptText="Time Step" />
             <ComboBox fx:id="chicksBox" layoutX="56.0" layoutY="73.0" prefHeight="25.0" prefWidth="105.0" promptText="Chicks" />
             <TextField fx:id="nameField" layoutX="193.0" layoutY="73.0" onAction="#handleName" prefHeight="25.0" prefWidth="103.0" promptText="chick name" />
