@@ -42,6 +42,7 @@ public class OpeningWindowController {
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
+		primary.setTitle("Setup Window");
 		primary.setScene(nextScene);
 		primary.show();		
 	

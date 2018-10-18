@@ -18,6 +18,7 @@ public class Main extends Application {
 			BorderPane root = (BorderPane)loader.load();
 			Scene scene = new Scene(root,500,500);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setTitle("Bittern Tracker");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			

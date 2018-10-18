@@ -138,6 +138,7 @@ public class CalibrationWindowController {
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
 		Stage primary = (Stage) backButton.getScene().getWindow();
+		primary.setTitle("Bittern Tracker");
 		primary.setScene(nextScene);
 		primary.show();
 
@@ -155,7 +156,9 @@ public class CalibrationWindowController {
 
 		Stage primary = (Stage) confirmButton.getScene().getWindow();
 		primary.setScene(nextScene);
+		primary.setTitle("Auto Tracking Window");
 		primary.show();
+		
 		System.out.println(project.getVideo());
 		AutoTrackWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);

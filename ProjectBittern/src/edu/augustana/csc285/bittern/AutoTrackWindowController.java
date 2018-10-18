@@ -63,6 +63,7 @@ public class AutoTrackWindowController implements AutoTrackListener {
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
 		Stage primary = (Stage) backButton.getScene().getWindow();
+		primary.setTitle("Setup Window");
 		primary.setScene(nextScene);
 		primary.show();
 
@@ -81,6 +82,7 @@ public class AutoTrackWindowController implements AutoTrackListener {
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		Stage primary = (Stage) nextButton.getScene().getWindow();
+		primary.setTitle("Manual Track Window");
 		primary.setScene(nextScene);
 		primary.show();		
 		

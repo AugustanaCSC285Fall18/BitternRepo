@@ -15,6 +15,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
@@ -50,6 +52,7 @@ public class ManualTrackWindowController {
 	private TimePoint currentTimePoint;
 	private Point point;
 	private Stage stage;
+	private Stage popup;
 	private GraphicsContext gc;
 	private String name;
 	private AnimalTrack currentTrack;
@@ -65,6 +68,12 @@ public class ManualTrackWindowController {
 	}
 
 	public void initializeWithStage(Stage stage) {
+		this.stage = new Stage();
+		popup = new Stage();
+		popup.initOwner(stage);
+		popup.setHeight(300);
+		popup.setWidth(200);
+		
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
@@ -82,27 +91,42 @@ public class ManualTrackWindowController {
 		videoView.setOnMouseClicked((event) -> {
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
 					project.getVideo().getCurrentFrameNum());
-			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPointAWT())) {
-				if (currentTrack.containsPointAtTime(currentTimePoint.getFrameNum())) {
-					currentTrack.updatePointAtTime(currentTimePoint);
-				} else {
-					currentTrack.add(currentTimePoint);
-				}
+			/*if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPointAWT())
+					&& project.getVideo().timeWithinBounds()) {*/ //until calibration works
+			if (project.getVideo().timeWithinBounds()) {
+				currentTrack.add(currentTimePoint);
 				updateCanvas(project.getVideo().getCurrentFrameNum());
-				
+
 				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
-					suggestAutoTracks();
+					try {
+						suggestAutoTracks();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-			
+
 			jump(1);
 		});
-
-
 	}
 
-	public void suggestAutoTracks() {
-		System.out.println("Possible track");
+	
+	public void suggestAutoTracks() throws IOException {
+		System.out.println("suggest tracks");
+		videoView.setOnMouseClicked((event) -> {
+		});
+		
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("SuggestAutoTrackWindow.fxml"));
+		BorderPane root = (BorderPane)loader.load();
+		SuggestAutoTrackWindowController controller = loader.getController();
+		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
+		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		stage.setScene(nextScene);
+		stage.setTitle("Select a possible track");
+		stage.show();
+		controller.setup(project, this);
 	}
 	
 	public void setup(ProjectData project) {
@@ -158,6 +182,7 @@ public class ManualTrackWindowController {
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
 		Stage primary = (Stage) backButton.getScene().getWindow();
+		primary.setTitle("Auto Tracking Window");
 		primary.setScene(nextScene);
 		primary.show();
 

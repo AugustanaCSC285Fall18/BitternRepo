@@ -42,7 +42,11 @@ public class AnimalTrack {
 	}
 
 	public void add(TimePoint pt) {
-		positions.add(pt);
+		if (this.containsPointAtTime(pt.getFrameNum())) {
+			updatePointAtTime(pt);
+		} else {
+			positions.add(pt);
+		}
 	}
 	
 	public boolean containsPointAtTime(int frameNum) {

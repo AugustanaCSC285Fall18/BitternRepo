@@ -171,6 +171,14 @@ public class Video {
 	public void resetToStart() {
 		this.setCurrentFrameNum(0);
 	}
+	
+	public boolean timeWithinBounds() {
+		if (this.getCurrentFrameNum() <= this.endFrameNum 
+				&& this.getCurrentFrameNum() >= this.startFrameNum) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public String toString() {
