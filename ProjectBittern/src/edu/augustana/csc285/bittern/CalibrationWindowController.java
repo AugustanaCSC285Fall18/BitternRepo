@@ -31,6 +31,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 //import javafx.scene.shape.LineBuilder;
@@ -59,12 +60,15 @@ public class CalibrationWindowController {
 	private Label showActualLengthY;
 
 	private Line mouseDragLine;
+	private Rectangle mouseDragRect;
 	private ProjectData project;
 
 	private double pixelLengthX;
 	private double pixelLengthY;
 	private int actualLengthX;
 	private int actualLengthY;
+
+	private Point startPoint;
 
 	public static double ratioX;
 	public static double ratioY;
@@ -100,7 +104,7 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void handleDrawingBoard(MouseEvent event) {
-		Point point = new Point((int) event.getX(), (int) event.getY());
+		// Point point = new Point((int) event.getX(), (int) event.getY());
 
 	}
 
@@ -208,22 +212,34 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void handleMousePressed(MouseEvent event) {
-		System.out.println("pressed: " + event.getX() + " " + event.getY());
-		if (mouseDragLine != null) {
-			drawingBoard.getChildren().remove(mouseDragLine);
+//		System.out.println("pressed: " + event.getX() + " " + event.getY());
+//		if (mouseDragLine != null) {
+//			drawingBoard.getChildren().remove(mouseDragLine);
+//		}
+//		mouseDragLine = new Line(event.getX(), event.getY(), event.getX(), event.getY());
+//		mouseDragLine.setStroke(Color.RED);
+//		mouseDragLine.setStrokeWidth(5.0f);
+//		drawingBoard.getChildren().add(mouseDragLine);
+
+		if (mouseDragRect != null) {
+			drawingBoard.getChildren().remove(mouseDragRect);
 		}
-		mouseDragLine = new Line(event.getX(), event.getY(), event.getX(), event.getY());
-		mouseDragLine.setStroke(Color.RED);
-		mouseDragLine.setStrokeWidth(5.0f);
-		drawingBoard.getChildren().add(mouseDragLine);
+		startPoint = new Point((int) event.getX(), (int) event.getY());
+		mouseDragRect = new Rectangle(startPoint.getX(), startPoint.getY(), 1, 1);
+		mouseDragRect.setStroke(Color.RED);
+		mouseDragRect.setStrokeWidth(5.0f);
+		drawingBoard.getChildren().add(mouseDragRect);
 
 	}
 
 	@FXML
 	public void handleMouseDragged(MouseEvent event) {
 		System.out.println("dragged: " + event.getX() + " " + event.getY());
-		mouseDragLine.setEndX(event.getX());
-		mouseDragLine.setEndY(event.getY());
+		// mouseDragLine.setEndX(event.getX());
+		// mouseDragLine.setEndY(event.getY());
+
+		mouseDragRect.setWidth(Math.abs(event.getX() - startPoint.getX()));
+		mouseDragRect.setHeight(Math.abs(event.getY() - startPoint.getY()));
 	}
 
 	@FXML
