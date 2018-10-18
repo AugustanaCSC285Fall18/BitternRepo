@@ -42,7 +42,16 @@ public class ProjectData {
 		}
 		return false;
 	}
-	
+
+	public AnimalTrack getAnimal(String id) {
+		for (AnimalTrack animal : tracks) {
+			if (animal.getID().equals(id)) {
+				return animal;
+			}
+		}
+		return null;
+	}
+
 	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
 		List<AnimalTrack> applicableTracks = new ArrayList<>();
 		for (AnimalTrack track : unassignedSegments) {
@@ -58,22 +67,12 @@ public class ProjectData {
 		List<TimePoint> pointsAtTime = new ArrayList<>();
 		for (AnimalTrack track : unassignedSegments) {
 			for (TimePoint point : track.getPositions()) {
-				if (point.sameTime(frameNum)) {
+				if (point.atSameTime(frameNum)) {
 					pointsAtTime.add(point);
-				}
-			}
-			
+				}		
+			}			
 		}
 		return pointsAtTime;
-	}
-		
-	public AnimalTrack getAnimal(String id) {
-		for (AnimalTrack animal : tracks) {
-			if (animal.getID().equals(id)) {
-				return animal;
-			}
-		}
-		return null;
 	}
 
 }

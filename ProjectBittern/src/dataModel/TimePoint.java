@@ -23,18 +23,14 @@ public class TimePoint implements Comparable<TimePoint> {
 		return x;
 	}
 	
-	public void setX(double x) {
-		this.x = x;
-	}
-		
 	public double getY() {
 		return y;
 	}
-	
-	public void setY(double y) {
-		this.y = y;
+
+	public int getFrameNum() {
+		return frameNum;
 	}
-	
+
 	public org.opencv.core.Point getPointOpenCV() {
 		return new org.opencv.core.Point(x,y);
 	}
@@ -43,8 +39,12 @@ public class TimePoint implements Comparable<TimePoint> {
 		return new java.awt.Point((int)x,(int)y);
 	}
 
-	public int getFrameNum() {
-		return frameNum;
+	public void setX(double x) {
+		this.x = x;
+	}
+		
+	public void setY(double y) {
+		this.y = y;
 	}
 	
 	@Override
@@ -67,6 +67,10 @@ public class TimePoint implements Comparable<TimePoint> {
 		return this.frameNum - other.frameNum;
 	}
 
+	public boolean atSameTime(int frameNum) {
+		return (this.getFrameNum() == frameNum);
+	}
+	
 	/**
 	 * Comparison based on the time (frame number).
 	 */
@@ -74,16 +78,12 @@ public class TimePoint implements Comparable<TimePoint> {
 	public int compareTo(TimePoint other) {		
 		return this.getTimeDiffAfter(other);
 	}
-	
-	public boolean sameTime(int frameNum) {
-		return (this.getFrameNum() == frameNum);
-	}
-	
+
 	public boolean equals(Object object) {
 		if (object instanceof TimePoint) {
 			TimePoint other = (TimePoint) object;
 			return (this.x == other.getX() && this.y == other.getY()
-					&& sameTime(other.getFrameNum()));
+					&& atSameTime(other.getFrameNum()));
 		} else {
 			return false;
 		}
