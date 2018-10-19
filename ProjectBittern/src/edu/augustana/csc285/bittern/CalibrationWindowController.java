@@ -1,7 +1,6 @@
 package edu.augustana.csc285.bittern;
 
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -58,20 +57,19 @@ public class CalibrationWindowController {
 	private Label showActualLengthX;
 	@FXML
 	private Label showActualLengthY;
+	@FXML
+	private Button originButton;
+	@FXML
+	private Button setAcutalLengthButton;
+	@FXML
+	private Button instruction;
 
-	private Line mouseDragLine;
 	private Rectangle mouseDragRect;
 	private ProjectData project;
 
-	private double pixelLengthX;
-	private double pixelLengthY;
-	private int actualLengthX;
-	private int actualLengthY;
-
 	private Point startPoint;
-
-	public static double ratioX;
-	public static double ratioY;
+	private Circle origin; 
+	private boolean isSettingOrigin = false;
 
 	public void createProject(String filePath) {
 		try {
@@ -110,14 +108,7 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void handleSlider() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame();
-				}
-			}
-		});
+
 	}
 
 	public void drawCircle(Point p) {
@@ -162,26 +153,28 @@ public class CalibrationWindowController {
 		primary.setScene(nextScene);
 		primary.setTitle("Auto Tracking Window");
 		primary.show();
-		
+
 		System.out.println(project.getVideo());
 		AutoTrackWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
 		controller.setup(project);
+		
+		project.getVideo().setArenaBounds(mouseDragRect);
+		project.getVideo().setOrigin(origin);
+
 	}
 
 	@FXML
 	public void initialize() {
-//		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-//			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-//				if (sliderBar.isValueChanging()) {
-//					project.getVideo().setCurrentFrameNum(arg2.intValue());
-//					displayFrame();
-//				}
-//			}
-//		});
-
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					displayFrame();
+				}
+			}
+		});
 		stepBox.getItems().addAll(1, 2, 3, 4, 5);
-
 	}
 
 	@FXML
@@ -201,75 +194,38 @@ public class CalibrationWindowController {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 	}
 
-	public void setActualLengthX(String inputX) {
-		actualLengthX = Integer.parseInt(inputX);
-		ratioX = actualLengthX / pixelLengthX;
-		System.out.println(ratioX);
-	}
-
-	public void setActualLengthY(String inputY) {
-		actualLengthY = Integer.parseInt(inputY);
-		ratioY = actualLengthY / pixelLengthY;
-		System.out.println(ratioY);
-	}
-
 	@FXML
 	public void handleMousePressed(MouseEvent event) {
-//		System.out.println("pressed: " + event.getX() + " " + event.getY());
-//		if (mouseDragLine != null) {
-//			drawingBoard.getChildren().remove(mouseDragLine);
-//		}
-//		mouseDragLine = new Line(event.getX(), event.getY(), event.getX(), event.getY());
-//		mouseDragLine.setStroke(Color.RED);
-//		mouseDragLine.setStrokeWidth(5.0f);
-//		drawingBoard.getChildren().add(mouseDragLine);
-
-		if (mouseDragRect != null) {
-			drawingBoard.getChildren().remove(mouseDragRect);
+		if (!isSettingOrigin) {
+			if (mouseDragRect != null) {
+				drawingBoard.getChildren().remove(mouseDragRect);
+			}
+			startPoint = new Point((int) event.getX(), (int) event.getY());
+			mouseDragRect = new Rectangle(startPoint.getX(), startPoint.getY(), 1, 1);
+			mouseDragRect.setFill(null);
+			mouseDragRect.setStroke(Color.RED);
+			mouseDragRect.setStrokeWidth(5.0f);
+			drawingBoard.getChildren().add(mouseDragRect);
+		} else {
+			if (origin != null) {
+				drawingBoard.getChildren().remove(origin);
+			}
+			origin = new Circle(event.getX(), event.getY(), 5, Color.BLUE);
+			drawingBoard.getChildren().add(origin);
 		}
-		startPoint = new Point((int) event.getX(), (int) event.getY());
-		mouseDragRect = new Rectangle(startPoint.getX(), startPoint.getY(), 1, 1);
-		mouseDragRect.setStroke(Color.RED);
-		mouseDragRect.setStrokeWidth(5.0f);
-		drawingBoard.getChildren().add(mouseDragRect);
-
 	}
 
 	@FXML
 	public void handleMouseDragged(MouseEvent event) {
-		System.out.println("dragged: " + event.getX() + " " + event.getY());
-		// mouseDragLine.setEndX(event.getX());
-		// mouseDragLine.setEndY(event.getY());
-
-		mouseDragRect.setWidth(Math.abs(event.getX() - startPoint.getX()));
-		mouseDragRect.setHeight(Math.abs(event.getY() - startPoint.getY()));
+		if (!isSettingOrigin) {
+			mouseDragRect.setWidth(Math.abs(event.getX() - startPoint.getX()));
+			mouseDragRect.setHeight(Math.abs(event.getY() - startPoint.getY()));
+		}
 	}
 
 	@FXML
 	public void handleMouseReleased(MouseEvent event) {
-		ArrayList<String> choices = new ArrayList();
-		choices.add("Vertical");
-		choices.add("Horizon");
 
-		ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
-		dialog.setHeaderText("Set up actual length");
-		dialog.showAndWait();
-		dialog.setHeaderText(null);
-
-		while (dialog.getResult().equals("")) {
-			Alert alert = new Alert(AlertType.INFORMATION, "You must choose something :)");
-			alert.setHeaderText(null);
-			alert.showAndWait();
-			dialog.showAndWait();
-		}
-
-		if (dialog.getResult().equals("Vertical")) {
-			askForYValue();
-		} else if (dialog.getResult().equals("Horizon")) {
-			askForXValue();
-		}
-
-		System.out.println("released: " + event.getX() + " " + event.getY());
 	}
 
 	public void setProject(ProjectData project) {
@@ -280,7 +236,6 @@ public class CalibrationWindowController {
 				chicksBox.getItems().add(track.getID());
 			}
 		}
-
 		project.getVideo().setCurrentFrameNum(0);
 		displayFrame();
 		System.out.println(project.getVideo());
@@ -291,10 +246,14 @@ public class CalibrationWindowController {
 		horizontalValue.setHeaderText("Set up horizontal length");
 		horizontalValue.setContentText("Please enter actual horizontal length:");
 		horizontalValue.showAndWait();
-		pixelLengthX = Point2D.distance(mouseDragLine.getStartX(), mouseDragLine.getStartY(), mouseDragLine.getEndX(),
-				mouseDragLine.getEndY());
-		setActualLengthX(horizontalValue.getResult());
+
+		int actualLengthX = Integer.parseInt(horizontalValue.getResult());
+		double pixelLength = mouseDragRect.getWidth();
+		project.getVideo().setYPixelsPerCm(pixelLength / actualLengthX);
 		showActualLengthX.setText("Actual Horizontal Length: " + actualLengthX + " cm");
+
+		System.out.println(project.getVideo().getXPixelsPerCm());
+
 	}
 
 	public void askForYValue() {
@@ -302,11 +261,54 @@ public class CalibrationWindowController {
 		verticalValue.setHeaderText("Set up vertical length");
 		verticalValue.setContentText("Please enter actual vertical length:");
 		verticalValue.showAndWait();
-		pixelLengthY = Point2D.distance(mouseDragLine.getStartX(), mouseDragLine.getStartY(), mouseDragLine.getEndX(),
-				mouseDragLine.getEndY());
-		setActualLengthY(verticalValue.getResult());
+
+		int actualLengthY = Integer.parseInt(verticalValue.getResult());
+		double pixelLength = mouseDragRect.getHeight();
+		project.getVideo().setYPixelsPerCm(pixelLength / actualLengthY);
 		showActualLengthY.setText("Actual Vertical Length: " + actualLengthY + " cm");
 
+		System.out.println(project.getVideo().getYPixelsPerCm());
+
+	}
+
+	@FXML
+	public void handleSetOriginButton() {
+		isSettingOrigin = true;
+
+	}
+
+	@FXML
+	public void handleSetActualLengthButton() {
+		isSettingOrigin = false;
+
+		ArrayList<String> choices = new ArrayList();
+		choices.add("Vertical");
+		choices.add("Horizon");
+
+		ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
+		dialog.setHeaderText("Set up actual length");
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			if (dialog.getResult().equals("Vertical")) {
+				askForYValue();
+			} else if (dialog.getResult().equals("Horizon")) {
+				askForXValue();
+			} else {
+				dialog.close();
+			}
+		}
+
+
+	}
+
+	@FXML
+	public void handleInstruction() {
+		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
+		calibrationInstruction.setTitle("Instruction for Calibration");
+		calibrationInstruction.setHeaderText(null);
+		calibrationInstruction
+				.setContentText("instruction goes here" + "\n click and drag your mouse to draw your preferred ...?");
+		calibrationInstruction.showAndWait();
 	}
 
 }

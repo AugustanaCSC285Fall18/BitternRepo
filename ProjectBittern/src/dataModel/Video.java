@@ -1,12 +1,17 @@
 package dataModel;
 
-import java.awt.Rectangle;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+
+import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
+
+
 
 public class Video {
 	
@@ -18,6 +23,7 @@ public class Video {
 	
 	private double xPixelsPerCm;
 	private double yPixelsPerCm;
+	private Point origin = new Point();
 	private Rectangle arenaBounds; 
 	private int stepSize;
 	
@@ -100,8 +106,8 @@ public class Video {
 		return yPixelsPerCm;
 	}
 
-	public void setArenaBounds(Rectangle arenaBounds) {
-		this.arenaBounds = arenaBounds;
+	public void setArenaBounds(Rectangle mouseDragRect) {
+		this.arenaBounds = mouseDragRect;
 	}
 
 
@@ -145,6 +151,10 @@ public class Video {
 
 	public void setYPixelsPerCm(double yPixelsPerCm) {
 		this.yPixelsPerCm = yPixelsPerCm;
+	}
+	
+	public void setOrigin(Circle c) {
+		this.origin.setLocation(c.getCenterX(), c.getCenterY());
 	}
 
 

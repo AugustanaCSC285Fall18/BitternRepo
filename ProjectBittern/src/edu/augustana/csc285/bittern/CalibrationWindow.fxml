@@ -16,6 +16,9 @@
          <right>
             <Label prefHeight="17.0" prefWidth="85.0" text="Setup" BorderPane.alignment="CENTER" />
          </right>
+         <left>
+            <Button fx:id="instruction" mnemonicParsing="false" onAction="#handleInstruction" text="?" BorderPane.alignment="CENTER" />
+         </left>
       </BorderPane>
    </top>
    <center>
@@ -35,11 +38,13 @@
          <children>
             <Button fx:id="confirmButton" layoutX="673.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleConfirm" text="Confirm" />
             <Button fx:id="backButton" layoutX="35.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-            <Label fx:id="showActualLengthY" layoutX="432.0" layoutY="77.0" prefHeight="17.0" prefWidth="202.0" text="Actual Vertical Length : " />
-            <Label fx:id="showActualLengthX" layoutX="432.0" layoutY="31.0" prefHeight="14.0" prefWidth="203.0" text="Actual Horizontal Length: " />
-            <ComboBox fx:id="stepBox" layoutX="56.0" layoutY="27.0" onAction="#handleStepBox" prefHeight="25.0" prefWidth="105.0" promptText="Time Step" />
-            <ComboBox fx:id="chicksBox" layoutX="56.0" layoutY="73.0" prefHeight="25.0" prefWidth="105.0" promptText="Chicks" />
-            <TextField fx:id="nameField" layoutX="193.0" layoutY="73.0" onAction="#handleName" prefHeight="25.0" prefWidth="103.0" promptText="chick name" />
+            <Label fx:id="showActualLengthY" layoutX="516.0" layoutY="77.0" prefHeight="17.0" prefWidth="202.0" text="Actual Vertical Length : " />
+            <Label fx:id="showActualLengthX" layoutX="515.0" layoutY="52.0" prefHeight="14.0" prefWidth="203.0" text="Actual Horizontal Length: " />
+            <ComboBox fx:id="stepBox" layoutX="35.0" layoutY="27.0" onAction="#handleStepBox" prefHeight="25.0" prefWidth="105.0" promptText="Time Step" />
+            <ComboBox fx:id="chicksBox" layoutX="35.0" layoutY="73.0" prefHeight="25.0" prefWidth="105.0" promptText="Chicks" />
+            <TextField fx:id="nameField" layoutX="159.0" layoutY="73.0" onAction="#handleName" prefHeight="25.0" prefWidth="103.0" promptText="chick name" />
+            <Button fx:id="originButton" layoutX="367.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleSetOriginButton" text="Set Origin" />
+            <Button fx:id="setAcutalLengthButton" layoutX="515.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleSetActualLengthButton" text="Set up actual length" />
          </children>
       </AnchorPane>
    </bottom>
