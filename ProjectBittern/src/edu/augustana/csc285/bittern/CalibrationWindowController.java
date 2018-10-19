@@ -111,19 +111,6 @@ public class CalibrationWindowController {
 
 	}
 
-	public void drawCircle(Point p) {
-		Circle c = new Circle(p.getX(), p.getY(), 5, Color.RED);
-		drawingBoard.getChildren().add(c);
-	}
-
-	public void drawLine(Point p1, Point p2) {
-		Line line = new Line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-		line.setStroke(Color.RED);
-		line.setStrokeWidth(5.0f);
-		drawingBoard.getChildren().add(line);
-
-	}
-
 	@FXML
 	private void handleBack() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("OpeningWindow.fxml"));
@@ -143,10 +130,7 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void handleConfirm() throws IOException {
-		
-		/*
-		 * this is for debugging 
-		 */
+//		
 //		if (mouseDragRect == null && origin == null) {
 //			Alert alert = new Alert(AlertType.INFORMATION);
 //			alert.setTitle(null);
@@ -184,7 +168,7 @@ public class CalibrationWindowController {
 			AutoTrackWindowController controller = loader.getController();
 			controller.initializeWithStage(primary);
 			controller.setup(project);
-		//}
+	//	}
 	}
 
 	@FXML
@@ -198,12 +182,12 @@ public class CalibrationWindowController {
 			}
 		});
 		stepBox.getItems().addAll(1, 2, 3, 4, 5);
-		
-		//default values to prevent errors
-		mouseDragRect = new Rectangle(videoView.getX(), videoView.getY(),
-				videoView.getFitWidth(), videoView.getFitHeight());
+
+		// default values to prevent errors
+		mouseDragRect = new Rectangle(videoView.getX(), videoView.getY(), videoView.getFitWidth(),
+			videoView.getFitHeight());
 		origin = new Circle(0, 0, 5, Color.BLUE);
-		
+
 	}
 
 	@FXML
