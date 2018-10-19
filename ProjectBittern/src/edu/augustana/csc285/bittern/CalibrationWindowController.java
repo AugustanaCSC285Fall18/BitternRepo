@@ -175,6 +175,12 @@ public class CalibrationWindowController {
 			}
 		});
 		stepBox.getItems().addAll(1, 2, 3, 4, 5);
+		
+		//default values to prevent errors
+		mouseDragRect = new Rectangle(videoView.getX(), videoView.getY(),
+				videoView.getFitWidth(), videoView.getFitHeight());
+		origin = new Circle(0, 0, 5, Color.BLUE);
+		
 	}
 
 	@FXML

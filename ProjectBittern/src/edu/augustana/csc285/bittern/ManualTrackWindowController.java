@@ -98,11 +98,7 @@ public class ManualTrackWindowController {
 				updateCanvas(project.getVideo().getCurrentFrameNum());
 
 				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
-					try {
-						suggestAutoTracks();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					suggestAutoTracks();
 				}
 			}
 
@@ -111,22 +107,10 @@ public class ManualTrackWindowController {
 	}
 
 	
-	public void suggestAutoTracks() throws IOException {
+	public void suggestAutoTracks() {
 		System.out.println("suggest tracks");
-		videoView.setOnMouseClicked((event) -> {
-		});
 		
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("SuggestAutoTrackWindow.fxml"));
-		BorderPane root = (BorderPane)loader.load();
-		SuggestAutoTrackWindowController controller = loader.getController();
-		Scene nextScene = new Scene(root,root.getPrefWidth(),root.getPrefHeight());
-		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
-		stage.setScene(nextScene);
-		stage.setTitle("Select a possible track");
-		stage.show();
-		controller.setup(project, this);
 	}
 	
 	public void setup(ProjectData project) {
