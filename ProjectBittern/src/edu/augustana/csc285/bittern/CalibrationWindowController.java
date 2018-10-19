@@ -68,7 +68,7 @@ public class CalibrationWindowController {
 	private ProjectData project;
 
 	private Point startPoint;
-	private Circle origin; 
+	private Circle origin;
 	private boolean isSettingOrigin = false;
 
 	public void createProject(String filePath) {
@@ -143,25 +143,48 @@ public class CalibrationWindowController {
 
 	@FXML
 	public void handleConfirm() throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("AutoTrackWindowController.fxml"));
-		BorderPane root = (BorderPane) loader.load();
-
-		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-
-		Stage primary = (Stage) confirmButton.getScene().getWindow();
-		primary.setScene(nextScene);
-		primary.setTitle("Auto Tracking Window");
-		primary.show();
-
-		System.out.println(project.getVideo());
-		AutoTrackWindowController controller = loader.getController();
-		controller.initializeWithStage(primary);
-		controller.setup(project);
 		
-		project.getVideo().setArenaBounds(mouseDragRect);
-		project.getVideo().setOrigin(origin);
+		/*
+		 * this is for debugging 
+		 */
+//		if (mouseDragRect == null && origin == null) {
+//			Alert alert = new Alert(AlertType.INFORMATION);
+//			alert.setTitle(null);
+//			alert.setHeaderText(null);
+//			alert.setContentText("set length and origin pls");
+//			alert.showAndWait();
+//		} else if (mouseDragRect == null) {
+//			Alert alert = new Alert(AlertType.INFORMATION);
+//			alert.setTitle(null);
+//			alert.setHeaderText(null);
+//			alert.setContentText("set length?");
+//			alert.showAndWait();
+//		} else if (origin != null) {
+//			Alert alert = new Alert(AlertType.INFORMATION);
+//			alert.setTitle(null);
+//			alert.setHeaderText(null);
+//			alert.setContentText("what about origin?");
+//			alert.showAndWait();
+//		} else {
+			project.getVideo().setArenaBounds(mouseDragRect);
+			project.getVideo().setOrigin(origin);
 
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("AutoTrackWindowController.fxml"));
+			BorderPane root = (BorderPane) loader.load();
+
+			Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+			nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+			Stage primary = (Stage) confirmButton.getScene().getWindow();
+			primary.setScene(nextScene);
+			primary.setTitle("Auto Tracking Window");
+			primary.show();
+
+			System.out.println(project.getVideo());
+			AutoTrackWindowController controller = loader.getController();
+			controller.initializeWithStage(primary);
+			controller.setup(project);
+		//}
 	}
 
 	@FXML
@@ -281,23 +304,24 @@ public class CalibrationWindowController {
 	public void handleSetActualLengthButton() {
 		isSettingOrigin = false;
 
-		ArrayList<String> choices = new ArrayList();
-		choices.add("Vertical");
-		choices.add("Horizon");
+		if (mouseDragRect != null) {
+			ArrayList<String> choices = new ArrayList();
+			choices.add("Vertical");
+			choices.add("Horizon");
 
-		ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
-		dialog.setHeaderText("Set up actual length");
-		Optional<String> result = dialog.showAndWait();
-		if (result.isPresent()) {
-			if (dialog.getResult().equals("Vertical")) {
-				askForYValue();
-			} else if (dialog.getResult().equals("Horizon")) {
-				askForXValue();
-			} else {
-				dialog.close();
+			ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
+			dialog.setHeaderText("Set up actual length");
+			Optional<String> result = dialog.showAndWait();
+			if (result.isPresent()) {
+				if (dialog.getResult().equals("Vertical")) {
+					askForYValue();
+				} else if (dialog.getResult().equals("Horizon")) {
+					askForXValue();
+				} else {
+					dialog.close();
+				}
 			}
 		}
-
 
 	}
 
