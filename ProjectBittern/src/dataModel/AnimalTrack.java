@@ -33,17 +33,30 @@ public class AnimalTrack {
 	}
 
 	public TimePoint getTimePointAtTime(int frameNum) {
-		//TODO: This method's implementation is inefficient [linear search is O(N)]
-		//      Replace this with binary search (O(log n)] or use a Map for fast access
-		//Arrays.sort(arg0, arg1);
 		Collections.sort(positions);
-		for (TimePoint pt : positions) {
-			if (pt.getFrameNum() == frameNum) {
-				return pt;
+		int index = indexOfPointAt(frameNum);
+		if (index >= 0) {
+			return positions.get(index);
+		} else {
+			return null;
+		}
+	}
+
+	public int indexOfPointAt(int frameNum) {
+		int min = 0;
+		int max = positions.size();
+		while (min <= max) {
+			int mid = (min + max) / 2;
+			if (positions.get(mid).getFrameNum() < frameNum) {
+				min = mid + 1;
+			} else if (positions.get(mid).getFrameNum() > frameNum) {
+				max = mid - 1;
+			} else {
+				return mid; 
 			}
 		}
-		return null;
-	}
+		return -(min + 1);
+	} 
 
 	public void add(List<TimePoint> points) {
 		for (TimePoint point : points) {
@@ -51,30 +64,27 @@ public class AnimalTrack {
 		}
 	}
 	
-	public void add(TimePoint pt) {
-		if (this.containsPointAtTime(pt.getFrameNum())) {
-			updatePointAtTime(pt);
+	public void add(TimePoint point) {
+		Collections.sort(positions);
+		if (this.containsPointAtTime(point.getFrameNum())) {
+			updateTimePoint(point);
 		} else {
-			positions.add(pt);
+			positions.add(point);
 		}
 	}
 	
 	public boolean containsPointAtTime(int frameNum) {
-		for (TimePoint position : positions) {
-			if (position.atSameTime(frameNum)) {
-				return true;
-			}
+		int index = indexOfPointAt(frameNum);
+		if (index >= 0) {
+			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 
-	public void updatePointAtTime(TimePoint newPoint) {
-		for (TimePoint position : positions) {
-			if (position.atSameTime(newPoint.getFrameNum())) {
-				positions.remove(position);
-				positions.add(newPoint);
-			}
-		}
+	public void updateTimePoint(TimePoint newPoint) {
+		positions.remove(indexOfPointAt(newPoint.getFrameNum()));
+		positions.add(newPoint);
 	}
 	
 	public String toString() {

@@ -41,7 +41,7 @@ public class AnimalTrackTest {
 		assertEquals(point3, chick2.getTimePointAtIndex(0));
 		assertEquals(point1, chick2.getTimePointAtIndex(1));
 		assertEquals(point2, chick2.getTimePointAtIndex(2));
-		assertEquals(point2, chick2.getTimePointAtIndex(3));
+		assertEquals(3, chick2.getPositions().size());
 	}
 	
 	
