@@ -87,8 +87,6 @@ public class AutoTrackWindowController implements AutoTrackListener {
 		primary.setScene(nextScene);
 		primary.show();		
 		
-		project.getVideo().resetToStart();
-		System.out.println(project.getVideo());
 		ManualTrackWindowController controller = loader.getController();
 		controller.setup(project);
 		controller.initializeWithStage(primary);
@@ -100,7 +98,6 @@ public class AutoTrackWindowController implements AutoTrackListener {
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
 		endTimeLabel.setText("End: " + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
-		project.getVideo().setCurrentFrameNum(project.getVideo().getStartFrameNum());
 	}
 
 	
@@ -109,7 +106,6 @@ public class AutoTrackWindowController implements AutoTrackListener {
 	public void handleStart() {
 		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
 		startTimeLabel.setText("Start: " + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
-		System.out.println(project.getVideo());
 	}
 
 	@FXML

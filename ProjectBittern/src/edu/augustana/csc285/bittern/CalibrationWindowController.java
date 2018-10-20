@@ -58,6 +58,23 @@ public class CalibrationWindowController {
 	private Circle origin;
 	private boolean isSettingOrigin = false;
 
+	@FXML
+	public void initialize() {
+		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				if (sliderBar.isValueChanging()) {
+					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					displayFrame();
+				}
+			}
+		});
+		stepBox.getItems().addAll(1, 2, 3, 4, 5);
+	}
+
+	public void initializeWithStage() {
+		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
+	}
+
 	public void createProject(String filePath) {
 		try {
 			project = new ProjectData(filePath);
@@ -72,10 +89,21 @@ public class CalibrationWindowController {
 			origin = new Circle(10, 10, 5, Color.BLUE);
 			
 			displayFrame();
-			System.out.println(project.getVideo());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setProject(ProjectData project) {
+		this.project = project;
+		project.getVideo().setCurrentFrameNum(0);
+		
+		if (!(project.getTracks() == null)) {
+			for (AnimalTrack track : project.getTracks()) {
+				chicksBox.getItems().add(track.getID());
+			}
+		}
+		displayFrame();
 	}
 
 	public void displayFrame() {
@@ -95,11 +123,6 @@ public class CalibrationWindowController {
 	@FXML
 	public void handleDrawingBoard(MouseEvent event) {
 		// Point point = new Point((int) event.getX(), (int) event.getY());
-
-	}
-
-	@FXML
-	public void handleSlider() {
 
 	}
 
@@ -164,33 +187,21 @@ public class CalibrationWindowController {
 	}
 
 	@FXML
-	public void initialize() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame();
-				}
-			}
-		});
-		stepBox.getItems().addAll(1, 2, 3, 4, 5);
+	public void handleInstruction() {
+		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
+		calibrationInstruction.setTitle("Instruction for Calibration");
+		calibrationInstruction.setHeaderText(null);
+		calibrationInstruction
+				.setContentText("instruction goes here" + "\n click and drag your mouse to draw your preferred ...?");
+		calibrationInstruction.showAndWait();
 	}
 
 	@FXML
-	public void handleName() {
-		String name = nameField.getText();
-		project.getTracks().add(new AnimalTrack(name));
-		chicksBox.getItems().add(name);
-		nameField.setText("");
-	}
-
-	@FXML
-	public void handleStepBox() {
-		project.getVideo().setStepSize(stepBox.getValue());
-	}
-
-	public void initializeWithStage() {
-		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
+	public void handleMouseDragged(MouseEvent event) {
+		if (!isSettingOrigin) {
+			mouseDragRect.setWidth(Math.abs(event.getX() - startPoint.getX()));
+			mouseDragRect.setHeight(Math.abs(event.getY() - startPoint.getY()));
+		}
 	}
 
 	@FXML
@@ -215,28 +226,57 @@ public class CalibrationWindowController {
 	}
 
 	@FXML
-	public void handleMouseDragged(MouseEvent event) {
-		if (!isSettingOrigin) {
-			mouseDragRect.setWidth(Math.abs(event.getX() - startPoint.getX()));
-			mouseDragRect.setHeight(Math.abs(event.getY() - startPoint.getY()));
-		}
+	public void handleMouseReleased(MouseEvent event) {
+	
 	}
 
 	@FXML
-	public void handleMouseReleased(MouseEvent event) {
-
+	public void handleName() {
+		String name = nameField.getText();
+		project.getTracks().add(new AnimalTrack(name));
+		chicksBox.getItems().add(name);
+		nameField.setText("");
 	}
 
-	public void setProject(ProjectData project) {
-		this.project = project;
-		project.getVideo().setCurrentFrameNum(0);
-		
-		if (!(project.getTracks() == null)) {
-			for (AnimalTrack track : project.getTracks()) {
-				chicksBox.getItems().add(track.getID());
+	@FXML
+	public void handleSetActualLengthButton() {
+		isSettingOrigin = false;
+	
+		if (mouseDragRect != null) {
+			ArrayList<String> choices = new ArrayList();
+			choices.add("Vertical");
+			choices.add("Horizon");
+	
+			ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
+			dialog.setHeaderText("Set up actual length");
+			Optional<String> result = dialog.showAndWait();
+			if (result.isPresent()) {
+				if (dialog.getResult().equals("Vertical")) {
+					askForYValue();
+				} else if (dialog.getResult().equals("Horizon")) {
+					askForXValue();
+				} else {
+					dialog.close();
+				}
 			}
 		}
-		displayFrame();
+	
+	}
+
+	@FXML
+	public void handleSetOriginButton() {
+		isSettingOrigin = true;
+	
+	}
+
+	@FXML
+	public void handleSlider() {
+	
+	}
+
+	@FXML
+	public void handleStepBox() {
+		project.getVideo().setStepSize(stepBox.getValue());
 	}
 
 	public void askForXValue() {
@@ -267,47 +307,6 @@ public class CalibrationWindowController {
 
 		System.out.println(project.getVideo().getYPixelsPerCm());
 
-	}
-
-	@FXML
-	public void handleSetOriginButton() {
-		isSettingOrigin = true;
-
-	}
-
-	@FXML
-	public void handleSetActualLengthButton() {
-		isSettingOrigin = false;
-
-		if (mouseDragRect != null) {
-			ArrayList<String> choices = new ArrayList();
-			choices.add("Vertical");
-			choices.add("Horizon");
-
-			ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
-			dialog.setHeaderText("Set up actual length");
-			Optional<String> result = dialog.showAndWait();
-			if (result.isPresent()) {
-				if (dialog.getResult().equals("Vertical")) {
-					askForYValue();
-				} else if (dialog.getResult().equals("Horizon")) {
-					askForXValue();
-				} else {
-					dialog.close();
-				}
-			}
-		}
-
-	}
-
-	@FXML
-	public void handleInstruction() {
-		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
-		calibrationInstruction.setTitle("Instruction for Calibration");
-		calibrationInstruction.setHeaderText(null);
-		calibrationInstruction
-				.setContentText("instruction goes here" + "\n click and drag your mouse to draw your preferred ...?");
-		calibrationInstruction.showAndWait();
 	}
 
 }

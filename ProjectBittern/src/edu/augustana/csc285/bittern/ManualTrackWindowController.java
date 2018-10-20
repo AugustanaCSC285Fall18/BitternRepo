@@ -127,12 +127,7 @@ public class ManualTrackWindowController {
 				}
 				chicksBox.setValue(project.getTracks().get(0).getID());
 				currentTrack = project.getTracks().get(0);
-			} 
-			
-			
-			//Collections.sort(project.getUnassignedSegments().get(0).getPositions());
-			//System.out.println(project.getUnassignedSegments().get(0).getPositions());
-			
+			} 			
 			displayFrame();
 			
 		} catch (Exception e) {
