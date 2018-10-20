@@ -32,6 +32,7 @@ import utils.UtilsForOpenCV;
 
 public class ManualTrackWindowController {
 
+	@FXML private StackPane stackPane;
 	@FXML private Canvas drawingCanvas;
 	@FXML private Canvas progressCanvas;
 	@FXML private Button playButton;
@@ -56,9 +57,10 @@ public class ManualTrackWindowController {
 	private Stage popup;
 	private GraphicsContext drawingGC;
 	private GraphicsContext progressGC;
-	private String name;
 	private AnimalTrack currentTrack;
-	private double frameWidthRatio; //refactor
+	private double frameWidthRatio; 
+	private double startWidth;
+	private double endWidth;
 
 	@FXML
 	public void initialize() {
@@ -83,11 +85,11 @@ public class ManualTrackWindowController {
 
 	public void setupCanvas() {
 		drawingGC = drawingCanvas.getGraphicsContext2D();
-		drawingGC.setFill(Color.RED);
 		progressGC = progressCanvas.getGraphicsContext2D();
-		progressGC.setFill(Color.GRAY);
-		progressGC.fillRect(0, progressCanvas.getLayoutY(), progressCanvas.getWidth(), progressCanvas.getHeight());
 		
+		drawingGC.setFill(Color.CYAN);
+		progressGC.setFill(Color.GRAY);
+				
 	}
 
 
@@ -100,7 +102,7 @@ public class ManualTrackWindowController {
 			if (project.getVideo().timeWithinBounds()) {
 				drawingGC.fillOval(event.getX() - 3, event.getY() - 3, 6, 6); //debug for edges of the arena
 				currentTrack.add(currentTimePoint);
-				updateCanvas(project.getVideo().getCurrentFrameNum());
+				//updateCanvas(project.getVideo().getCurrentFrameNum());
 
 				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
 					suggestAutoTracks();
@@ -128,9 +130,6 @@ public class ManualTrackWindowController {
 			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 			
-			frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
-			System.out.println("Frame Width Ratio: " + frameWidthRatio + " width: " + progressCanvas.getWidth());
-			
 			//remove conditional before we turn project in
 			if (project.getTracks().size() > 0) {
 				for (AnimalTrack track : project.getTracks()) {
@@ -140,7 +139,6 @@ public class ManualTrackWindowController {
 				currentTrack = project.getTracks().get(0);
 			} 
 			
-			System.out.println(project.getVideo());
 			displayFrame();
 			
 		} catch (Exception e) {
@@ -194,6 +192,7 @@ public class ManualTrackWindowController {
 		project.getTracks().add(currentTrack);
 		currentTrack = project.getAnimal(chicksBox.getValue());
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
+		refillCanvas();
 	}
 
 	@FXML
@@ -246,29 +245,32 @@ public class ManualTrackWindowController {
 	}
 
 	public void refillCanvas() {
-		
-		System.out.println("DrawingCanvas: Width: " + drawingCanvas.getWidth() 
-			+ " Height: " + drawingCanvas.getHeight());
-		System.out.println("ImageView: Width: " + videoView.getFitWidth()
-			+ " Height: " + videoView.getFitHeight());
-		System.out.println("ProgressCanvas: Width: " + progressCanvas.getWidth());
-		
+		System.out.println(videoView.getFitWidth());
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
-	
-		progressGC.fillRect(0, 0, progressCanvas.getWidth(), progressCanvas.getHeight());
+		startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
+		endWidth = project.getVideo().getEndFrameNum() / frameWidthRatio;
+		System.out.println("Should work");
 		
+		progressGC.setFill(Color.GRAY);
+		progressGC.fillRect(0, progressCanvas.getLayoutY(), startWidth, progressCanvas.getHeight());
+		progressGC.fillRect(endWidth, progressCanvas.getLayoutY(), progressCanvas.getWidth() - endWidth, 
+				progressCanvas.getHeight());
 		
+		progressGC.setFill(Color.RED);
+		progressGC.fillRect(startWidth, progressCanvas.getLayoutY(), endWidth - startWidth,
+				progressCanvas.getHeight());
+
+		for (TimePoint position : currentTrack.getPositions()) {
+			updateCanvas(position.getFrameNum());
+		}
 	}
 	
 	public void updateCanvas(int frameNumber) {
-		double x = frameNumber / frameWidthRatio - frameWidthRatio;
-		double y = progressCanvas.getLayoutY();
-		double width = frameWidthRatio;
-		double height = progressCanvas.getHeight();
-		
-		progressGC.clearRect(x, y, width, height);
+		System.out.println("Did it?");
+		startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
 		progressGC.setFill(Color.GREEN);
-		progressGC.fillRect(x, y, width, height);
+		progressGC.clearRect(startWidth, progressCanvas.getLayoutX(), frameWidthRatio, progressCanvas.getHeight());
+		progressGC.fillRect(startWidth, progressCanvas.getLayoutX(), frameWidthRatio, progressCanvas.getHeight());
 	}
 
 	public void startVideo() {

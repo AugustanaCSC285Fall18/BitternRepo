@@ -10,14 +10,14 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800" prefWidth="761.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.CalibrationWindowController">
+<BorderPane prefHeight="800" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.CalibrationWindowController">
    <top>
-      <BorderPane BorderPane.alignment="CENTER">
+      <BorderPane prefHeight="15.0" BorderPane.alignment="CENTER">
          <right>
             <Label prefHeight="17.0" prefWidth="85.0" text="Setup" BorderPane.alignment="CENTER" />
          </right>
          <left>
-            <Button fx:id="instruction" mnemonicParsing="false" onAction="#handleInstruction" text="?" BorderPane.alignment="CENTER" />
+            <Button fx:id="instruction" maxHeight="17.0" mnemonicParsing="false" onAction="#handleInstruction" prefHeight="17.0" prefWidth="22.0" text="?" BorderPane.alignment="CENTER" />
          </left>
       </BorderPane>
    </top>
