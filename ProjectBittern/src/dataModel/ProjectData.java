@@ -33,8 +33,6 @@ public class ProjectData {
 		return unassignedSegments;
 	}
 	
-	//a second lies within a range of frameNumbers
-	//so we need to check for points at the range of frameNumbers the inputed time represents
 	public boolean containsAutoTracksAtTime(int frameNum) {
 		for (AnimalTrack track : unassignedSegments) {
 			int quotient = (int) (frameNum / video.getFrameRate());
@@ -49,23 +47,24 @@ public class ProjectData {
 		return false;
 	}
 
-	public AnimalTrack getAnimal(String id) {
-		for (AnimalTrack animal : tracks) {
-			if (animal.getID().equals(id)) {
-				return animal;
+	public int getAnimalIndex(String id) {
+		int index = 0;
+		for (int i = 0; i < tracks.size(); i++) {
+			if (tracks.get(i).getID().equals(id)) {
+				return index;
 			}
 		}
-		return null;
+		return -1;
 	}
 
 	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
-		List<AnimalTrack> applicableTracks = new ArrayList<>();
+		List<AnimalTrack> relevantTracks = new ArrayList<>();
 		for (AnimalTrack track : unassignedSegments) {
 			if (track.containsPointAtTime(frameNum)) {
-				applicableTracks.add(track);
+				relevantTracks.add(track);
 			}
 		}
-		return applicableTracks;
+		return relevantTracks;
 	}
 	
 	// go through unassigned segments, finding each time point at frameNum
@@ -79,6 +78,15 @@ public class ProjectData {
 			}			
 		}
 		return pointsAtTime;
+	}
+	
+	public void addAutoTracks(AnimalTrack autoTrack, String trackID) {
+		int index = getAnimalIndex(trackID);
+		AnimalTrack track = tracks.get(index);
+		tracks.remove(track);
+		track.add(autoTrack.getPositions());
+		tracks.add(index, track);
+		
 	}
 	
 	/*public void saveToFile(File saveFile) throws FileNotFoundException {

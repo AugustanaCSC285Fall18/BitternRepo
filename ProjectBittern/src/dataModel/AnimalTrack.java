@@ -49,6 +49,12 @@ public class AnimalTrack {
 		}
 	}
 	
+	public void add(List<TimePoint> points) {
+		for (TimePoint point : points) {
+			add(point);
+		}
+	}
+	
 	public boolean containsPointAtTime(int frameNum) {
 		for (TimePoint position : positions) {
 			if (position.atSameTime(frameNum)) {

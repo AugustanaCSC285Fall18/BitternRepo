@@ -1,6 +1,5 @@
 package edu.augustana.csc285.bittern;
 
-import java.awt.Point;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -52,9 +51,6 @@ public class ManualTrackWindowController {
 	private ProjectData project;
 	private ScheduledExecutorService timer;
 	private TimePoint currentTimePoint;
-	private Point point;
-	private Stage stage;
-	private Stage popup;
 	private GraphicsContext drawingGC;
 	private GraphicsContext progressGC;
 	private AnimalTrack currentTrack;
@@ -72,8 +68,6 @@ public class ManualTrackWindowController {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		this.stage = new Stage();
-				
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
 
 		drawingCanvas.widthProperty().bind(videoView.fitWidthProperty());
@@ -86,10 +80,7 @@ public class ManualTrackWindowController {
 	public void setupCanvas() {
 		drawingGC = drawingCanvas.getGraphicsContext2D();
 		progressGC = progressCanvas.getGraphicsContext2D();
-		
-		drawingGC.setFill(Color.CYAN);
-		progressGC.setFill(Color.GRAY);
-				
+		drawingGC.setFill(Color.CYAN);				
 	}
 
 
@@ -103,20 +94,18 @@ public class ManualTrackWindowController {
 				drawingGC.fillOval(event.getX() - 3, event.getY() - 3, 6, 6); //debug for edges of the arena
 				currentTrack.add(currentTimePoint);
 				//updateCanvas(project.getVideo().getCurrentFrameNum());
-
+				
 				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
-					suggestAutoTracks();
+					tracksBox.setPromptText("Posible Autotracks!");
+					handleTracksBox();
 				}
 			}
-
-			jump(1);
+			jump(1); //when do we jump?
 		});
 	}
 
 	
 	public void suggestAutoTracks() {
-		System.out.println("suggest tracks");
-		
 		
 	}
 	
@@ -181,7 +170,6 @@ public class ManualTrackWindowController {
 	
 	@FXML
 	public void handleTracksBox() {
-		
 		for (AnimalTrack track : project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum())) {
 			tracksBox.getItems().add(track);
 		}
@@ -190,7 +178,7 @@ public class ManualTrackWindowController {
 	@FXML
 	public void handleChicksBox() {
 		project.getTracks().add(currentTrack);
-		currentTrack = project.getAnimal(chicksBox.getValue());
+		currentTrack = project.getTracks().get(project.getAnimalIndex(chicksBox.getValue()));
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 		refillCanvas();
 	}
@@ -245,11 +233,10 @@ public class ManualTrackWindowController {
 	}
 
 	public void refillCanvas() {
-		System.out.println(videoView.getFitWidth());
+		System.out.println(videoView.getFitWidth() + " = " + drawingCanvas.getWidth());
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 		startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
 		endWidth = project.getVideo().getEndFrameNum() / frameWidthRatio;
-		System.out.println("Should work");
 		
 		progressGC.setFill(Color.GRAY);
 		progressGC.fillRect(0, progressCanvas.getLayoutY(), startWidth, progressCanvas.getHeight());
@@ -266,7 +253,6 @@ public class ManualTrackWindowController {
 	}
 	
 	public void updateCanvas(int frameNumber) {
-		System.out.println("Did it?");
 		startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
 		progressGC.setFill(Color.GREEN);
 		progressGC.clearRect(startWidth, progressCanvas.getLayoutX(), frameWidthRatio, progressCanvas.getHeight());
