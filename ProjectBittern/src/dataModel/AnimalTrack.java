@@ -1,6 +1,8 @@
 package dataModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -33,6 +35,8 @@ public class AnimalTrack {
 	public TimePoint getTimePointAtTime(int frameNum) {
 		//TODO: This method's implementation is inefficient [linear search is O(N)]
 		//      Replace this with binary search (O(log n)] or use a Map for fast access
+		//Arrays.sort(arg0, arg1);
+		Collections.sort(positions);
 		for (TimePoint pt : positions) {
 			if (pt.getFrameNum() == frameNum) {
 				return pt;
@@ -41,17 +45,17 @@ public class AnimalTrack {
 		return null;
 	}
 
+	public void add(List<TimePoint> points) {
+		for (TimePoint point : points) {
+			add(point);
+		}
+	}
+	
 	public void add(TimePoint pt) {
 		if (this.containsPointAtTime(pt.getFrameNum())) {
 			updatePointAtTime(pt);
 		} else {
 			positions.add(pt);
-		}
-	}
-	
-	public void add(List<TimePoint> points) {
-		for (TimePoint point : points) {
-			add(point);
 		}
 	}
 	
@@ -79,6 +83,5 @@ public class AnimalTrack {
 		return "AnimalTrack[id="+ animalID + ",numPts=" + positions.size() 
 			+" start=" + startFrame + " end=" + endFrame +"]" ; 
 	}
-		
 	
 }

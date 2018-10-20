@@ -1,6 +1,7 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -127,6 +128,10 @@ public class ManualTrackWindowController {
 				chicksBox.setValue(project.getTracks().get(0).getID());
 				currentTrack = project.getTracks().get(0);
 			} 
+			
+			
+			//Collections.sort(project.getUnassignedSegments().get(0).getPositions());
+			//System.out.println(project.getUnassignedSegments().get(0).getPositions());
 			
 			displayFrame();
 			

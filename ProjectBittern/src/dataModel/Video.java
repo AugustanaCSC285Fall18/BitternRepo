@@ -45,6 +45,11 @@ public class Video {
 		this.arenaBounds = new Rectangle(0,0,frameWidth,frameHeight);
 	}
 		
+	public Rectangle getDefaultArenaBounds() {
+		int frameWidth = (int)vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
+		int frameHeight = (int)vidCap.get(Videoio.CAP_PROP_FRAME_HEIGHT);
+		return new Rectangle(0,0,frameWidth,frameHeight);
+	}
 	
 	public Rectangle getArenaBounds() {
 		return arenaBounds;
@@ -153,8 +158,8 @@ public class Video {
 		this.yPixelsPerCm = yPixelsPerCm;
 	}
 	
-	public void setOrigin(Circle c) {
-		this.origin.setLocation(c.getCenterX(), c.getCenterY());
+	public void setOrigin(Point point) {
+		this.origin.setLocation(point.getX(), point.getY());
 	}
 
 

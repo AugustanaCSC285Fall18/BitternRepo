@@ -37,32 +37,19 @@ import utils.UtilsForOpenCV;
 
 public class CalibrationWindowController {
 
-	@FXML
-	private Button backButton;
-	@FXML
-	private Button confirmButton;
-	@FXML
-	private Slider sliderBar;
-	@FXML
-	private ImageView videoView;
-	@FXML
-	private BorderPane drawingBoard;
-	@FXML
-	private ComboBox<Integer> stepBox;
-	@FXML
-	private ComboBox<String> chicksBox;
-	@FXML
-	private TextField nameField;
-	@FXML
-	private Label showActualLengthX;
-	@FXML
-	private Label showActualLengthY;
-	@FXML
-	private Button originButton;
-	@FXML
-	private Button setAcutalLengthButton;
-	@FXML
-	private Button instruction;
+	@FXML private Button backButton;
+	@FXML private Button confirmButton;
+	@FXML private Slider sliderBar;
+	@FXML private ImageView videoView;
+	@FXML private BorderPane drawingBoard;
+	@FXML private ComboBox<Integer> stepBox;
+	@FXML private ComboBox<String> chicksBox;
+	@FXML private TextField nameField;
+	@FXML private Label showActualLengthX;
+	@FXML private Label showActualLengthY;
+	@FXML private Button originButton;
+	@FXML private Button setAcutalLengthButton;
+	@FXML private Button instruction;
 
 	private Rectangle mouseDragRect;
 	private ProjectData project;
@@ -79,6 +66,11 @@ public class CalibrationWindowController {
 
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
+			
+			// default values to prevent errors
+			mouseDragRect = project.getVideo().getDefaultArenaBounds();
+			origin = new Circle(10, 10, 5, Color.BLUE);
+			
 			displayFrame();
 			System.out.println(project.getVideo());
 		} catch (Exception e) {
@@ -151,7 +143,7 @@ public class CalibrationWindowController {
 //			alert.showAndWait();
 //		} else {
 			project.getVideo().setArenaBounds(mouseDragRect);
-			project.getVideo().setOrigin(origin);
+			project.getVideo().setOrigin(new Point((int)origin.getCenterX(), (int)origin.getCenterY()));
 
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("AutoTrackWindowController.fxml"));
 			BorderPane root = (BorderPane) loader.load();
@@ -182,12 +174,6 @@ public class CalibrationWindowController {
 			}
 		});
 		stepBox.getItems().addAll(1, 2, 3, 4, 5);
-
-		// default values to prevent errors
-		mouseDragRect = new Rectangle(videoView.getX(), videoView.getY(), videoView.getFitWidth(),
-			videoView.getFitHeight());
-		origin = new Circle(0, 0, 5, Color.BLUE);
-
 	}
 
 	@FXML
@@ -243,15 +229,14 @@ public class CalibrationWindowController {
 
 	public void setProject(ProjectData project) {
 		this.project = project;
-
+		project.getVideo().setCurrentFrameNum(0);
+		
 		if (!(project.getTracks() == null)) {
 			for (AnimalTrack track : project.getTracks()) {
 				chicksBox.getItems().add(track.getID());
 			}
 		}
-		project.getVideo().setCurrentFrameNum(0);
 		displayFrame();
-		System.out.println(project.getVideo());
 	}
 
 	public void askForXValue() {

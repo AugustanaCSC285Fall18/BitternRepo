@@ -2,6 +2,7 @@ package edu.augustana.csc285.bittern;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.List;
 
 import org.opencv.core.Mat;
@@ -113,8 +114,8 @@ public class AutoTrackWindowController implements AutoTrackListener {
 
 	@FXML
 	public void handleStartAutotracking() {
+		
 		if (autotracker == null || !autotracker.isRunning()) {
-
 			autotracker = new AutoTracker();
 			autotracker.addAutoTrackListener(this);
 			autotracker.startAnalysis(project.getVideo());
@@ -185,7 +186,6 @@ public class AutoTrackWindowController implements AutoTrackListener {
 			progressAutoTrack.setProgress(1.0);
 			autoTrackButton.setText("Start auto-tracking");
 		});
-		autotracker.cancelAnalysis();
 	}
 	
 
