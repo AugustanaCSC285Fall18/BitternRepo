@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -8,38 +9,51 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="800" prefWidth="761.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.ManualTrackWindowController">
-   <top>
-      <BorderPane BorderPane.alignment="CENTER">
-         <center>
-            <Label prefHeight="17.0" prefWidth="88.0" text="Current Time: " BorderPane.alignment="CENTER_RIGHT" />
-         </center>
-         <right>
-            <Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="85.0" BorderPane.alignment="CENTER" />
-         </right>
-      </BorderPane>
-   </top>
-   <center>
-      <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
-            <Canvas fx:id="progressCanvas" height="15.0" width="763.0" />
-            <Slider fx:id="sliderBar" />
-         </children>
-      </VBox>
-   </center>
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ComboBox fx:id="chicksBox" layoutX="307.0" layoutY="49.0" onAction="#handleChicksBox" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
-            <Button fx:id="previousButton" layoutX="273.0" layoutY="14.0" minWidth="60.0" mnemonicParsing="false" onAction="#handlePrevious" prefWidth="50.0" text="Back" />
-            <Button fx:id="playButton" layoutX="352.0" layoutY="14.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="60.0" text="Play" />
-            <Button fx:id="nextButton" layoutX="430.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="60.0" text="Forward" />
+            <ComboBox fx:id="chicksBox" layoutX="307.0" layoutY="75.0" onAction="#handleChicksBox" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
+            <Button fx:id="previousButton" layoutX="262.0" layoutY="40.0" minWidth="60.0" mnemonicParsing="false" onAction="#handlePrevious" prefHeight="25.0" prefWidth="76.0" text="Previous" />
+            <Button fx:id="playButton" layoutX="352.0" layoutY="40.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="60.0" text="Play" />
+            <Button fx:id="nextButton" layoutX="427.0" layoutY="40.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="60.0" text="Forward" />
             <Button fx:id="exportButton" layoutX="699.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
             <Button fx:id="backButton" layoutX="14.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
+            <ComboBox fx:id="tracksBox" layoutX="26.0" layoutY="53.0" onAction="#handleTracksBox" prefWidth="150.0" promptText="Auto Tracks" />
          </children>
       </AnchorPane>
    </bottom>
+   <top>
+      <FlowPane hgap="30.0" prefHeight="23.0" prefWidth="743.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label prefHeight="17.0" prefWidth="88.0" text="Start Time: " />
+            <Label fx:id="startFrameLabel" prefHeight="17.0" prefWidth="85.0" />
+            <Label prefHeight="17.0" prefWidth="76.0" text="End Time:" />
+            <Label fx:id="endFrameLabel" prefHeight="17.0" prefWidth="78.0" />
+            <Label text="Current Time:" />
+            <Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="69.0" />
+         </children>
+         <BorderPane.margin>
+            <Insets left="20.0" />
+         </BorderPane.margin>
+      </FlowPane>
+   </top>
+   <center>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <StackPane prefHeight="575.0">
+               <children>
+                  <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
+                  <Canvas fx:id="drawingCanvas" height="547.0" width="762.0" />
+               </children>
+            </StackPane>
+            <Canvas fx:id="progressCanvas" height="15.0" width="763.0" />
+            <Slider fx:id="sliderBar" prefHeight="14.0" prefWidth="763.0" />
+         </children>
+      </VBox>
+   </center>
 </BorderPane>
