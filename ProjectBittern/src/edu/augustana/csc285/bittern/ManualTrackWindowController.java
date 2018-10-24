@@ -188,7 +188,7 @@ public class ManualTrackWindowController {
 	}
 	
 	@FXML
-	public void handleRemoveTracks() {
+	public void handleRemoveTrack() {
 		
 	}
 	
