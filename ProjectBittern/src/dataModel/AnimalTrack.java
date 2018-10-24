@@ -20,6 +20,10 @@ public class AnimalTrack {
 		return animalID;
 	}
 
+	public int getSize() {
+		return positions.size();
+	}
+	
 	public TimePoint getFinalTimePoint() {
 		return positions.get(positions.size()-1);
 	}
@@ -62,15 +66,14 @@ public class AnimalTrack {
 		return -(min + 1);
 	} 
 
+	//fix
 	public void add(TimePoint point) {
-		Collections.sort(positions);
-		if (positions.size() == 0) {
-			positions.add(point);
-		} else if (this.containsPointAtTime(point.getFrameNum())) {
+		if (this.containsPointAtTime(point.getFrameNum()) & positions.size() != 0) {
 			updateTimePoint(point);
 		} else {
 			positions.add(point);
 		}
+		Collections.sort(positions);
 	}
 	
 	public void add(List<TimePoint> points) {
@@ -89,8 +92,13 @@ public class AnimalTrack {
 	}
 
 	public void updateTimePoint(TimePoint newPoint) {
-		positions.remove(indexOfPointAt(newPoint.getFrameNum()));
-		positions.add(newPoint);
+		TimePoint oldPoint = getTimePointAtIndex(newPoint.getFrameNum());
+		if (oldPoint != null) {
+			oldPoint.setX(newPoint.getX());
+			oldPoint.setY(newPoint.getY());
+		} else {
+			positions.add(newPoint);
+		}
 	}
 	
 	public String toString() {

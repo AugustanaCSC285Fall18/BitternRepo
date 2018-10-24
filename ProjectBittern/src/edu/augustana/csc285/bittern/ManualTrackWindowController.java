@@ -1,7 +1,6 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +47,6 @@ public class ManualTrackWindowController {
 	@FXML private ComboBox<String> chicksBox;
 	@FXML private ComboBox<AnimalTrack> tracksBox;
 	
-
 	private ProjectData project;
 	private ScheduledExecutorService timer;
 	private TimePoint currentTimePoint;
@@ -87,11 +85,15 @@ public class ManualTrackWindowController {
 
 	public void setupClick() {
 		drawingCanvas.setOnMouseClicked((event) -> {
+			System.out.println("click");
+			drawingGC.clearRect(drawingCanvas.getLayoutX(), drawingCanvas.getLayoutY(),
+					drawingCanvas.getWidth(), drawingCanvas.getHeight());
+			
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
 					project.getVideo().getCurrentFrameNum());
-			/*if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPointAWT())
-					&& project.getVideo().timeWithinBounds()) {*/ //until calibration works
-			if (project.getVideo().timeWithinBounds()) {
+			
+			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
+					&& project.getVideo().timeWithinBounds()) {
 				drawingGC.fillOval(event.getX() - 3, event.getY() - 3, 6, 6); //debug for edges of the arena
 				currentTrack.add(currentTimePoint);
 				//updateCanvas(project.getVideo().getCurrentFrameNum());
@@ -104,11 +106,6 @@ public class ManualTrackWindowController {
 			jump(1); //when do we jump?
 		});
 	}
-
-	
-	public void suggestAutoTracks() {
-		
-	}
 	
 	public void setup(ProjectData project) {
 		try {
@@ -116,7 +113,7 @@ public class ManualTrackWindowController {
 			project.getVideo().resetToStart();
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
-			
+
 			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 			
@@ -172,6 +169,12 @@ public class ManualTrackWindowController {
 	public void handleTracksBox() {
 		for (AnimalTrack track : project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum())) {
 			tracksBox.getItems().add(track);
+		}
+	}
+
+	public void drawAutoTrackPath(AnimalTrack autoTrack) {
+		for (int i = 0; i < autoTrack.getSize(); i++) {
+			//drawingGC.fillOval(arg0, arg1, arg2, arg3);
 		}
 	}
 

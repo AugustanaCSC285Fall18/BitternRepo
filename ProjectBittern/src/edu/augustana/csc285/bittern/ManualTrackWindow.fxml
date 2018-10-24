@@ -21,9 +21,9 @@
             <Button fx:id="nextButton" layoutX="427.0" layoutY="40.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="60.0" text="Forward" />
             <Button fx:id="exportButton" layoutX="699.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
             <Button fx:id="backButton" layoutX="14.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-            <ComboBox fx:id="tracksBox" layoutX="26.0" layoutY="53.0" onAction="#handleTracksBox" prefWidth="150.0" promptText="Auto Tracks" />
+            <ComboBox fx:id="tracksBox" layoutX="26.0" layoutY="53.0" onAction="#handleTracksBox" prefWidth="150.0" promptText="Autotracks" />
             <Label fx:id="startFrameLabel" layoutX="639.0" layoutY="32.0" prefHeight="17.0" prefWidth="85.0" />
-            <Label fx:id="currentFrameLabel" layoutX="784.0" layoutY="109.0" prefHeight="17.0" prefWidth="69.0" />
+            <Label fx:id="endFrameLabel" layoutX="758.0" layoutY="32.0" prefHeight="17.0" prefWidth="78.0" />
          </children>
       </AnchorPane>
    </bottom>
@@ -33,7 +33,7 @@
             <StackPane fx:id="stackPane" prefHeight="575.0" prefWidth="750.0">
                <children>
                   <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
-                  <Canvas fx:id="drawingCanvas" height="547.0" width="750.0" />
+                  <Canvas fx:id="drawingCanvas" height="547.0" width="850.0" />
                </children>
             </StackPane>
             <Canvas fx:id="progressCanvas" height="15.0" width="750.0" />
@@ -47,7 +47,7 @@
             <Label text="Current Time:" BorderPane.alignment="CENTER" />
          </center>
          <right>
-            <Label fx:id="endFrameLabel" prefHeight="17.0" prefWidth="78.0" BorderPane.alignment="CENTER" />
+            <Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="69.0" BorderPane.alignment="CENTER" />
          </right>
       </BorderPane>
    </top>

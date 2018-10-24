@@ -43,6 +43,10 @@ public class ProjectData {
 					return true;
 				}
 			}
+			
+			/*if (track.containsPointAtTime(frameNum)) {
+				return true;
+			}*/
 		}
 		return false;
 	}
