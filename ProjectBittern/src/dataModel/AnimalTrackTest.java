@@ -65,6 +65,22 @@ public class AnimalTrackTest {
 		assertEquals(5, lastPt.getFrameNum());
 	}
 	
+	@Test
+	public void testGetMostRecentPoint() {
+		AnimalTrack bob = new AnimalTrack("Bob");
+		bob.add(new TimePoint(0,0,5));
+		bob.add(new TimePoint(0,0,2));
+		bob.add(new TimePoint(0,0,3));
+		bob.add(new TimePoint(0,0,4));
+		bob.add(new TimePoint(0,0,9));
+		bob.add(new TimePoint(0,0,29));
+		bob.add(new TimePoint(0,0,30));
+		
+		assertNull(bob.getMostRecentPoint(50, 10));
+		assertEquals(new TimePoint(0,0,30), bob.getMostRecentPoint(31, 29.97));
+		
+	}
+	
 	
 	
 

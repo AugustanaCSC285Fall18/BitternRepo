@@ -121,6 +121,24 @@ public class AnimalTrack {
 		return pointsInInterval;
 	}
 	
+	public TimePoint getMostRecentPoint(int frameNum, double frameRate) {
+		AnimalTrack pointsInInterval = getTimePointsWithinInterval((int) Math.round(frameNum - frameRate), 
+				(int) Math.round(frameNum + frameRate));
+		TimePoint closestPoint = null;
+
+		if (pointsInInterval.getSize() != 0) {
+			closestPoint = pointsInInterval.getTimePointAtIndex(0);
+			for (TimePoint point : pointsInInterval.getPositions()) {
+				if (Math.abs(point.getTimeDiffFrom(frameNum)) 
+						< Math.abs(closestPoint.getTimeDiffFrom(frameNum))) {
+					closestPoint = point;
+				}
+			}
+		}
+
+		return closestPoint; 
+	}
+	
 	public TimePoint getClosestPoint(TimePoint other) {
 		if (positions.size() == 0) {
 			return null;
