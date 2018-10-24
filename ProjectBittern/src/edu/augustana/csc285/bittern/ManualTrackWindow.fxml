@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -48,12 +49,16 @@
    <center>
       <VBox prefWidth="750.0" BorderPane.alignment="CENTER">
          <children>
-            <StackPane fx:id="stackPane" prefHeight="575.0" prefWidth="750.0">
+            <Pane fx:id="paneContainingCanvas">
                <children>
-                  <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
-                  <Canvas fx:id="drawingCanvas" height="547.0" width="850.0" />
+                  <StackPane fx:id="stackPane">
+                     <children>
+                        <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
+                        <Canvas fx:id="drawingCanvas" height="555.0" width="850.0" />
+                     </children>
+                  </StackPane>
                </children>
-            </StackPane>
+            </Pane>
             <Canvas fx:id="progressCanvas" height="15.0" width="850.0" />
             <Slider fx:id="sliderBar" prefHeight="14.0" prefWidth="750.0" />
          </children>

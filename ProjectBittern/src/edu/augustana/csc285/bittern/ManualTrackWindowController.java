@@ -24,6 +24,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -31,7 +32,8 @@ import utils.UtilsForOpenCV;
 
 public class ManualTrackWindowController {
 
-	@FXML private StackPane stackPane;//don't use
+	@FXML private StackPane stackPane;
+	@FXML private Pane paneContainingCanvas;
 	@FXML private Button addTrackButton;
 	@FXML private Button backButton;
 	@FXML private Button exportButton;
@@ -70,21 +72,21 @@ public class ManualTrackWindowController {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
-
-		drawingCanvas.widthProperty().bind(videoView.fitWidthProperty());
-		drawingCanvas.heightProperty().bind(videoView.fitHeightProperty());
+		videoView.fitWidthProperty().bind(paneContainingCanvas.widthProperty());
+		videoView.fitHeightProperty().bind(paneContainingCanvas.heightProperty());
+		
+		drawingCanvas.widthProperty().bind(paneContainingCanvas.widthProperty());
+		drawingCanvas.heightProperty().bind(paneContainingCanvas.heightProperty());
 		
 		progressCanvas.widthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
-		sliderBar.widthProperty().addListener(observable -> sliderBar.setPrefWidth(progressCanvas.getWidth()));
+		//sliderBar.widthProperty().addListener(observable -> sliderBar.setPrefWidth(progressCanvas.getWidth()));
 	}
 
 	
 	public void setupCanvas() {
 		drawingGC = drawingCanvas.getGraphicsContext2D();
 		progressGC = progressCanvas.getGraphicsContext2D();
-		drawingGC.setFill(Color.CYAN);				
 	}
 
 
@@ -109,7 +111,8 @@ public class ManualTrackWindowController {
 				}
 			}
 			jump(1); //when do we jump?
-		});
+		});	
+	
 	}
 	
 	public void setup(ProjectData project) {
@@ -260,6 +263,8 @@ public class ManualTrackWindowController {
 	}
 
 	public void refillCanvas() {
+		System.err.println("draw canvas size: " + drawingCanvas.getWidth() + " x " + drawingCanvas.getHeight());
+		
 		System.out.println(videoView.getFitWidth() + " = " + drawingCanvas.getWidth());
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 		startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
