@@ -26,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
@@ -118,8 +119,8 @@ public class ManualTrackWindowController {
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
-			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
-			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
+			//startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
+			//endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 			
 			//remove conditional before we turn project in
 			if (project.getTracks().size() > 0) {

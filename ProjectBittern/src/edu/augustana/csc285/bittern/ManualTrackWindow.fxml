@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.ManualTrackWindowController">
+<BorderPane prefHeight="800.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.ManualTrackWindowController">
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -47,14 +47,14 @@
       </AnchorPane>
    </bottom>
    <center>
-      <VBox prefWidth="750.0" BorderPane.alignment="CENTER">
+      <VBox BorderPane.alignment="CENTER">
          <children>
-            <Pane fx:id="paneContainingCanvas">
+            <Pane fx:id="paneContainingCanvas" prefHeight="548.0" prefWidth="849.0">
                <children>
                   <StackPane fx:id="stackPane">
                      <children>
                         <ImageView fx:id="videoView" pickOnBounds="true" preserveRatio="true" />
-                        <Canvas fx:id="drawingCanvas" height="555.0" width="850.0" />
+                        <Canvas fx:id="drawingCanvas" height="555.0" width="750.0" />
                      </children>
                   </StackPane>
                </children>
