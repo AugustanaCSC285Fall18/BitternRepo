@@ -1,7 +1,6 @@
 package dataModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,6 +88,38 @@ public class AnimalTrack {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 
+	 * @param startFrameNum - the starting time (inclusive)
+	 * @param endFrameNum   - the ending time (inclusive)
+	 * @return all time points in that time interval
+	 */
+	public AnimalTrack getTimePointsWithinInterval(int startFrameNum, int endFrameNum) {
+		AnimalTrack pointsInInterval = new AnimalTrack("Points");
+		for (TimePoint pt : positions) {
+			if (pt.getFrameNum() >= startFrameNum && pt.getFrameNum() <= endFrameNum) {
+				pointsInInterval.add(pt);
+			}
+		}
+		return pointsInInterval;
+	}
+	
+	public TimePoint getClosestPoint(TimePoint other) {
+		if (positions.size() == 0) {
+			return null;
+		}
+		
+		TimePoint closestPoint = positions.get(0);
+		
+		for (int i = 1; i < positions.size(); i++) {
+			if (positions.get(i).getDistanceTo(other) < closestPoint.getDistanceTo(other)) {
+				closestPoint = positions.get(i);
+			}
+		}
+		
+		return closestPoint;
 	}
 
 	public void updateTimePoint(TimePoint newPoint) {

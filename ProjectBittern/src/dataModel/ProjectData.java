@@ -1,11 +1,9 @@
 package dataModel;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+
 
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
@@ -92,6 +90,25 @@ public class ProjectData {
 		tracks.add(index, track);
 		
 	}
+		
+	public AnimalTrack getNearestUnassignedSegment(double x, double y, int startFrame, int endFrame) {
+		TimePoint other = new TimePoint(x,y,0);
+		AnimalTrack closestTrack = null;
+		double minDistance = Integer.MAX_VALUE;
+		TimePoint closestPoint;
+		
+		for (AnimalTrack track : unassignedSegments) {
+			closestPoint = track.getTimePointsWithinInterval(startFrame, endFrame).getClosestPoint(other);
+			if (closestPoint != null && closestPoint.getDistanceTo(other) < minDistance) {
+				closestTrack = track;
+				minDistance = closestTrack.getTimePointsWithinInterval(startFrame, endFrame)
+						.getClosestPoint(other).getDistanceTo(other);
+			}
+		}
+
+		return closestTrack;
+	}
+	
 	
 	/*public void saveToFile(File saveFile) throws FileNotFoundException {
 		String json = toJSON();
