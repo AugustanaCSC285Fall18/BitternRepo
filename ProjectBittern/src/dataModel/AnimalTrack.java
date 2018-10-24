@@ -38,9 +38,6 @@ public class AnimalTrack {
 	public TimePoint getTimePointAtTime(int frameNum) {
 		Collections.sort(positions);
 		
-		//how can I have comparator binary search TimePoints for a frameNum
-		//int index = Collections.binarySearch(positions, frameNum);
-		
 		int index = indexOfPointAt(frameNum);
 		if (index >= 0) {
 			return positions.get(index);
@@ -80,7 +77,18 @@ public class AnimalTrack {
 			add(point);
 		}
 	}
-		
+			
+	public void remove(TimePoint point) {
+		positions.remove(point);
+		Collections.sort(positions);
+	}
+	
+	public void remove(List<TimePoint> points) {
+		for (TimePoint point : points) {
+			remove(point);
+		}
+	}
+	
 	public boolean containsPointAtTime(int frameNum) {
 		for (TimePoint position : positions) {
 			if (position.atSameTime(frameNum)) {

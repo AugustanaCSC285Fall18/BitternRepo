@@ -96,6 +96,13 @@ public class ProjectData {
 	}
 	
 	public void removeAutoTrack(AnimalTrack autoTrack, String trackID) {
+		int index = getAnimalIndex(trackID);
+		AnimalTrack track = tracks.get(index);
+		track.remove(autoTrack.getPositions());
+		
+		tracks.remove(track);
+		tracks.add(index, track);
+		unassignedSegments.add(autoTrack);
 		
 	}
 	
