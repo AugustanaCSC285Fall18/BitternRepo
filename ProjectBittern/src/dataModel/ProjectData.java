@@ -83,15 +83,22 @@ public class ProjectData {
 		return pointsAtTime;
 	}
 	
+	//check what happens with updatePoint when you remove added autoTracks
 	public void addAutoTracks(AnimalTrack autoTrack, String trackID) {
 		int index = getAnimalIndex(trackID);
 		AnimalTrack track = tracks.get(index);
-		tracks.remove(track);
 		track.add(autoTrack.getPositions());
+		
+		tracks.remove(track);
 		tracks.add(index, track);
+		unassignedSegments.remove(track);
 		
 	}
+	
+	public void removeAutoTrack(AnimalTrack autoTrack, String trackID) {
 		
+	}
+	
 	public AnimalTrack getNearestUnassignedSegment(double x, double y, int startFrame, int endFrame) {
 		TimePoint other = new TimePoint(x,y,0);
 		AnimalTrack closestTrack = null;

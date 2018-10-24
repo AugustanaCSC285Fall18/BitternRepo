@@ -31,21 +31,24 @@ import utils.UtilsForOpenCV;
 
 public class ManualTrackWindowController {
 
-	@FXML private StackPane stackPane;
+	@FXML private StackPane stackPane;//don't use
+	@FXML private Button addTrackButton;
+	@FXML private Button backButton;
+	@FXML private Button exportButton;
+	@FXML private Button nextButton;
+	@FXML private Button playButton;
+	@FXML private Button previousButton;
+	@FXML private Button removeTrackButton;
 	@FXML private Canvas drawingCanvas;
 	@FXML private Canvas progressCanvas;
-	@FXML private Button playButton;
-	@FXML private Button exportButton;
-	@FXML private Button backButton;
 	@FXML private ImageView videoView;
 	@FXML private Label currentFrameLabel;
 	@FXML private Label endFrameLabel;
 	@FXML private Label startFrameLabel;
 	@FXML private Slider sliderBar;
-	@FXML private Button previousButton;
-	@FXML private Button nextButton;
 	@FXML private ComboBox<String> chicksBox;
 	@FXML private ComboBox<AnimalTrack> tracksBox;
+	@FXML private ComboBox<AnimalTrack> usedTracksBox;
 	
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -172,6 +175,23 @@ public class ManualTrackWindowController {
 		}
 	}
 
+	@FXML
+	public void handleUsedTracksBox() {
+		
+	}
+	
+	@FXML 
+	public void handleAddTrack() {
+		project.addAutoTracks(tracksBox.getValue(), currentTrack.getID());
+		tracksBox.getItems().remove(tracksBox.getValue());
+		
+	}
+	
+	@FXML
+	public void handleRemoveTracks() {
+		
+	}
+	
 	public void drawAutoTrackPath(AnimalTrack autoTrack) {
 		for (int i = 0; i < autoTrack.getSize(); i++) {
 			//drawingGC.fillOval(arg0, arg1, arg2, arg3);
