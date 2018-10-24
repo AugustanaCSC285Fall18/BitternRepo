@@ -106,7 +106,7 @@ public class ManualTrackWindowController {
 					handleTracksBox();
 				}
 			}
-			jump(1); //when do we jump?
+			//jump(1); we won't jump for now
 		});	
 	
 	}
@@ -237,18 +237,18 @@ public class ManualTrackWindowController {
 
 	
 	public void drawPoint(TimePoint point) {
-		drawingGC.setFill(Color.CYAN);
-		drawingGC.fillOval(point.getX()-3, point.getY(), 6, 6);
+		if (point != null) {
+			drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+			drawingGC.setFill(Color.CYAN);
+			drawingGC.fillOval(point.getX()-3, point.getY(), 6, 6);
+		}
 	}
 
 	public void displayFrame() {
 		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
-		
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		videoView.setImage(curFrame);
-		if (currentTrack.containsPointAtTime(project.getVideo().getCurrentFrameNum())) {
-			drawPoint(currentTrack.getTimePointAtTime(project.getVideo().getCurrentFrameNum()));
-		}
+		drawPoint(currentTrack.getTimePointWithinTime(project.getVideo().getCurrentFrameNum(), project.getVideo().getFrameRate()));
 		Platform.runLater(() -> {
 			currentFrameLabel.setText("" 
 					+ project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));

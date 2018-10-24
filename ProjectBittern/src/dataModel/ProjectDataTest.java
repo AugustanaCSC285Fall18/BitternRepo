@@ -30,7 +30,7 @@ class ProjectDataTest {
 		return project;
 	}
 	
-	@Test
+	/*@Test
 	void testJSONSerializationDeserialization() throws FileNotFoundException {
 		ProjectData fake = makeFakeData();
 		String json = fake.toJSON();
@@ -47,5 +47,5 @@ class ProjectDataTest {
 		File fSave = new File("fake_test.project");
 		fake.saveToFile(fSave);
 		assertTrue(fSave.exists());
-	}
+	}*/
 }
