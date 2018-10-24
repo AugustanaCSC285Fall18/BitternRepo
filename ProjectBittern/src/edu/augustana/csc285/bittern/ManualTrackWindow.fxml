@@ -39,7 +39,7 @@
                   <ComboBox fx:id="tracksBox" onAction="#handleTracksBox" prefHeight="26.0" prefWidth="118.0" promptText="Autotracks" GridPane.rowIndex="1" />
                   <Button fx:id="addTrackButton" mnemonicParsing="false" onAction="#handleAddTrack" prefHeight="25.0" prefWidth="116.0" text="Add AutoTrack" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Button fx:id="removeTrackButton" mnemonicParsing="false" onAction="#handleRemoveTrack" text="Remove AutoTrack" GridPane.columnIndex="1" />
-                  <ComboBox fx:id="usedTracksBox" onAction="#handleUsedTracksBox" prefWidth="118.0" promptText="Used Tracks" />
+                  <ComboBox fx:id="usedTracksBox" prefWidth="118.0" promptText="Used Tracks" />
                </children>
             </GridPane>
          </children>
@@ -54,7 +54,7 @@
                   <Canvas fx:id="drawingCanvas" height="547.0" width="850.0" />
                </children>
             </StackPane>
-            <Canvas fx:id="progressCanvas" height="15.0" width="750.0" />
+            <Canvas fx:id="progressCanvas" height="15.0" width="850.0" />
             <Slider fx:id="sliderBar" prefHeight="14.0" prefWidth="750.0" />
          </children>
       </VBox>
