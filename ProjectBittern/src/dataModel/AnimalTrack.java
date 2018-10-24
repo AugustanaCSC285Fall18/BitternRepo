@@ -37,13 +37,19 @@ public class AnimalTrack {
 
 	public TimePoint getTimePointAtTime(int frameNum) {
 		Collections.sort(positions);
-		
 		int index = indexOfPointAt(frameNum);
 		if (index >= 0) {
 			return positions.get(index);
 		} else {
 			return null;
 		}
+		
+//		for (TimePoint point : positions) {
+//			if (point.getFrameNum() == frameNum) {
+//				return point;
+//			}
+//		}
+//		return null;
 	}
 
 	public int indexOfPointAt(int frameNum) {
@@ -120,18 +126,16 @@ public class AnimalTrack {
 		}
 		
 		TimePoint closestPoint = positions.get(0);
-		
 		for (int i = 1; i < positions.size(); i++) {
 			if (positions.get(i).getDistanceTo(other) < closestPoint.getDistanceTo(other)) {
 				closestPoint = positions.get(i);
 			}
-		}
-		
+		}	
 		return closestPoint;
 	}
 
 	public void updateTimePoint(TimePoint newPoint) {
-		TimePoint oldPoint = getTimePointAtIndex(newPoint.getFrameNum());
+		TimePoint oldPoint = getTimePointAtTime(newPoint.getFrameNum());
 		if (oldPoint != null) {
 			oldPoint.setX(newPoint.getX());
 			oldPoint.setY(newPoint.getY());

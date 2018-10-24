@@ -30,7 +30,7 @@ public class ProjectData {
 	public List<AnimalTrack> getUnassignedSegments() {
 		return unassignedSegments;
 	}
-	
+		
 	public boolean containsAutoTracksAtTime(int frameNum) {
 		for (AnimalTrack track : unassignedSegments) {
 			int quotient = (int) (frameNum / video.getFrameRate());

@@ -80,7 +80,6 @@ public class ManualTrackWindowController {
 		
 		progressCanvas.widthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
-		//sliderBar.widthProperty().addListener(observable -> sliderBar.setPrefWidth(progressCanvas.getWidth()));
 	}
 
 	
@@ -92,18 +91,15 @@ public class ManualTrackWindowController {
 
 	public void setupClick() {
 		drawingCanvas.setOnMouseClicked((event) -> {
-			System.out.println("click");
-			drawingGC.clearRect(drawingCanvas.getLayoutX(), drawingCanvas.getLayoutY(),
-					drawingCanvas.getWidth(), drawingCanvas.getHeight());
-			
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
 					project.getVideo().getCurrentFrameNum());
 			
 			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
 					&& project.getVideo().timeWithinBounds()) {
-				drawingGC.fillOval(event.getX() - 3, event.getY() - 3, 6, 6); //debug for edges of the arena
+				drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 				currentTrack.add(currentTimePoint);
-				//updateCanvas(project.getVideo().getCurrentFrameNum());
+				drawPoint(currentTimePoint);
+				updateProgress(project.getVideo().getCurrentFrameNum());
 				
 				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
 					tracksBox.setPromptText("Posible Autotracks!");
@@ -239,10 +235,20 @@ public class ManualTrackWindowController {
 		jump(-project.getVideo().getStepSize());
 	}
 
+	
+	public void drawPoint(TimePoint point) {
+		drawingGC.setFill(Color.CYAN);
+		drawingGC.fillOval(point.getX()-3, point.getY(), 6, 6);
+	}
 
 	public void displayFrame() {
+		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+		
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		videoView.setImage(curFrame);
+		if (currentTrack.containsPointAtTime(project.getVideo().getCurrentFrameNum())) {
+			drawPoint(currentTrack.getTimePointAtTime(project.getVideo().getCurrentFrameNum()));
+		}
 		Platform.runLater(() -> {
 			currentFrameLabel.setText("" 
 					+ project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
@@ -279,15 +285,14 @@ public class ManualTrackWindowController {
 		progressGC.fillRect(startWidth, 0, endWidth - startWidth,
 				progressCanvas.getHeight());
 
-		/*for (TimePoint position : currentTrack.getPositions()) {
-			updateCanvas(position.getFrameNum());
-		}*/
+		for (TimePoint position : currentTrack.getPositions()) {
+			updateProgress(position.getFrameNum());
+		}
 	}
 	
-	public void updateCanvas(int frameNumber) {
+	public void updateProgress(int frameNumber) {
 		startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
 		progressGC.setFill(Color.GREEN);
-		progressGC.clearRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
 		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
 	}
 

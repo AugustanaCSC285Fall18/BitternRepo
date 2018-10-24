@@ -37,9 +37,9 @@ public class AnimalTrackTest {
 		chick2.add(point2);
 		chick2.add(point2);
 		
-		assertEquals(point1, chick1.getTimePointAtIndex(0));
-		assertEquals(point2, chick1.getTimePointAtIndex(1));
-		assertEquals(point3, chick1.getTimePointAtIndex(2));
+		assertEquals(point3, chick1.getTimePointAtIndex(0));
+		assertEquals(point1, chick1.getTimePointAtIndex(1));
+		assertEquals(point2, chick1.getTimePointAtIndex(2));
 		
 		assertEquals(point3, chick2.getTimePointAtIndex(0));
 		assertEquals(point1, chick2.getTimePointAtIndex(1));
@@ -48,7 +48,7 @@ public class AnimalTrackTest {
 	}
 	
 	@Test
-	void testAddingAndGettingPoints() {
+	public void testAddingAndGettingPoints() {
 		AnimalTrack testTrack = new AnimalTrack("ChickenLittle");
 		assertEquals("ChickenLittle", testTrack.getID());
 
