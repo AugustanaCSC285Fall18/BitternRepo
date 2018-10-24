@@ -248,7 +248,9 @@ public class ManualTrackWindowController {
 		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		videoView.setImage(curFrame);
-		drawPoint(currentTrack.getTimePointWithinTime(project.getVideo().getCurrentFrameNum(), project.getVideo().getFrameRate()));
+		
+		//should i add code to search for points within ...
+		drawPoint(currentTrack.getTimePointAtTime(project.getVideo().getCurrentFrameNum()));
 		Platform.runLater(() -> {
 			currentFrameLabel.setText("" 
 					+ project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));

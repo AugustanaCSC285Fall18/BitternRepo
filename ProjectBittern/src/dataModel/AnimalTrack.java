@@ -134,21 +134,6 @@ public class AnimalTrack {
 		}	
 		return closestPoint;
 	}
-
-	//refactor name and test
-	public TimePoint getTimePointWithinTime(int frameNum, double frameRate) {
-		/*if (positions.size() == 0) {
-			return null;
-		}*/
-		
-		TimePoint closestPoint = null;
-		for (TimePoint point : positions) {
-			if (point.getFrameNum() >= frameNum - frameRate && point.getFrameNum() <= frameNum + frameRate) {
-				closestPoint = point;
-			}
-		}
-		return closestPoint;
-	}
 	
 	public void updateTimePoint(TimePoint newPoint) {
 		TimePoint oldPoint = getTimePointAtTime(newPoint.getFrameNum());
