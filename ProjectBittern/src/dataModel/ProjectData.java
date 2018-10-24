@@ -69,6 +69,7 @@ public class ProjectData {
 		return relevantTracks;
 	}
 	
+	//should this be List<TimePoint> or AnimalTrack
 	// go through unassigned segments, finding each time point at frameNum
 	public List<TimePoint> getUnassignedTimePointsAtTime(int frameNum) {
 		List<TimePoint> pointsAtTime = new ArrayList<>();

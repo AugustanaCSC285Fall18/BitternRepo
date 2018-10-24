@@ -34,11 +34,11 @@ public class DataExporter {
 	
 	public static String getPositionsPerSecond(AnimalTrack tracks, Video video) {
 		String output = "";
-		for (int i = 0; i < tracks.getPositions().size(); i++) {
-			int frameNum = tracks.getPositions().get(i).getFrameNum();
+		for (int i = 0; i < tracks.getSize(); i++) {
+			int frameNum = tracks.getTimePointAtIndex(i).getFrameNum();
 			output += "Time: " + video.getTime(frameNum) + ", Position: (" 
-					+ (int) tracks.getPositions().get(i).getX() + ", " 
-					+ (int) tracks.getPositions().get(i).getY() + ")\n";
+					+ (int) tracks.getTimePointAtIndex(i).getX() + ", " 
+					+ (int) tracks.getTimePointAtIndex(i).getY() + ")\n";
 		}
 		return output;
 	}
