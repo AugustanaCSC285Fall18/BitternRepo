@@ -37,9 +37,9 @@ public class AnimalTrackTest {
 		chick2.add(point2);
 		chick2.add(point2);
 		
-		assertEquals(point1, chick1.getTimePointAtIndex(0));
-		assertEquals(point2, chick1.getTimePointAtIndex(1));
-		assertEquals(point3, chick1.getTimePointAtIndex(2));
+		assertEquals(point3, chick1.getTimePointAtIndex(0));
+		assertEquals(point1, chick1.getTimePointAtIndex(1));
+		assertEquals(point2, chick1.getTimePointAtIndex(2));
 		
 		assertEquals(point3, chick2.getTimePointAtIndex(0));
 		assertEquals(point1, chick2.getTimePointAtIndex(1));
@@ -48,7 +48,7 @@ public class AnimalTrackTest {
 	}
 	
 	@Test
-	void testAddingAndGettingPoints() {
+	public void testAddingAndGettingPoints() {
 		AnimalTrack testTrack = new AnimalTrack("ChickenLittle");
 		assertEquals("ChickenLittle", testTrack.getID());
 
@@ -64,6 +64,23 @@ public class AnimalTrackTest {
 		TimePoint lastPt = testTrack.getFinalTimePoint();
 		assertEquals(5, lastPt.getFrameNum());
 	}
+	
+	@Test
+	public void testGetMostRecentPoint() {
+		AnimalTrack bob = new AnimalTrack("Bob");
+		bob.add(new TimePoint(0,0,5));
+		bob.add(new TimePoint(0,0,2));
+		bob.add(new TimePoint(0,0,3));
+		bob.add(new TimePoint(0,0,4));
+		bob.add(new TimePoint(0,0,9));
+		bob.add(new TimePoint(0,0,29));
+		bob.add(new TimePoint(0,0,30));
+		
+		assertNull(bob.getMostRecentPoint(50, 10));
+		assertEquals(new TimePoint(0,0,30), bob.getMostRecentPoint(31, 29.97));
+		
+	}
+	
 	
 	
 

@@ -190,10 +190,11 @@ public class CalibrationWindowController {
 	@FXML
 	public void handleInstruction() {
 		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
-		calibrationInstruction.setTitle("Instruction for Calibration");
+		calibrationInstruction.setTitle("Instructions for Calibration");
 		calibrationInstruction.setHeaderText(null);
 		calibrationInstruction
-				.setContentText("instruction goes here" + "\n click and drag your mouse to draw your preferred ...?");
+				.setContentText("Click and drag your mouse to draw the space that the chicks will be"
+						+ " tracked within.");
 		calibrationInstruction.showAndWait();
 	}
 

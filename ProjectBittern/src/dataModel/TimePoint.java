@@ -68,9 +68,13 @@ public class TimePoint implements Comparable<TimePoint> {
 	 * @return the difference (negative if the other TimePoint is later)
 	 */
 	public int getTimeDiffAfter(TimePoint other) {
-		return this.frameNum - other.frameNum;
+		return getTimeDiffFrom(other.getFrameNum());
 	}
 
+	public int getTimeDiffFrom(int frameNum) {
+		return this.frameNum - frameNum;
+	}
+	
 	public boolean atSameTime(int frameNum) {
 		return (this.getFrameNum() == frameNum);
 	}

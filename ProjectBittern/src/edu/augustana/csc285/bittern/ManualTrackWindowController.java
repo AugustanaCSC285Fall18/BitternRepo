@@ -24,14 +24,17 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
 public class ManualTrackWindowController {
 
-	@FXML private StackPane stackPane;//don't use
+	@FXML private StackPane stackPane;
+	@FXML private Pane paneContainingCanvas;
 	@FXML private Button addTrackButton;
 	@FXML private Button backButton;
 	@FXML private Button exportButton;
@@ -70,44 +73,43 @@ public class ManualTrackWindowController {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
-
-		drawingCanvas.widthProperty().bind(videoView.fitWidthProperty());
-		drawingCanvas.heightProperty().bind(videoView.fitHeightProperty());
+		videoView.fitWidthProperty().bind(paneContainingCanvas.widthProperty());
+		videoView.fitHeightProperty().bind(paneContainingCanvas.heightProperty());
+		
+		drawingCanvas.widthProperty().bind(paneContainingCanvas.widthProperty());
+		drawingCanvas.heightProperty().bind(paneContainingCanvas.heightProperty());
 		
 		progressCanvas.widthProperty().bind(videoView.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
 	}
 
+	
 	public void setupCanvas() {
 		drawingGC = drawingCanvas.getGraphicsContext2D();
 		progressGC = progressCanvas.getGraphicsContext2D();
-		drawingGC.setFill(Color.CYAN);				
 	}
 
 
 	public void setupClick() {
 		drawingCanvas.setOnMouseClicked((event) -> {
-			System.out.println("click");
-			drawingGC.clearRect(drawingCanvas.getLayoutX(), drawingCanvas.getLayoutY(),
-					drawingCanvas.getWidth(), drawingCanvas.getHeight());
-			
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
 					project.getVideo().getCurrentFrameNum());
 			
 			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
 					&& project.getVideo().timeWithinBounds()) {
-				drawingGC.fillOval(event.getX() - 3, event.getY() - 3, 6, 6); //debug for edges of the arena
+				drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 				currentTrack.add(currentTimePoint);
-				//updateCanvas(project.getVideo().getCurrentFrameNum());
+				drawPoint(currentTimePoint);
+				updateProgress(project.getVideo().getCurrentFrameNum());
 				
 				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
 					tracksBox.setPromptText("Posible Autotracks!");
 					handleTracksBox();
 				}
 			}
-			jump(1); //when do we jump?
-		});
+			//jump(1); we won't jump for now
+		});	
+	
 	}
 	
 	public void setup(ProjectData project) {
@@ -117,8 +119,8 @@ public class ManualTrackWindowController {
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
-			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
-			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
+			//startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
+			//endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 			
 			//remove conditional before we turn project in
 			if (project.getTracks().size() > 0) {
@@ -176,22 +178,23 @@ public class ManualTrackWindowController {
 			tracksBox.getItems().add(track);
 		}
 	}
-
-	@FXML
-	public void handleUsedTracksBox() {
-		
-	}
 	
 	@FXML 
 	public void handleAddTrack() {
-		project.addAutoTracks(tracksBox.getValue(), currentTrack.getID());
-		tracksBox.getItems().remove(tracksBox.getValue());
-		
+		if (tracksBox.getItems().size() != 0) {
+			project.addAutoTracks(tracksBox.getValue(), currentTrack.getID());
+			usedTracksBox.getItems().add(tracksBox.getValue());
+			tracksBox.getItems().remove(tracksBox.getValue());
+		}
 	}
 	
 	@FXML
 	public void handleRemoveTrack() {
-		
+		if (usedTracksBox.getItems().size() != 0) {
+			project.removeAutoTrack(usedTracksBox.getValue(), currentTrack.getID());
+			usedTracksBox.getItems().remove(usedTracksBox.getValue());
+		}
+
 	}
 	
 	public void drawAutoTrackPath(AnimalTrack autoTrack) {
@@ -235,10 +238,22 @@ public class ManualTrackWindowController {
 		jump(-project.getVideo().getStepSize());
 	}
 
+	
+	public void drawPoint(TimePoint point) {
+		if (point != null) {
+			drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+			drawingGC.setFill(Color.CYAN);
+			drawingGC.fillOval(point.getX()-3, point.getY(), 6, 6);
+		}
+	}
 
 	public void displayFrame() {
+		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		videoView.setImage(curFrame);
+		
+		drawPoint(currentTrack.getMostRecentPoint(project.getVideo().getCurrentFrameNum(), 
+				project.getVideo().getFrameRate()));
 		Platform.runLater(() -> {
 			currentFrameLabel.setText("" 
 					+ project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
@@ -252,36 +267,38 @@ public class ManualTrackWindowController {
 		if (frameNum < project.getVideo().getEndFrameNum()) {
 			project.getVideo().setCurrentFrameNum((int)frameNum);
 			sliderBar.setValue(project.getVideo().getCurrentFrameNum());
+			handleTracksBox();
 			displayFrame();
 		}
 	
 	}
 
 	public void refillCanvas() {
+		System.err.println("draw canvas size: " + drawingCanvas.getWidth() + " x " + drawingCanvas.getHeight());
+		
 		System.out.println(videoView.getFitWidth() + " = " + drawingCanvas.getWidth());
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 		startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
 		endWidth = project.getVideo().getEndFrameNum() / frameWidthRatio;
-		
+
 		progressGC.setFill(Color.GRAY);
-		progressGC.fillRect(0, progressCanvas.getLayoutY(), startWidth, progressCanvas.getHeight());
-		progressGC.fillRect(endWidth, progressCanvas.getLayoutY(), progressCanvas.getWidth() - endWidth, 
+		progressGC.fillRect(0, 0, startWidth, progressCanvas.getHeight());
+		progressGC.fillRect(endWidth, 0, progressCanvas.getWidth() - endWidth, 
 				progressCanvas.getHeight());
 		
 		progressGC.setFill(Color.RED);
-		progressGC.fillRect(startWidth, progressCanvas.getLayoutY(), endWidth - startWidth,
+		progressGC.fillRect(startWidth, 0, endWidth - startWidth,
 				progressCanvas.getHeight());
 
 		for (TimePoint position : currentTrack.getPositions()) {
-			updateCanvas(position.getFrameNum());
+			updateProgress(position.getFrameNum());
 		}
 	}
 	
-	public void updateCanvas(int frameNumber) {
+	public void updateProgress(int frameNumber) {
 		startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
 		progressGC.setFill(Color.GREEN);
-		progressGC.clearRect(startWidth, progressCanvas.getLayoutX(), frameWidthRatio, progressCanvas.getHeight());
-		progressGC.fillRect(startWidth, progressCanvas.getLayoutX(), frameWidthRatio, progressCanvas.getHeight());
+		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
 	}
 
 	public void startVideo() {

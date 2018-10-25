@@ -31,7 +31,10 @@ public class OpeningWindowController {
 		fileChooser.setTitle("Open Video File");
 		Window mainWindow = browseButton.getScene().getWindow();
 		chosenFile = fileChooser.showOpenDialog(mainWindow);
-		fileNameLabel.setText("You selected " + chosenFile.getAbsolutePath());	
+		if (chosenFile != null) {
+			fileNameLabel.setText("You selected " + chosenFile.getAbsolutePath());
+		}
+			
 	 }
 	
 	@FXML public void handleConfirm() throws IOException {
