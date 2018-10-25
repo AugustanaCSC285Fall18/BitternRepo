@@ -18,6 +18,7 @@ public class AnimalTrack {
 	public String getID() {
 		return animalID;
 	}
+	
 
 	public int getSize() {
 		return positions.size();

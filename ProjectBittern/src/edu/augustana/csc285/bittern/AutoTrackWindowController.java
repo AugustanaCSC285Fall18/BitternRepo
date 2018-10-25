@@ -68,9 +68,10 @@ public class AutoTrackWindowController implements AutoTrackListener {
 		primary.setScene(nextScene);
 		primary.show();
 
-		CalibrationWindowController controller = loader.getController();
-		controller.initializeWithStage();
-		controller.setProject(project);
+		CalibrationWindowController cwc = loader.getController();
+		cwc.initializeWithStage();
+		cwc.setProject(project);
+		
 	}
 
 	
@@ -87,9 +88,9 @@ public class AutoTrackWindowController implements AutoTrackListener {
 		primary.setScene(nextScene);
 		primary.show();		
 		
-		ManualTrackWindowController controller = loader.getController();
-		controller.setup(project);
-		controller.initializeWithStage(primary);
+		ManualTrackWindowController mtwc = loader.getController();
+		mtwc.setup(project);
+		mtwc.initializeWithStage(primary);
 		
 	}
 	

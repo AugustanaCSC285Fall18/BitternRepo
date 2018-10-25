@@ -64,6 +64,7 @@ public class CalibrationWindowController {
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				if (sliderBar.isValueChanging()) {
 					project.getVideo().setCurrentFrameNum(arg2.intValue());
+					System.out.println("slider is working");
 					displayFrame();
 				}
 			}

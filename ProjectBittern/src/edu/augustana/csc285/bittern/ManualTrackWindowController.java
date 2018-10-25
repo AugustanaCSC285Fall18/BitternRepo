@@ -166,6 +166,8 @@ public class ManualTrackWindowController {
 		AutoTrackWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
 		controller.setup(project);
+		
+		
 	}
 	
 	@FXML
