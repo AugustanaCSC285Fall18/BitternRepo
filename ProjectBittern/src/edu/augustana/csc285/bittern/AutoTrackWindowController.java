@@ -1,8 +1,6 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.Collections;
 import java.util.List;
 
 import org.opencv.core.Mat;

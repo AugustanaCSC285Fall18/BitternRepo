@@ -62,6 +62,15 @@ public class Video {
 	public synchronized int getCurrentFrameNum() {
 		return (int) vidCap.get(Videoio.CAP_PROP_POS_FRAMES);
 	}
+	
+
+	public synchronized int getFrameWidth() {
+		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
+	}
+
+	public synchronized int getFrameHeight() {
+		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_HEIGHT);
+	}
 		
 	public int getEmptyFrameNum() {
 		return emptyFrameNum;

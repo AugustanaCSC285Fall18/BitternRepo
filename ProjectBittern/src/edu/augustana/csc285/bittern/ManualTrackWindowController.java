@@ -170,7 +170,7 @@ public class ManualTrackWindowController {
 		if (project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum()).size() > 0) {
 			tracksBox.setStyle("-fx-background-color: rgb(0,255,0)");
 		} else {
-			tracksBox.setStyle("-fx-background-color: lightgray");
+			tracksBox.setStyle("-fx-background-color: lightgrey");
 		}
 		for (AnimalTrack track : project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum())) {
 			tracksBox.getItems().add(track);
@@ -184,7 +184,7 @@ public class ManualTrackWindowController {
 			project.addAutoTracks(tracksBox.getValue(), currentTrack.getID());
 			usedTracksBox.getItems().add(tracksBox.getValue());
 			tracksBox.getItems().removeAll(tracksBox.getItems());
-			tracksBox.setStyle("-fx-background-color: lightgray");
+			tracksBox.setStyle("-fx-background-color: lightgrey");
 			tracksBox.setPromptText("AutoTracks");
 		}
 	}
