@@ -58,6 +58,18 @@ public class ProjectData {
 		}
 		return -1;
 	}
+	
+	public void addTrack(AnimalTrack track) {
+		int index = getAnimalIndex(track.getID());
+		if (index >= 0) {
+			tracks.remove(track);
+			tracks.add(index, track);;
+		} else {
+			tracks.add(track);
+		}
+		
+		
+	}
 
 	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
 		List<AnimalTrack> relevantTracks = new ArrayList<>();

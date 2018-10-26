@@ -65,7 +65,6 @@ public class ManualTrackWindowController {
 
 	@FXML
 	public void initialize() {
-		
 		setupSlider();
 		setupClick();
 		setupCanvas();
@@ -101,13 +100,8 @@ public class ManualTrackWindowController {
 				currentTrack.add(currentTimePoint);
 				drawPoint(currentTimePoint);
 				updateProgress(project.getVideo().getCurrentFrameNum());
-				
-				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
-					tracksBox.setPromptText("Posible Autotracks!");
-					handleTracksBox();
-				}
-			}
-			//jump(1); we won't jump for now
+				jump(1); //if we jump the user doesn't see the point
+			} 
 		});	
 	
 	}
@@ -118,9 +112,9 @@ public class ManualTrackWindowController {
 			project.getVideo().resetToStart();
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
-
-			//startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
-			//endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
+			
+			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
+			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 			
 			//remove conditional before we turn project in
 			if (project.getTracks().size() > 0) {
@@ -170,11 +164,17 @@ public class ManualTrackWindowController {
 		controller.setup(project);
 	}
 	
-	@FXML
-	public void handleTracksBox() {
+	public void findAutoTracks() {
+		tracksBox.getItems().removeAll(tracksBox.getItems());
+		if (project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum()).size() > 0) {
+			tracksBox.setStyle("-fx-background-color: rgb(0,255,0)");
+		} else {
+			tracksBox.setStyle("-fx-background-color: lightgray");
+		}
 		for (AnimalTrack track : project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum())) {
 			tracksBox.getItems().add(track);
 		}
+		tracksBox.setPromptText("Auto Tracks");
 	}
 	
 	@FXML 
@@ -182,7 +182,9 @@ public class ManualTrackWindowController {
 		if (tracksBox.getItems().size() != 0) {
 			project.addAutoTracks(tracksBox.getValue(), currentTrack.getID());
 			usedTracksBox.getItems().add(tracksBox.getValue());
-			tracksBox.getItems().remove(tracksBox.getValue());
+			tracksBox.getItems().removeAll(tracksBox.getItems());
+			tracksBox.setStyle("-fx-background-color: lightgray");
+			tracksBox.setPromptText("AutoTracks");
 		}
 	}
 	
@@ -191,19 +193,26 @@ public class ManualTrackWindowController {
 		if (usedTracksBox.getItems().size() != 0) {
 			project.removeAutoTrack(usedTracksBox.getValue(), currentTrack.getID());
 			usedTracksBox.getItems().remove(usedTracksBox.getValue());
+			usedTracksBox.setPromptText("Used Tracks");
 		}
 
 	}
-	
-	public void drawAutoTrackPath(AnimalTrack autoTrack) {
-		for (int i = 0; i < autoTrack.getSize(); i++) {
-			//drawingGC.fillOval(arg0, arg1, arg2, arg3);
+
+	@FXML
+	public void handleTracksBox() {
+		if (tracksBox.getValue() != null) {
+			drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+			drawingGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));for (TimePoint point : tracksBox.getValue().getPositions()) {
+				drawingGC.fillOval(point.getX() - 3, point.getY() - 3, 6, 6);
+			}
 		}
 	}
 
 	@FXML
 	public void handleChicksBox() {
-		project.getTracks().add(currentTrack);
+		if (currentTrack != null) { //rethink using this conditional
+			project.addTrack(currentTrack);
+		}
 		currentTrack = project.getTracks().get(project.getAnimalIndex(chicksBox.getValue()));
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 		refillCanvas();
@@ -238,7 +247,7 @@ public class ManualTrackWindowController {
 
 	
 	public void drawPoint(TimePoint point) {
-		if (point != null) {
+		if (point != null) { //rethink this conditional
 			drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 			drawingGC.setFill(Color.CYAN);
 			drawingGC.fillOval(point.getX()-3, point.getY(), 6, 6);
@@ -246,10 +255,10 @@ public class ManualTrackWindowController {
 	}
 
 	public void displayFrame() {
+		findAutoTracks();
 		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		videoView.setImage(curFrame);
-		
 		drawPoint(currentTrack.getMostRecentPoint(project.getVideo().getCurrentFrameNum(), 
 				project.getVideo().getFrameRate()));
 		Platform.runLater(() -> {
@@ -265,7 +274,6 @@ public class ManualTrackWindowController {
 		if (frameNum < project.getVideo().getEndFrameNum()) {
 			project.getVideo().setCurrentFrameNum((int)frameNum);
 			sliderBar.setValue(project.getVideo().getCurrentFrameNum());
-			handleTracksBox();
 			displayFrame();
 		}
 	
