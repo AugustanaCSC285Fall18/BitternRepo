@@ -263,8 +263,7 @@ public class ManualTrackWindowController {
 	public void drawTrackPath(AnimalTrack track, Color color) {
 		pathsGC.setLineWidth(2.0);
 		pathsGC.setStroke(color);
-		double numFrameSkip = project.getVideo().getStepSize() * project.getVideo().getFrameRate();
-		for (int i = 0; i < track.getSize() - 1; i+= numFrameSkip) {
+		for (int i = 0; i < track.getSize() - 1; i++) {
 			pathsGC.moveTo(track.getTimePointAtIndex(i).getX(), track.getTimePointAtIndex(i).getY());
 			pathsGC.lineTo(track.getTimePointAtIndex(i + 1).getX(), track.getTimePointAtIndex(i+ 1).getY());
 			pathsGC.stroke();
