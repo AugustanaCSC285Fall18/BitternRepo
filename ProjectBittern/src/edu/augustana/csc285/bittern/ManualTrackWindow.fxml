@@ -19,7 +19,7 @@
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="exportButton" layoutX="699.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
+            <Button fx:id="exportButton" layoutX="772.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
             <Button fx:id="backButton" layoutX="14.0" layoutY="161.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
             <Label fx:id="startFrameLabel" layoutX="13.0" layoutY="13.0" prefHeight="17.0" prefWidth="85.0" />
             <Label fx:id="endFrameLabel" layoutX="758.0" layoutY="6.0" prefHeight="17.0" prefWidth="78.0" />
@@ -34,11 +34,12 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ComboBox fx:id="tracksBox" onAction="#handleTracksBox" prefHeight="26.0" prefWidth="118.0" promptText="Autotracks" GridPane.rowIndex="1" />
+                  <ComboBox fx:id="tracksBox" onAction="#handleTracksBox" prefHeight="25.0" prefWidth="118.0" promptText="Autotracks" GridPane.rowIndex="1" />
                   <Button fx:id="addTrackButton" mnemonicParsing="false" onAction="#handleAddTrack" prefHeight="25.0" prefWidth="116.0" text="Add AutoTrack" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Button fx:id="removeTrackButton" mnemonicParsing="false" onAction="#handleRemoveTrack" text="Remove AutoTrack" GridPane.columnIndex="1" />
                   <ComboBox fx:id="usedTracksBox" prefWidth="118.0" promptText="Used Tracks" />
                   <ComboBox fx:id="chicksBox" onAction="#handleChicksBox" prefHeight="25.0" prefWidth="119.0" promptText="Current Chick" visibleRowCount="3" GridPane.rowIndex="2" />
+                  <Button fx:id="showCurrentPathButton" mnemonicParsing="false" onAction="#handleShowCurrentPath" text="Show Path" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
             <GridPane layoutX="291.0" layoutY="8.0" prefHeight="30.0" prefWidth="269.0">

@@ -67,9 +67,8 @@ public class ProjectData {
 		} else {
 			tracks.add(track);
 		}
-		
-		
 	}
+
 
 	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
 		List<AnimalTrack> relevantTracks = new ArrayList<>();

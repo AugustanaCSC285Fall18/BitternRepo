@@ -26,7 +26,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
@@ -42,6 +41,8 @@ public class ManualTrackWindowController {
 	@FXML private Button playButton;
 	@FXML private Button previousButton;
 	@FXML private Button removeTrackButton;
+	@FXML private Button showCurrentPathButton;
+	@FXML private Button showAutoPathButton;
 	@FXML private Canvas drawingCanvas;
 	@FXML private Canvas progressCanvas;
 	@FXML private ImageView videoView;
@@ -52,6 +53,7 @@ public class ManualTrackWindowController {
 	@FXML private ComboBox<String> chicksBox;
 	@FXML private ComboBox<AnimalTrack> tracksBox;
 	@FXML private ComboBox<AnimalTrack> usedTracksBox;
+	
 	
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -93,17 +95,17 @@ public class ManualTrackWindowController {
 		drawingCanvas.setOnMouseClicked((event) -> {
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
 					project.getVideo().getCurrentFrameNum());
-			
+
 			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
 					&& project.getVideo().timeWithinBounds()) {
-				drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 				currentTrack.add(currentTimePoint);
 				drawPoint(currentTimePoint);
 				updateProgress(project.getVideo().getCurrentFrameNum());
+
 				jump(1); //if we jump the user doesn't see the point
 			} 
 		});	
-	
+
 	}
 	
 	public void setup(ProjectData project) {
@@ -140,7 +142,6 @@ public class ManualTrackWindowController {
 				if (sliderBar.isValueChanging()) {
 					project.getVideo().setCurrentFrameNum(arg2.intValue());
 					displayFrame();
-	
 				}
 			}
 		});
@@ -195,14 +196,14 @@ public class ManualTrackWindowController {
 			usedTracksBox.getItems().remove(usedTracksBox.getValue());
 			usedTracksBox.setPromptText("Used Tracks");
 		}
-
 	}
 
 	@FXML
 	public void handleTracksBox() {
 		if (tracksBox.getValue() != null) {
 			drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
-			drawingGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));for (TimePoint point : tracksBox.getValue().getPositions()) {
+			drawingGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+			for (TimePoint point : tracksBox.getValue().getPositions()) {
 				drawingGC.fillOval(point.getX() - 3, point.getY() - 3, 6, 6);
 			}
 		}
@@ -244,6 +245,20 @@ public class ManualTrackWindowController {
 	public void handlePrevious() {
 		jump(-project.getVideo().getStepSize());
 	}
+	
+	//debug this
+	@FXML
+	public void handleShowCurrentPath() {
+		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+		drawTrackPath(currentTrack);
+	}
+	
+//	don't need this
+//	@FXML
+//	public void handleShowAutoPath() {
+//		pathsGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+//		drawTrackPath(tracksBox.getValue(), Color.YELLOW);
+//	}
 
 	
 	public void drawPoint(TimePoint point) {
@@ -251,7 +266,25 @@ public class ManualTrackWindowController {
 			drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 			drawingGC.setFill(Color.CYAN);
 			drawingGC.fillOval(point.getX()-3, point.getY(), 6, 6);
+			
 		}
+	}
+	
+	public void drawTrackPath(AnimalTrack track) {
+		//pathsGC.setLineWidth(2.0);
+		//pathsGC.setStroke(color);
+//		for (int i = 0; i < track.getSize() - 1; i++) {
+//			pathsGC.moveTo(track.getTimePointAtIndex(i).getX(), track.getTimePointAtIndex(i).getY());
+//			pathsGC.lineTo(track.getTimePointAtIndex(i + 1).getX(), track.getTimePointAtIndex(i+ 1).getY());
+//			pathsGC.stroke();
+//		}
+		
+		drawingGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+		for (TimePoint point : track.getPositions()) {
+			drawingGC.fillOval(point.getX() - 3, point.getY() - 3, 6, 6);
+		}
+		
+		
 	}
 
 	public void displayFrame() {
