@@ -42,6 +42,8 @@ public class ManualTrackWindowController {
 	@FXML private Button playButton;
 	@FXML private Button previousButton;
 	@FXML private Button removeTrackButton;
+	@FXML private Button showCurrentPathButton;
+	@FXML private Button showAutoPathButton;
 	@FXML private Canvas drawingCanvas;
 	@FXML private Canvas progressCanvas;
 	@FXML private ImageView videoView;
@@ -53,11 +55,13 @@ public class ManualTrackWindowController {
 	@FXML private ComboBox<AnimalTrack> tracksBox;
 	@FXML private ComboBox<AnimalTrack> usedTracksBox;
 	
+	
 	private ProjectData project;
 	private ScheduledExecutorService timer;
 	private TimePoint currentTimePoint;
 	private GraphicsContext drawingGC;
 	private GraphicsContext progressGC;
+	private GraphicsContext pathsGC;
 	private AnimalTrack currentTrack;
 	private double frameWidthRatio; 
 	private double startWidth;
@@ -86,6 +90,7 @@ public class ManualTrackWindowController {
 	
 	public void setupCanvas() {
 		drawingGC = drawingCanvas.getGraphicsContext2D();
+		pathsGC = drawingCanvas.getGraphicsContext2D();
 		progressGC = progressCanvas.getGraphicsContext2D();
 	}
 
@@ -95,18 +100,19 @@ public class ManualTrackWindowController {
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
 					project.getVideo().getCurrentFrameNum());
 			
-			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
-					&& project.getVideo().timeWithinBounds()) {
+//			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
+//					&& project.getVideo().timeWithinBounds()) {
 				drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
-				currentTrack.add(currentTimePoint);
-				drawPoint(currentTimePoint);
+				currentTrack.updateTimePoint(currentTimePoint);
+//				currentTrack.add(currentTimePoint);
+				drawPoint(currentTimePoint, Color.RED);
 				updateProgress(project.getVideo().getCurrentFrameNum());
 				
 				if (project.containsAutoTracksAtTime(currentTimePoint.getFrameNum())) {
-					tracksBox.setPromptText("Posible Autotracks!");
+					tracksBox.setPromptText("Possible Autotracks!");
 					handleTracksBox();
 				}
-			}
+//			}
 			//jump(1); we won't jump for now
 		});	
 	
@@ -195,11 +201,7 @@ public class ManualTrackWindowController {
 
 	}
 	
-	public void drawAutoTrackPath(AnimalTrack autoTrack) {
-		for (int i = 0; i < autoTrack.getSize(); i++) {
-			//drawingGC.fillOval(arg0, arg1, arg2, arg3);
-		}
-	}
+	
 
 	@FXML
 	public void handleChicksBox() {
@@ -235,13 +237,37 @@ public class ManualTrackWindowController {
 	public void handlePrevious() {
 		jump(-project.getVideo().getStepSize());
 	}
+	
+	@FXML
+	public void handleShowCurrentPath() {
+		pathsGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+		drawTrackPath(currentTrack, Color.BLUE);
+	}
+	
+	@FXML
+	public void handleShowAutoPath() {
+		pathsGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+		drawTrackPath(tracksBox.getValue(), Color.YELLOW);
+	}
 
 	
-	public void drawPoint(TimePoint point) {
+	public void drawPoint(TimePoint point, Color color) {
 		if (point != null) {
 			drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
-			drawingGC.setFill(Color.CYAN);
+			drawingGC.setFill(color);
 			drawingGC.fillOval(point.getX()-3, point.getY(), 6, 6);
+			
+		}
+	}
+	
+	public void drawTrackPath(AnimalTrack track, Color color) {
+		pathsGC.setLineWidth(2.0);
+		pathsGC.setStroke(color);
+		double numFrameSkip = project.getVideo().getStepSize() * project.getVideo().getFrameRate();
+		for (int i = 0; i < track.getSize() - 1; i+= numFrameSkip) {
+			pathsGC.moveTo(track.getTimePointAtIndex(i).getX(), track.getTimePointAtIndex(i).getY());
+			pathsGC.lineTo(track.getTimePointAtIndex(i + 1).getX(), track.getTimePointAtIndex(i+ 1).getY());
+			pathsGC.stroke();
 		}
 	}
 
@@ -251,7 +277,7 @@ public class ManualTrackWindowController {
 		videoView.setImage(curFrame);
 		
 		drawPoint(currentTrack.getMostRecentPoint(project.getVideo().getCurrentFrameNum(), 
-				project.getVideo().getFrameRate()));
+				project.getVideo().getFrameRate()), Color.RED);
 		Platform.runLater(() -> {
 			currentFrameLabel.setText("" 
 					+ project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));

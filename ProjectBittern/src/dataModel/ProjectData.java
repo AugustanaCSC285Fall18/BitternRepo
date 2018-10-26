@@ -58,6 +58,7 @@ public class ProjectData {
 		}
 		return -1;
 	}
+	
 
 	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
 		List<AnimalTrack> relevantTracks = new ArrayList<>();

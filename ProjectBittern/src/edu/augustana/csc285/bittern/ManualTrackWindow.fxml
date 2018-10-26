@@ -15,11 +15,11 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.ManualTrackWindowController">
+<BorderPane prefHeight="800.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.ManualTrackWindowController">
    <bottom>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="showCurrentChickPath" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ComboBox fx:id="chicksBox" layoutX="307.0" layoutY="75.0" onAction="#handleChicksBox" prefWidth="150.0" promptText="Current Chick" visibleRowCount="3" />
+            <ComboBox fx:id="chicksBox" layoutX="262.0" layoutY="81.0" onAction="#handleChicksBox" prefHeight="27.0" prefWidth="134.0" promptText="Current Chick" visibleRowCount="3" />
             <Button fx:id="previousButton" layoutX="262.0" layoutY="40.0" minWidth="60.0" mnemonicParsing="false" onAction="#handlePrevious" prefHeight="25.0" prefWidth="76.0" text="Previous" />
             <Button fx:id="playButton" layoutX="352.0" layoutY="40.0" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="60.0" text="Play" />
             <Button fx:id="nextButton" layoutX="427.0" layoutY="40.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="60.0" text="Forward" />
@@ -43,6 +43,8 @@
                   <ComboBox fx:id="usedTracksBox" prefWidth="118.0" promptText="Used Tracks" />
                </children>
             </GridPane>
+            <Button fx:id="showCurrentPathButton" layoutX="412.0" layoutY="81.0" mnemonicParsing="false" onAction="#handleShowCurrentPath" text="Show Path" />
+            <Button fx:id="showAutoPathButton" layoutX="630.0" layoutY="95.0" mnemonicParsing="false" onAction="#handleShowAutoPath" text="Show Auto Path" />
          </children>
       </AnchorPane>
    </bottom>
