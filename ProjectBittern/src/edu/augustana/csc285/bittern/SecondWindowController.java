@@ -103,12 +103,11 @@ public class SecondWindowController {
 		videoCanvas.setOnMouseClicked((event) -> {
 			if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
 					&& project.getVideo().timeWithinBounds()) {
+				int curFrameNum = (int) sliderBar.getValue();
 				double scalingRatio = getImageScalingRatio();
 				double unscaledX = event.getX() / scalingRatio;
 				double unscaledY = event.getY() / scalingRatio;
-				currentTrack.add(new TimePoint(unscaledX, unscaledY, 
-						project.getVideo().getCurrentFrameNum()));
-				drawAssignedAnimalTracks(scalingRatio, project.getVideo().getCurrentFrameNum());
+				currentTrack.add(new TimePoint(unscaledX, unscaledY, curFrameNum));
 				updateProgress(project.getVideo().getCurrentFrameNum());
 				jump(project.getVideo().getStepSize());
 			} 
@@ -243,12 +242,13 @@ public class SecondWindowController {
 
 	public void displayFrame(int frameNum) {
 		project.getVideo().setCurrentFrameNum(frameNum);
+		sliderBar.setValue(frameNum);
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		double scalingRatio = getImageScalingRatio();
 		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
 		videoGC.drawImage(curFrame, 0, 0, curFrame.getWidth() * scalingRatio, curFrame.getHeight() * scalingRatio);
 		drawAssignedAnimalTracks(scalingRatio, frameNum);
-		currentFrameLabel.setText(String.format("%05d", frameNum));
+		//currentFrameLabel.setText(String.format("%05d", frameNum));
 	}
 
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
@@ -275,10 +275,9 @@ public class SecondWindowController {
 	}
 
 	public void jump(int stepSize) {
-		double frameNum = project.getVideo().getCurrentFrameNum() 
-				+ stepSize * project.getVideo().getFrameRate();
+		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
 		if (frameNum < project.getVideo().getEndFrameNum()) {
-			displayFrame((int)frameNum);
+			sliderBar.setValue(frameNum);
 		}
 	}
 	
@@ -288,7 +287,6 @@ public class SecondWindowController {
 				@Override
 				public void run() {
 					sliderBar.setValue(project.getVideo().getCurrentFrameNum());
-					displayFrame((int)sliderBar.getValue());
 				}
 			};
 	
