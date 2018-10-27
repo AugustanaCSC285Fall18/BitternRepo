@@ -43,7 +43,7 @@ public class SecondWindowController {
 	@FXML private Label endFrameLabel;
 	@FXML private Label startFrameLabel;
 	@FXML private Slider sliderBar;
-	@FXML private ComboBox<String> chicksBox;
+	@FXML private ComboBox<AnimalTrack> chicksBox;
 	@FXML private ComboBox<AnimalTrack> tracksBox;
 	@FXML private ComboBox<AnimalTrack> usedTracksBox;
 	
@@ -71,7 +71,7 @@ public class SecondWindowController {
 		
 		progressGC = progressCanvas.getGraphicsContext2D();
 		progressCanvas.widthProperty().bind(progressCanvas.getScene().widthProperty());
-		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
+		progressCanvas.widthProperty().addListener(observable -> refillProgressCanvas());
 	}
 
 	public void setup(ProjectData project) {
@@ -87,9 +87,9 @@ public class SecondWindowController {
 			//remove conditional before we turn project in
 			if (project.getTracks().size() > 0) {
 				for (AnimalTrack track : project.getTracks()) {
-					chicksBox.getItems().add(track.getID());
+					chicksBox.getItems().add(track);
 				}
-				chicksBox.setValue(project.getTracks().get(0).getID());
+				chicksBox.setValue(project.getTracks().get(0));
 				currentTrack = project.getTracks().get(0);
 			} 			
 			displayFrame(0);
@@ -106,19 +106,18 @@ public class SecondWindowController {
 				double scalingRatio = getImageScalingRatio();
 				double unscaledX = event.getX() / scalingRatio;
 				double unscaledY = event.getY() / scalingRatio;
-				currentTimePoint = new TimePoint(unscaledX, unscaledY, 
-						project.getVideo().getCurrentFrameNum());
-				currentTrack.add(currentTimePoint);
-				drawPoint(event.getX(), event.getY());
+				currentTrack.add(new TimePoint(unscaledX, unscaledY, 
+						project.getVideo().getCurrentFrameNum()));
+				drawAssignedAnimalTracks(scalingRatio, project.getVideo().getCurrentFrameNum());
 				updateProgress(project.getVideo().getCurrentFrameNum());
-				jump(1);
+				jump(project.getVideo().getStepSize());
 			} 
 		});	
 
 	}
 	
 	//fix
-	public void refillCanvas() {
+	public void refillProgressCanvas() {
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 		double startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
 		double endWidth = project.getVideo().getEndFrameNum() / frameWidthRatio;
@@ -190,9 +189,9 @@ public class SecondWindowController {
 		if (currentTrack != null) { //rethink using this conditional
 			project.addTrack(currentTrack);
 		}
-		currentTrack = project.getTracks().get(project.getAnimalIndex(chicksBox.getValue()));
+		currentTrack = chicksBox.getValue(); 
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
-		refillCanvas();
+		refillProgressCanvas();
 	}
 
 	@FXML
@@ -252,12 +251,6 @@ public class SecondWindowController {
 		currentFrameLabel.setText(String.format("%05d", frameNum));
 	}
 
-	public void drawPoint(double x, double y) {
-		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
-		videoGC.setFill(Color.CYAN);
-		videoGC.fillOval(x-3, x-3, 6, 6);	
-	}
-
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
 		for (int i = 0; i < project.getTracks().size(); i++) {
 			AnimalTrack track = project.getTracks().get(i);
@@ -285,7 +278,6 @@ public class SecondWindowController {
 		double frameNum = project.getVideo().getCurrentFrameNum() 
 				+ stepSize * project.getVideo().getFrameRate();
 		if (frameNum < project.getVideo().getEndFrameNum()) {
-			project.getVideo().setCurrentFrameNum((int)frameNum);
 			displayFrame((int)frameNum);
 		}
 	}
@@ -310,7 +302,9 @@ public class SecondWindowController {
 	public void updateProgress(int frameNumber) {
 		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
 		progressGC.setFill(Color.GREEN);
-		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
+		//progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
+		progressGC.fillRect(startWidth, 0, project.getVideo().getFrameRate() /frameWidthRatio, 
+				progressCanvas.getHeight());
 	}
 	
 }
