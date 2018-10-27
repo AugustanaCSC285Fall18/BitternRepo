@@ -140,19 +140,6 @@ public class SecondWindowController {
 			displayFrame((int) sliderBar.getValue()); 
 		}
 	}
-
-	public void findAutoTracks() {
-		tracksBox.getItems().removeAll(tracksBox.getItems());
-		if (project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum()).size() > 0) {
-			tracksBox.setStyle("-fx-background-color: rgb(0,255,0)");
-		} else {
-			tracksBox.setStyle("-fx-background-color: lightgrey");
-		}
-		for (AnimalTrack track : project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum())) {
-			tracksBox.getItems().add(track);
-		}
-		tracksBox.setPromptText("Auto Tracks");
-	}
 	
 	@FXML 
 	public void handleAddTrack() {
@@ -241,14 +228,18 @@ public class SecondWindowController {
 	}
 
 	public void displayFrame(int frameNum) {
-		project.getVideo().setCurrentFrameNum(frameNum);
+		findAutoTracks();
 		sliderBar.setValue(frameNum);
+		project.getVideo().setCurrentFrameNum(frameNum);
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		double scalingRatio = getImageScalingRatio();
 		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
 		videoGC.drawImage(curFrame, 0, 0, curFrame.getWidth() * scalingRatio, curFrame.getHeight() * scalingRatio);
 		drawAssignedAnimalTracks(scalingRatio, frameNum);
-		//currentFrameLabel.setText(String.format("%05d", frameNum));
+		
+		Platform.runLater(() -> {
+			currentFrameLabel.setText(project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
+		});
 	}
 
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
@@ -268,6 +259,19 @@ public class SecondWindowController {
 		}
 	}
 
+	public void findAutoTracks() {
+		tracksBox.getItems().removeAll(tracksBox.getItems());
+		if (project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum()).size() > 0) {
+			tracksBox.setStyle("-fx-background-color: rgb(0,255,0)");
+		} else {
+			tracksBox.setStyle("-fx-background-color: lightgrey");
+		}
+		for (AnimalTrack track : project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum())) {
+			tracksBox.getItems().add(track);
+		}
+		tracksBox.setPromptText("Auto Tracks");
+	}
+	
 	private double getImageScalingRatio() {
 		double widthRatio = videoCanvas.getWidth() / project.getVideo().getFrameWidth();
 		double heightRatio = videoCanvas.getHeight() / project.getVideo().getFrameHeight();
@@ -300,9 +304,7 @@ public class SecondWindowController {
 	public void updateProgress(int frameNumber) {
 		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
 		progressGC.setFill(Color.GREEN);
-		//progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
-		progressGC.fillRect(startWidth, 0, project.getVideo().getFrameRate() /frameWidthRatio, 
-				progressCanvas.getHeight());
+		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
 	}
 	
 	@FXML public void menuFileExit() {
