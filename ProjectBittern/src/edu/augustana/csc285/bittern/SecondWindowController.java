@@ -237,10 +237,11 @@ public class SecondWindowController {
 
 	@FXML
 	public void handleTracksBox() {
+		double scalingRatio = getImageScalingRatio();
 		if (tracksBox.getValue() != null) {
 			videoGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));
 			for (TimePoint point : tracksBox.getValue().getPositions()) {
-				videoGC.fillOval(point.getX() - 3, point.getY() - 3, 6, 6);
+				videoGC.fillRect(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
 			}
 		}
 	}
