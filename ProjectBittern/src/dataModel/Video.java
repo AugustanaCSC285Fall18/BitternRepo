@@ -44,12 +44,6 @@ public class Video {
 		this.arenaBounds = new Rectangle(0,0,this.getFrameWidth(),this.getFrameHeight());
 	}
 		
-	public Rectangle getDefaultArenaBounds() {
-		int frameWidth = (int)vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
-		int frameHeight = (int)vidCap.get(Videoio.CAP_PROP_FRAME_HEIGHT);
-		return new Rectangle(0,0,frameWidth,frameHeight);
-	}
-	
 	public Rectangle getArenaBounds() {
 		return arenaBounds;
 	}

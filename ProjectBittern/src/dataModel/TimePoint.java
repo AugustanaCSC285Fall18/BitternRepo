@@ -38,10 +38,6 @@ public class TimePoint implements Comparable<TimePoint> {
 	public java.awt.Point getPointAWT() {
 		return new java.awt.Point((int)x,(int)y);
 	}
-	
-	public Point2D getPoint2D() {
-		return new Point2D(x,y);
-	}
 
 	public void setX(double x) {
 		this.x = x;

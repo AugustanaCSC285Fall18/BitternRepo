@@ -70,6 +70,13 @@ public class ProjectData {
 			tracks.add(track);
 		}
 	}
+	
+	public void removeTrack(String id) {
+		int index = getAnimalIndex(id);
+		if (index >= 0) {
+			tracks.remove(index);
+		}
+	}
 
 
 	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {

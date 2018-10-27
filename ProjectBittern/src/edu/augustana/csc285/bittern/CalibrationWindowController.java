@@ -117,7 +117,7 @@ public class CalibrationWindowController {
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
 			// default values to prevent errors
-			mouseDragRect = project.getVideo().getDefaultArenaBounds();
+		//	mouseDragRect = project.getVideo().getDefaultArenaBounds();
 			origin = new Circle(10, 10, 5, Color.BLUE);
 
 			displayFrame();

@@ -93,9 +93,6 @@
          </children>
       </AnchorPane>
    </bottom>
-<<<<<<< HEAD
-</BorderPane>
-=======
    <top>
       <BorderPane prefHeight="18.0" prefWidth="750.0" BorderPane.alignment="CENTER">
          <right>
@@ -104,4 +101,3 @@
       </BorderPane>
    </top>
 </BorderPane>
->>>>>>> 06b214467d0bfa988114c4b2837b035f9df14ec2

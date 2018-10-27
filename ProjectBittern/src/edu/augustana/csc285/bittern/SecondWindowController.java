@@ -9,19 +9,16 @@ import dataModel.AnimalTrack;
 import dataModel.DataExporter;
 import dataModel.ProjectData;
 import dataModel.TimePoint;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -104,9 +101,8 @@ public class SecondWindowController {
 
 	public void setupClick() {
 		videoCanvas.setOnMouseClicked((event) -> {
-			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
+			if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
 					&& project.getVideo().timeWithinBounds()) {
-				
 				double scalingRatio = getImageScalingRatio();
 				double unscaledX = event.getX() / scalingRatio;
 				double unscaledY = event.getY() / scalingRatio;

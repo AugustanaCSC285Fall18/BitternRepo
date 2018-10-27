@@ -86,16 +86,12 @@ public class FirstWindowController implements AutoTrackListener {
 	private Point startPoint;
 	private Circle origin;
 	
-	
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false; 
 	
-	private boolean setOrigin = false; // will fix later
-	private boolean setLengthPerPixel = false;
-
 	@FXML
 	public void initialize() {
-		autoTrackButton.setDisable(true);
+		nextButton.setDisable(true);
 		stepBox.getItems().addAll(1, 2, 3, 4, 5);
 		sliderBar.valueProperty().addListener((obs, oldV, newV) -> displayFrame(newV.intValue()));
 		System.out.println(videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
@@ -110,6 +106,8 @@ public class FirstWindowController implements AutoTrackListener {
 		videoCanvas.heightProperty().bind(paneHoldingVideoCanvas.heightProperty());
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
+		
+		//remove debugging code
 		System.out.println(videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
 				+ videoCanvas.getLayoutY());
 		System.out.println(paneHoldingVideoCanvas.getHeight() + " " + paneHoldingVideoCanvas.getWidth() + " " + paneHoldingVideoCanvas.getLayoutX() + " "
@@ -156,12 +154,34 @@ public class FirstWindowController implements AutoTrackListener {
 
 	@FXML
 	public void handleAddChickButton() {
+		String suggestedInput = "Chick #" + (chicksBox.getItems().size() + 1);
+		TextInputDialog dialog = new TextInputDialog(suggestedInput);
+		dialog.setTitle("Add Chick:");
+		dialog.setHeaderText(null);
+		dialog.setContentText("Enter Chick Name:");
 
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			String chickName = result.get();
+			project.getTracks().add(new AnimalTrack(chickName));
+			chicksBox.getItems().add(chickName);
+			chicksBox.getSelectionModel().select(chickName);
+		}
+		
+		nextButton.setDisable(false);
 	}
 
 	@FXML
 	public void handleRemoveChickButton() {
-
+		String trackID = chicksBox.getValue();
+		chicksBox.getItems().remove(trackID);
+		project.removeTrack(trackID);
+		if (chicksBox.getItems().size() == 0) {
+			nextButton.setDisable(true);
+			//add code to show prompt text
+		}
+			
+		
 	}
 
 	@FXML
@@ -253,13 +273,6 @@ public class FirstWindowController implements AutoTrackListener {
 		});
 	}
 
-	// calibration methods
-	public void calibrationComplete() {
-		if (setOrigin && setLengthPerPixel) {
-			autoTrackButton.setDisable(false);
-		}
-	}
-
 	@FXML
 	public void handleMouseDragged(MouseEvent event) {
 		if (isAbleToSetArena) {
@@ -306,6 +319,7 @@ public class FirstWindowController implements AutoTrackListener {
 		project.getVideo().setYPixelsPerCm(pixelLength / actualLengthX);
 		showActualLengthX.setText("Actual Horizontal Length: " + actualLengthX + " cm");
 
+		//remove check
 		System.out.println(project.getVideo().getXPixelsPerCm());
 
 	}
@@ -321,6 +335,7 @@ public class FirstWindowController implements AutoTrackListener {
 		project.getVideo().setYPixelsPerCm(pixelLength / actualLengthY);
 		showActualLengthY.setText("Actual Vertical Length: " + actualLengthY + " cm");
 
+		//remove check
 		System.out.println(project.getVideo().getYPixelsPerCm());
 
 	}

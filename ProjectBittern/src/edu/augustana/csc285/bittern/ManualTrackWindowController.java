@@ -14,6 +14,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -96,7 +97,7 @@ public class ManualTrackWindowController {
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
 					project.getVideo().getCurrentFrameNum());
 
-			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
+			if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
 					&& project.getVideo().timeWithinBounds()) {
 				currentTrack.add(currentTimePoint);
 				drawPoint(currentTimePoint);
