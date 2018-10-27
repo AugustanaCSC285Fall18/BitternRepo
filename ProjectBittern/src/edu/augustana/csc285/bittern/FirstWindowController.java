@@ -34,7 +34,7 @@ import utils.UtilsForOpenCV;
 
 public class FirstWindowController implements AutoTrackListener {
 
-	@FXML private Pane paneHoldingCanvas;
+	@FXML private Pane paneHoldingVideoCanvas;
 	@FXML private BorderPane drawingBoard;
 	@FXML private Button backButton;
 	@FXML private Button confirmButton;
@@ -80,8 +80,8 @@ public class FirstWindowController implements AutoTrackListener {
 	
 	public void initializeWithStage(Stage stage) {
 		videoGC = videoCanvas.getGraphicsContext2D();
-		videoCanvas.widthProperty().bind(paneHoldingCanvas.widthProperty());
-		videoCanvas.heightProperty().bind(paneHoldingCanvas.heightProperty());
+		videoCanvas.widthProperty().bind(paneHoldingVideoCanvas.widthProperty());
+		videoCanvas.heightProperty().bind(paneHoldingVideoCanvas.heightProperty());
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 	}

@@ -7,7 +7,6 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -20,7 +19,7 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Pane fx:id="paneHoldingCanvas">
+            <Pane fx:id="paneHoldingVideoCanvas">
                <children>
                   <Canvas fx:id="videoCanvas" height="560.0" width="751.0" />
                </children>
@@ -62,15 +61,16 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="startTimeButton" mnemonicParsing="false" onAction="#handleStart" prefHeight="25.0" prefWidth="102.0" text="Set Start Time" />
-                  <Button fx:id="endTimeButton" mnemonicParsing="false" onAction="#handleEnd" prefHeight="25.0" prefWidth="99.0" text="Set End Time" GridPane.rowIndex="1" />
+                  <Button fx:id="startTimeButton" mnemonicParsing="false" onAction="#handleStart" prefHeight="25.0" prefWidth="95.0" text="Set Start Time" />
+                  <Button fx:id="endTimeButton" mnemonicParsing="false" onAction="#handleEnd" prefHeight="25.0" prefWidth="95.0" text="Set End Time" GridPane.rowIndex="1" />
                   <Label fx:id="startTimeLabel" prefHeight="17.0" prefWidth="70.0" GridPane.columnIndex="1" />
                   <Label fx:id="endTimeLabel" prefHeight="17.0" prefWidth="66.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <ComboBox fx:id="chicksBox" prefHeight="25.0" prefWidth="105.0" promptText="Chicks" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="stepBox" onAction="#handleStepBox" prefHeight="25.0" prefWidth="105.0" promptText="Time Step" GridPane.rowIndex="2" />
-                  <TextField fx:id="nameField" onAction="#handleName" prefHeight="25.0" prefWidth="103.0" promptText="chick name" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Button fx:id="setAcutalLengthButton" mnemonicParsing="false" onAction="#handleSetActualLengthButton" prefHeight="25.0" prefWidth="97.0" text="Set Length" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Button fx:id="originButton" mnemonicParsing="false" onAction="#handleSetOriginButton" prefHeight="25.0" prefWidth="97.0" text="Set Origin" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="chicksBox" prefHeight="25.0" prefWidth="95.0" promptText="Chicks" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="stepBox" onAction="#handleStepBox" prefHeight="25.0" prefWidth="95.0" promptText="Time Step" GridPane.rowIndex="2" />
+                  <Button fx:id="setAcutalLengthButton" mnemonicParsing="false" onAction="#handleSetActualLengthButton" prefHeight="25.0" prefWidth="95.0" text="Set Length" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Button fx:id="originButton" mnemonicParsing="false" onAction="#handleSetOriginButton" prefHeight="25.0" prefWidth="95.0" text="Set Origin" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <Button fx:id="addChickButton" mnemonicParsing="false" onAction="#handleAddChickButton" prefHeight="25.0" prefWidth="95.0" text="Add Chick" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Button fx:id="removeChickButton" mnemonicParsing="false" onAction="#handleRemoveChickButton" prefHeight="25.0" prefWidth="95.0" text="Remove Chick" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                </children>
             </GridPane>
             <Label fx:id="showActualLengthY" layoutX="536.0" layoutY="92.0" prefHeight="17.0" prefWidth="202.0" text="Actual Vertical Length : " />
