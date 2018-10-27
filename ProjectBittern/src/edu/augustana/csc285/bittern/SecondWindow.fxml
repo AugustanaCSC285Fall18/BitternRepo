@@ -20,22 +20,18 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-              <MenuBar>
+            <MenuBar>
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
-                     <MenuItem mnemonicParsing="false" text="Save" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Calibration Tool">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
+                   <MenuItem mnemonicParsing="false" onAction="#menuFileExit" text="Close" />
+                     <MenuItem mnemonicParsing="false" onAction="#menuFileSave" text="Save" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                   <MenuItem mnemonicParsing="false" onAction="#menuHelpInstruction" text="Instruction" />
+                    <MenuItem mnemonicParsing="false" onAction="#menuHelpAbout" text="About" />
                   </items>
                 </Menu>
               </menus>
@@ -93,6 +89,7 @@
          </children>
       </AnchorPane>
    </bottom>
+<<<<<<< HEAD
    <top>
       <BorderPane prefHeight="18.0" prefWidth="750.0" BorderPane.alignment="CENTER">
          <right>
@@ -100,4 +97,6 @@
          </right>
       </BorderPane>
    </top>
+=======
+>>>>>>> c1ff3f3da59baf2006ed376ba0f7a6c893ba1147
 </BorderPane>

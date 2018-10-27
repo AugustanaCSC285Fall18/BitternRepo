@@ -9,12 +9,15 @@ import dataModel.AnimalTrack;
 import dataModel.DataExporter;
 import dataModel.ProjectData;
 import dataModel.TimePoint;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -49,7 +52,6 @@ public class SecondWindowController {
 	
 	private ProjectData project;
 	private ScheduledExecutorService timer;
-	private TimePoint currentTimePoint;
 	private GraphicsContext videoGC;
 	private GraphicsContext progressGC;
 	private AnimalTrack currentTrack;
@@ -305,6 +307,30 @@ public class SecondWindowController {
 		//progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
 		progressGC.fillRect(startWidth, 0, project.getVideo().getFrameRate() /frameWidthRatio, 
 				progressCanvas.getHeight());
+	}
+	
+	@FXML public void menuFileExit() {
+		Platform.exit();
+	}
+	
+	/**
+	 * Save to Json?
+	 */
+	@FXML public void menuFileSave() {
+		//save method goes here @Dakota @Evan
+	}
+	
+	@FXML public void menuHelpAbout() {
+		//Say something about our team
+	}
+	
+	@FXML public void menuHelpInstruction() {
+		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
+		calibrationInstruction.setTitle("Instructions for Calibration");
+		calibrationInstruction.setHeaderText(null);
+		calibrationInstruction.setContentText(
+				"Click and drag your mouse to draw the space that the chicks will be" + " tracked within.");
+		calibrationInstruction.showAndWait();
 	}
 	
 }
