@@ -328,7 +328,6 @@ public class FirstWindowController implements AutoTrackListener {
 	// MENU EVENTS HANDLING
 	
 	//FILE 
-	
 	/*
 	 * Close the program
 	 */

@@ -26,18 +26,21 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
-                     <MenuItem mnemonicParsing="false" text="Save" />
+                    <MenuItem mnemonicParsing="false" onAction="#menuFileExit" text="Close" />
+                     <MenuItem mnemonicParsing="false" onAction="#menuFileSave" text="Save" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Calibration Tool">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
+                    <MenuItem mnemonicParsing="false" onAction="#menuCalibrationSetArenaBounds" text="Draw Arena Bounds" />
+                    <MenuItem mnemonicParsing="false" text="Set Actual Length" />
+                     <MenuItem mnemonicParsing="false" onAction="#menuCalibrationSetOrgin" text="Set Origin" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                   <MenuItem mnemonicParsing="false" onAction="#menuHelpInstruction" text="Instruction" />
+                    <MenuItem mnemonicParsing="false" onAction="#menuHelpAbout" text="About" />
                   </items>
                 </Menu>
               </menus>
