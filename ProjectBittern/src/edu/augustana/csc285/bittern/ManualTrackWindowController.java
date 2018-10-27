@@ -45,7 +45,7 @@ public class ManualTrackWindowController {
 	@FXML private Button showAutoPathButton;
 	@FXML private Canvas drawingCanvas;
 	@FXML private Canvas progressCanvas;
-	@FXML private ImageView videoView;
+//	@FXML private ImageView videoView;
 	@FXML private Label currentFrameLabel;
 	@FXML private Label endFrameLabel;
 	@FXML private Label startFrameLabel;
@@ -74,13 +74,13 @@ public class ManualTrackWindowController {
 	}
 
 	public void initializeWithStage(Stage stage) {
-		videoView.fitWidthProperty().bind(paneContainingCanvas.widthProperty());
-		videoView.fitHeightProperty().bind(paneContainingCanvas.heightProperty());
+//		videoView.fitWidthProperty().bind(paneContainingCanvas.widthProperty());
+//		videoView.fitHeightProperty().bind(paneContainingCanvas.heightProperty());
 		
 		drawingCanvas.widthProperty().bind(paneContainingCanvas.widthProperty());
 		drawingCanvas.heightProperty().bind(paneContainingCanvas.heightProperty());
 		
-		progressCanvas.widthProperty().bind(videoView.getScene().widthProperty());
+		progressCanvas.widthProperty().bind(progressCanvas.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
 	}
 
@@ -286,12 +286,25 @@ public class ManualTrackWindowController {
 		
 		
 	}
+	
+	private double getImageScalingRatio() {
+		double widthRatio = drawingCanvas.getWidth() / project.getVideo().getFrameWidth();
+		double heightRatio = drawingCanvas.getHeight() / project.getVideo().getFrameHeight();
+		return Math.min(widthRatio, heightRatio);
+	}
+
 
 	public void displayFrame() {
 		findAutoTracks();
-		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+		//drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
-		videoView.setImage(curFrame);
+		
+		//videoView.setImage(curFrame);
+		double videoWidth = project.getVideo().getFrameWidth();
+		double videoHeight= project.getVideo().getFrameHeight();
+		double ratio = getImageScalingRatio();
+		drawingGC.drawImage(curFrame, 0, 0, videoWidth*ratio, videoHeight*ratio);
+		
 		drawPoint(currentTrack.getMostRecentPoint(project.getVideo().getCurrentFrameNum(), 
 				project.getVideo().getFrameRate()));
 		Platform.runLater(() -> {
@@ -299,6 +312,13 @@ public class ManualTrackWindowController {
 					+ project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
 		});
 		
+	}
+	
+	public void repaintCanvas() {
+		if (project != null) {
+			//displayFrame((int) sliderVideoTime.getValue());
+			displayFrame();
+		}
 	}
 
 	public void jump(int stepSize) {
@@ -315,7 +335,6 @@ public class ManualTrackWindowController {
 	public void refillCanvas() {
 		System.err.println("draw canvas size: " + drawingCanvas.getWidth() + " x " + drawingCanvas.getHeight());
 		
-		System.out.println(videoView.getFitWidth() + " = " + drawingCanvas.getWidth());
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 		startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
 		endWidth = project.getVideo().getEndFrameNum() / frameWidthRatio;
