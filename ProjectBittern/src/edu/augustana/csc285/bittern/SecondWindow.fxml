@@ -50,7 +50,6 @@
                   <Button fx:id="removeTrackButton" mnemonicParsing="false" onAction="#handleRemoveTrack" prefWidth="115.0" text="Remove AutoTrack" GridPane.columnIndex="1" />
                   <ComboBox fx:id="usedTracksBox" prefWidth="115.0" promptText="Used Tracks" />
                   <ComboBox fx:id="chicksBox" onAction="#handleChicksBox" prefHeight="25.0" prefWidth="115.0" promptText="Current Chick" visibleRowCount="3" GridPane.rowIndex="2" />
-                  <Button fx:id="showCurrentPathButton" mnemonicParsing="false" onAction="#handleShowCurrentPath" prefWidth="115.0" text="Show Path" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
             <GridPane layoutX="227.0" layoutY="10.0" prefHeight="30.0" prefWidth="269.0">

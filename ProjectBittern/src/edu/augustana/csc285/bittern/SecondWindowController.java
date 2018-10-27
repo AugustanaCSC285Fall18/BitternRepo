@@ -60,9 +60,9 @@ public class SecondWindowController {
 	
 	@FXML
 	public void initialize() {
-		setupSlider();
+		sliderBar.valueProperty().addListener((obs, oldV, newV) -> displayFrame(newV.intValue()));
 		setupClick();
-				
+			
 	}
 	
 	public void setupClick() {
@@ -83,19 +83,6 @@ public class SecondWindowController {
 		});	
 
 	}
-
-	public void setupSlider() {
-		sliderBar.valueProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-				if (sliderBar.isValueChanging()) {
-					project.getVideo().setCurrentFrameNum(arg2.intValue());
-					displayFrame();
-				}
-			}
-		});
-	}
-
 	
 	public void initializeWithStage(Stage stage) {
 		videoGC = videoCanvas.getGraphicsContext2D();
@@ -109,18 +96,45 @@ public class SecondWindowController {
 		progressCanvas.widthProperty().addListener(observable -> refillCanvas());
 	}
 
+	public void setup(ProjectData project) {
+		try {
+			this.project = project;
+			project.getVideo().resetToStart();
+			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
+			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
+			
+			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
+			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
+			
+			//remove conditional before we turn project in
+			if (project.getTracks().size() > 0) {
+				for (AnimalTrack track : project.getTracks()) {
+					chicksBox.getItems().add(track.getID());
+				}
+				chicksBox.setValue(project.getTracks().get(0).getID());
+				currentTrack = project.getTracks().get(0);
+			} 			
+			displayFrame(0);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+
 	public void repaintCanvas() {
 		if (project != null) {
-			displayFrame(); 
+			displayFrame((int) sliderBar.getValue()); 
 		}
 	}
 
-	public void displayFrame() {
+	public void displayFrame(int frameNum) {
+		project.getVideo().setCurrentFrameNum(frameNum);
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		double scalingRatio = getImageScalingRatio();
 		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
 		videoGC.drawImage(curFrame, 0, 0, curFrame.getWidth() * scalingRatio, curFrame.getHeight() * scalingRatio);
-		currentFrameLabel.setText(String.format("%05d", project.getVideo().getCurrentFrameNum()));
+		drawAssignedAnimalTracks(scalingRatio, frameNum);
+		currentFrameLabel.setText(String.format("%05d", frameNum));
 	}
 
 	public void drawPoint(TimePoint point) {
@@ -131,6 +145,7 @@ public class SecondWindowController {
 		}
 	}
 	
+	//fix
 	public void refillCanvas() {
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 		double startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
@@ -236,8 +251,7 @@ public class SecondWindowController {
 				+ stepSize * project.getVideo().getFrameRate();
 		if (frameNum < project.getVideo().getEndFrameNum()) {
 			project.getVideo().setCurrentFrameNum((int)frameNum);
-			sliderBar.setValue(project.getVideo().getCurrentFrameNum());
-			displayFrame();
+			displayFrame((int)frameNum);
 		}
 	}
 	
@@ -253,7 +267,7 @@ public class SecondWindowController {
 				@Override
 				public void run() {
 					sliderBar.setValue(project.getVideo().getCurrentFrameNum());
-					displayFrame();
+					displayFrame((int)sliderBar.getValue());
 				}
 			};
 
@@ -285,6 +299,23 @@ public class SecondWindowController {
 	@FXML
 	public void handleExport() throws IOException {
 		DataExporter.exportToCSV(project);
+	}
+	
+	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
+		for (int i = 0; i < project.getTracks().size(); i++) {
+			AnimalTrack track = project.getTracks().get(i);
+			Color trackColor = Color.color(Math.random(), Math.random(), Math.random());
+			Color trackPrevColor = trackColor.deriveColor(0, 0.5, 1.5, 1.0); // subtler variant
+			videoGC.setFill(trackPrevColor);
+			for (TimePoint prevPt : track.getTimePointsWithinInterval(frameNum - 90, frameNum).getPositions()) {
+				videoGC.fillOval(prevPt.getX() * scalingRatio - 3, prevPt.getY() * scalingRatio - 3, 7, 7);
+			}
+			TimePoint currPt = track.getTimePointAtTime(frameNum);
+			if (currPt != null) {
+				videoGC.setFill(trackColor);
+				videoGC.fillOval(currPt.getX() * scalingRatio - 7, currPt.getY() * scalingRatio - 7, 15, 15);
+			}
+		}
 	}
 	
 }
