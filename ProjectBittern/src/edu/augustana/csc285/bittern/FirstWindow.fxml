@@ -33,7 +33,7 @@
                 <Menu mnemonicParsing="false" text="Calibration Tool">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#menuCalibrationSetArenaBounds" text="Draw Arena Bounds" />
-                    <MenuItem mnemonicParsing="false" text="Set Actual Length" />
+                    <MenuItem mnemonicParsing="false" onAction="#menuCalibrationSetActualLengths" text="Set Actual Length" />
                      <MenuItem mnemonicParsing="false" onAction="#menuCalibrationSetOrgin" text="Set Origin" />
                   </items>
                 </Menu>

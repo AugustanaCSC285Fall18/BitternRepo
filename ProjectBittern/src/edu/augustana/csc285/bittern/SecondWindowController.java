@@ -9,6 +9,7 @@ import dataModel.AnimalTrack;
 import dataModel.DataExporter;
 import dataModel.ProjectData;
 import dataModel.TimePoint;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -314,6 +315,30 @@ public class SecondWindowController {
 		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
 		progressGC.setFill(Color.GREEN);
 		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
+	}
+	
+	@FXML public void menuFileExit() {
+		Platform.exit();
+	}
+	
+	/**
+	 * Save to Json?
+	 */
+	@FXML public void menuFileSave() {
+		//save method goes here @Dakota @Evan
+	}
+	
+	@FXML public void menuHelpAbout() {
+		//Say something about our team
+	}
+	
+	@FXML public void menuHelpInstruction() {
+		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
+		calibrationInstruction.setTitle("Instructions for Calibration");
+		calibrationInstruction.setHeaderText(null);
+		calibrationInstruction.setContentText(
+				"Click and drag your mouse to draw the space that the chicks will be" + " tracked within.");
+		calibrationInstruction.showAndWait();
 	}
 	
 }
