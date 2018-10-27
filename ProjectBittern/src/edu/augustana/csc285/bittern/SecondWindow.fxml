@@ -9,16 +9,20 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
-<BorderPane prefHeight="800.0" prefWidth="750.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171">
+<BorderPane prefHeight="800.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.SecondWindowController">
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Canvas fx:id="videoCanvas" height="200.0" width="200.0" />
-            <Canvas fx:id="progressCanvas" height="200.0" width="200.0" />
+            <Pane fx:id="paneHoldingVideoCanvas" prefHeight="559.0" prefWidth="750.0">
+               <children>
+                  <Canvas fx:id="videoCanvas" height="200.0" width="200.0" />
+               </children>
+            </Pane>
+            <Canvas fx:id="progressCanvas" height="10.0" width="750.0" />
             <Slider fx:id="sliderBar" />
          </children>
       </VBox>
@@ -41,12 +45,12 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <ComboBox fx:id="tracksBox" onAction="#handleTracksBox" prefHeight="25.0" prefWidth="118.0" promptText="Autotracks" GridPane.rowIndex="1" />
-                  <Button fx:id="addTrackButton" mnemonicParsing="false" onAction="#handleAddTrack" prefHeight="25.0" prefWidth="116.0" text="Add AutoTrack" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button fx:id="removeTrackButton" mnemonicParsing="false" onAction="#handleRemoveTrack" text="Remove AutoTrack" GridPane.columnIndex="1" />
-                  <ComboBox fx:id="usedTracksBox" prefWidth="118.0" promptText="Used Tracks" />
-                  <ComboBox fx:id="chicksBox" onAction="#handleChicksBox" prefHeight="25.0" prefWidth="119.0" promptText="Current Chick" visibleRowCount="3" GridPane.rowIndex="2" />
-                  <Button fx:id="showCurrentPathButton" mnemonicParsing="false" onAction="#handleShowCurrentPath" text="Show Path" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="tracksBox" onAction="#handleTracksBox" prefHeight="25.0" prefWidth="115.0" promptText="Autotracks" GridPane.rowIndex="1" />
+                  <Button fx:id="addTrackButton" mnemonicParsing="false" onAction="#handleAddTrack" prefHeight="25.0" prefWidth="115.0" text="Add AutoTrack" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Button fx:id="removeTrackButton" mnemonicParsing="false" onAction="#handleRemoveTrack" prefWidth="115.0" text="Remove AutoTrack" GridPane.columnIndex="1" />
+                  <ComboBox fx:id="usedTracksBox" prefWidth="115.0" promptText="Used Tracks" />
+                  <ComboBox fx:id="chicksBox" onAction="#handleChicksBox" prefHeight="25.0" prefWidth="115.0" promptText="Current Chick" visibleRowCount="3" GridPane.rowIndex="2" />
+                  <Button fx:id="showCurrentPathButton" mnemonicParsing="false" onAction="#handleShowCurrentPath" prefWidth="115.0" text="Show Path" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
             <GridPane layoutX="227.0" layoutY="10.0" prefHeight="30.0" prefWidth="269.0">
@@ -70,7 +74,7 @@
    <top>
       <BorderPane prefHeight="18.0" prefWidth="750.0" BorderPane.alignment="CENTER">
          <right>
-            <Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="77.0" BorderPane.alignment="CENTER" />
+            <Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="168.0" BorderPane.alignment="CENTER" />
          </right>
       </BorderPane>
    </top>
