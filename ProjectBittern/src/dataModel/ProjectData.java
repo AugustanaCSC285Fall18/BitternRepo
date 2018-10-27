@@ -61,6 +61,15 @@ public class ProjectData {
 		return -1;
 	}
 	
+	public AnimalTrack getAnimal(String id) {
+		for (AnimalTrack animal : tracks) {
+			if (animal.getID().equals(id)) {
+				return animal;
+			}
+		}
+		return null;
+	}
+	
 	public void addTrack(AnimalTrack track) {
 		int index = getAnimalIndex(track.getID());
 		if (index >= 0) {

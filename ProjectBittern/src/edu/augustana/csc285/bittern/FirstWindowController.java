@@ -120,8 +120,8 @@ public class FirstWindowController implements AutoTrackListener {
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
-			startTimeLabel.setText("Start: " + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
-			endTimeLabel.setText("End: " + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
+			startTimeLabel.setText(project.getVideo().getTime(project.getVideo().getStartFrameNum()));
+			endTimeLabel.setText(project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 
 			displayFrame(0);
 		} catch (Exception e) {
@@ -203,7 +203,6 @@ public class FirstWindowController implements AutoTrackListener {
 
 	@FXML
 	public void handleNext() throws IOException {
-
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("SecondWindow.fxml"));
 		BorderPane root = (BorderPane) loader.load();
 
@@ -223,13 +222,13 @@ public class FirstWindowController implements AutoTrackListener {
 	@FXML
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
-		endTimeLabel.setText("End: " + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
+		endTimeLabel.setText(project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 	}
 
 	@FXML
 	public void handleStart() {
 		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
-		startTimeLabel.setText("Start: " + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
+		startTimeLabel.setText(project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 	}
 
 	@FXML

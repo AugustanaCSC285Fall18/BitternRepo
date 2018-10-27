@@ -55,8 +55,8 @@
             <Label fx:id="endFrameLabel" layoutX="658.0" layoutY="6.0" prefHeight="17.0" prefWidth="78.0" />
             <GridPane layoutX="490.0" layoutY="47.0" prefHeight="81.0" prefWidth="246.0">
                <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -86,17 +86,8 @@
                   <Button fx:id="previousButton" minWidth="60.0" mnemonicParsing="false" onAction="#handlePrevious" prefHeight="25.0" prefWidth="80.0" text="Previous" />
                </children>
             </GridPane>
+            <Label fx:id="currentFrameLabel" layoutY="79.0" prefHeight="17.0" prefWidth="168.0" />
          </children>
       </AnchorPane>
    </bottom>
-<<<<<<< HEAD
-   <top>
-      <BorderPane prefHeight="18.0" prefWidth="750.0" BorderPane.alignment="CENTER">
-         <right>
-            <Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="168.0" BorderPane.alignment="CENTER" />
-         </right>
-      </BorderPane>
-   </top>
-=======
->>>>>>> c1ff3f3da59baf2006ed376ba0f7a6c893ba1147
 </BorderPane>

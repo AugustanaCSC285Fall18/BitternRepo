@@ -168,7 +168,7 @@ public class AnimalTrack {
 		int startFrame = positions.get(0).getFrameNum();
 		int endFrame = getFinalTimePoint().getFrameNum();
 		return "AnimalTrack[id="+ animalID + ",numPts=" + positions.size() 
-			+" start=" + startFrame + " end=" + endFrame +"]" ; 
+		+" start=" + startFrame + " end=" + endFrame +"]" ; 
 	}
-	
+
 }

@@ -46,7 +46,7 @@ public class SecondWindowController {
 	@FXML private Label endFrameLabel;
 	@FXML private Label startFrameLabel;
 	@FXML private Slider sliderBar;
-	@FXML private ComboBox<AnimalTrack> chicksBox;
+	@FXML private ComboBox<String> chicksBox;
 	@FXML private ComboBox<AnimalTrack> tracksBox;
 	@FXML private ComboBox<AnimalTrack> usedTracksBox;
 	
@@ -86,14 +86,12 @@ public class SecondWindowController {
 			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 			
-			//remove conditional before we turn project in
-			if (project.getTracks().size() > 0) {
-				for (AnimalTrack track : project.getTracks()) {
-					chicksBox.getItems().add(track);
-				}
-				chicksBox.setValue(project.getTracks().get(0));
-				currentTrack = project.getTracks().get(0);
-			} 			
+			for (AnimalTrack track : project.getTracks()) {
+				chicksBox.getItems().add(track.getID());
+			}
+			currentTrack = project.getTracks().get(0);
+			chicksBox.setValue(currentTrack.getID());
+			
 			displayFrame(0);
 			
 		} catch (Exception e) {
@@ -191,7 +189,7 @@ public class SecondWindowController {
 		if (currentTrack != null) { //rethink using this conditional
 			project.addTrack(currentTrack);
 		}
-		currentTrack = chicksBox.getValue(); 
+		currentTrack = project.getAnimal(chicksBox.getValue()); 
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 		refillProgressCanvas();
 	}
@@ -238,7 +236,7 @@ public class SecondWindowController {
 		if (tracksBox.getValue() != null) {
 			videoGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));
 			for (TimePoint point : tracksBox.getValue().getPositions()) {
-				videoGC.fillRect(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
+				videoGC.fillOval(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
 			}
 		}
 	}
