@@ -170,10 +170,9 @@ public class FirstWindowController implements AutoTrackListener {
 		primary.setScene(nextScene);
 		primary.show();		
 		
-		ManualTrackWindowController controller = loader.getController();
-		controller.setup(project);
+		SecondWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
-		
+		controller.setup(project);
 	}
 
 	@FXML
