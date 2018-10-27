@@ -37,19 +37,32 @@ import utils.UtilsForOpenCV;
 
 public class CalibrationWindowController {
 
-	@FXML private Button backButton;
-	@FXML private Button confirmButton;
-	@FXML private Slider sliderBar;
-	@FXML private ImageView videoView;
-	@FXML private BorderPane drawingBoard;
-	@FXML private ComboBox<Integer> stepBox;
-	@FXML private ComboBox<String> chicksBox;
-	@FXML private TextField nameField;
-	@FXML private Label showActualLengthX;
-	@FXML private Label showActualLengthY;
-	@FXML private Button originButton;
-	@FXML private Button setAcutalLengthButton;
-	@FXML private Button instruction;
+	@FXML
+	private Button backButton;
+	@FXML
+	private Button confirmButton;
+	@FXML
+	private Slider sliderBar;
+	@FXML
+	private ImageView videoView;
+	@FXML
+	private BorderPane drawingBoard;
+	@FXML
+	private ComboBox<Integer> stepBox;
+	@FXML
+	private ComboBox<String> chicksBox;
+	@FXML
+	private TextField nameField;
+	@FXML
+	private Label showActualLengthX;
+	@FXML
+	private Label showActualLengthY;
+	@FXML
+	private Button originButton;
+	@FXML
+	private Button setAcutalLengthButton;
+	@FXML
+	private Button instruction;
 
 	private Rectangle mouseDragRect;
 	private ProjectData project;
@@ -70,10 +83,28 @@ public class CalibrationWindowController {
 			}
 		});
 		stepBox.getItems().addAll(1, 2, 3, 4, 5);
+		if (mouseDragRect != null) {
+			drawingBoard.getChildren().add(mouseDragRect);
+		}
+		
+		if (origin != null) {
+			drawingBoard.getChildren().add(origin);
+		}
 	}
 
 	public void initializeWithStage() {
 		videoView.fitWidthProperty().bind(videoView.getScene().widthProperty());
+		
+		if (mouseDragRect != null) {
+			drawingBoard.getChildren().add(mouseDragRect);
+			mouseDragRect.setFill(null);
+			mouseDragRect.setStroke(Color.RED);
+			mouseDragRect.setStrokeWidth(5.0f);
+		}
+		
+		if (origin != null) {
+			drawingBoard.getChildren().add(origin);
+		}
 	}
 
 	public void createProject(String filePath) {
@@ -84,11 +115,11 @@ public class CalibrationWindowController {
 
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
-			
+
 			// default values to prevent errors
 			mouseDragRect = project.getVideo().getDefaultArenaBounds();
 			origin = new Circle(10, 10, 5, Color.BLUE);
-			
+
 			displayFrame();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -98,7 +129,7 @@ public class CalibrationWindowController {
 	public void setProject(ProjectData project) {
 		this.project = project;
 		project.getVideo().setCurrentFrameNum(0);
-		
+
 		if (!(project.getTracks() == null)) {
 			for (AnimalTrack track : project.getTracks()) {
 				chicksBox.getItems().add(track.getID());
@@ -166,25 +197,31 @@ public class CalibrationWindowController {
 //			alert.setContentText("what about origin?");
 //			alert.showAndWait();
 //		} else {
-			project.getVideo().setArenaBounds(mouseDragRect);
-			project.getVideo().setOrigin(new Point((int)origin.getCenterX(), (int)origin.getCenterY()));
 
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("AutoTrackWindowController.fxml"));
-			BorderPane root = (BorderPane) loader.load();
+		// find somewhere to call. should not be here in confirm
 
-			Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
-			nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		// project.getVideo().setArenaBounds(mouseDragRect);
+		// project.getVideo().setOrigin(new Point((int)origin.getCenterX(),
+		// (int)origin.getCenterY()));
+		
+		
 
-			Stage primary = (Stage) confirmButton.getScene().getWindow();
-			primary.setScene(nextScene);
-			primary.setTitle("Auto Tracking Window");
-			primary.show();
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("AutoTrackWindowController.fxml"));
+		BorderPane root = (BorderPane) loader.load();
 
-			System.out.println(project.getVideo());
-			AutoTrackWindowController controller = loader.getController();
-			controller.initializeWithStage(primary);
-			controller.setup(project);
-	//	}
+		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
+		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+		Stage primary = (Stage) confirmButton.getScene().getWindow();
+		primary.setScene(nextScene);
+		primary.setTitle("Auto Tracking Window");
+		primary.show();
+
+		System.out.println(project.getVideo());
+		AutoTrackWindowController controller = loader.getController();
+		controller.initializeWithStage(primary);
+		controller.setup(project);
+		// }
 	}
 
 	@FXML
@@ -192,9 +229,8 @@ public class CalibrationWindowController {
 		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
 		calibrationInstruction.setTitle("Instructions for Calibration");
 		calibrationInstruction.setHeaderText(null);
-		calibrationInstruction
-				.setContentText("Click and drag your mouse to draw the space that the chicks will be"
-						+ " tracked within.");
+		calibrationInstruction.setContentText(
+				"Click and drag your mouse to draw the space that the chicks will be" + " tracked within.");
 		calibrationInstruction.showAndWait();
 	}
 
@@ -226,10 +262,11 @@ public class CalibrationWindowController {
 			drawingBoard.getChildren().add(origin);
 		}
 	}
-
+	
+	
 	@FXML
 	public void handleMouseReleased(MouseEvent event) {
-	
+
 	}
 
 	@FXML
@@ -243,12 +280,12 @@ public class CalibrationWindowController {
 	@FXML
 	public void handleSetActualLengthButton() {
 		isSettingOrigin = false;
-	
+
 		if (mouseDragRect != null) {
 			ArrayList<String> choices = new ArrayList();
 			choices.add("Vertical");
 			choices.add("Horizon");
-	
+
 			ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
 			dialog.setHeaderText("Set up actual length");
 			Optional<String> result = dialog.showAndWait();
@@ -262,18 +299,20 @@ public class CalibrationWindowController {
 				}
 			}
 		}
-	
+
 	}
 
 	@FXML
 	public void handleSetOriginButton() {
 		isSettingOrigin = true;
-	
+		if (origin != null) {
+			project.getVideo().setOrigin(new Point((int) origin.getCenterX(), (int) origin.getCenterY()));
+		}
 	}
 
 	@FXML
 	public void handleSlider() {
-	
+
 	}
 
 	@FXML

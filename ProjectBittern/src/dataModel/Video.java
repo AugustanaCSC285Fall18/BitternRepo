@@ -21,8 +21,8 @@ public class Video {
 	private int startFrameNum;
 	private int endFrameNum;
 	
-	private static double xPixelsPerCm;
-	private  static double yPixelsPerCm;
+	private double xPixelsPerCm;
+	private double yPixelsPerCm;
 	private Point origin = new Point();
 	private Rectangle arenaBounds; 
 	private int stepSize;
@@ -104,11 +104,11 @@ public class Video {
 		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_COUNT);
 	}
 
-	public static double getXPixelsPerCm() {
+	public  double getXPixelsPerCm() {
 		return xPixelsPerCm;
 	}
 
-	public static double getYPixelsPerCm() {
+	public  double getYPixelsPerCm() {
 		return yPixelsPerCm;
 	}
 

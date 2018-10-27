@@ -32,17 +32,17 @@ public class DataExporter {
 		}
 	}
 	
-	public static String getPositionsPerSecond(AnimalTrack tracks, Video video) {
-		String output = "";
-		for (int i = 0; i < tracks.getSize(); i++) {
-			int frameNum = tracks.getTimePointAtIndex(i).getFrameNum();
-			output += "Time: " + video.getTime(frameNum) + ", Position: (" 
-					+ (int) tracks.getTimePointAtIndex(i).getX() + ", " 
-					+ (int) tracks.getTimePointAtIndex(i).getY() + ")\n";
-		}
-		return output;
-	}
-	
-	
+//	public static String getPositionsPerSecond(AnimalTrack tracks, Video video) {
+//		String output = "";
+//		for (int i = 0; i < tracks.getSize(); i++) {
+//			int frameNum = tracks.getTimePointAtIndex(i).getFrameNum();
+//			output += "Time: " + video.getTime(frameNum) + ", Position: (" 
+//					+ (int) tracks.getTimePointAtIndex(i).getX() + ", " 
+//					+ (int) tracks.getTimePointAtIndex(i).getY() + ")\n";
+//		}
+//		return output;
+//	}
+//	
+//	
 	
 }

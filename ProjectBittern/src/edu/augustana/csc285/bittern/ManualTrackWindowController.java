@@ -95,8 +95,8 @@ public class ManualTrackWindowController {
 			currentTimePoint = new TimePoint(event.getX(), event.getY(), 
 					project.getVideo().getCurrentFrameNum());
 			
-			if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
-					&& project.getVideo().timeWithinBounds()) {
+			//if (project.getVideo().getArenaBounds().contains(currentTimePoint.getPoint2D())
+					//&& project.getVideo().timeWithinBounds()) {
 				drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 				currentTrack.add(currentTimePoint);
 				drawPoint(currentTimePoint);
@@ -106,8 +106,8 @@ public class ManualTrackWindowController {
 					tracksBox.setPromptText("Posible Autotracks!");
 					handleTracksBox();
 				}
-			}
-			//jump(1); we won't jump for now
+		//	}
+			//jump(1); //we won't jump for now
 		});	
 	
 	}
