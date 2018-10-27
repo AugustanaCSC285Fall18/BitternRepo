@@ -39,10 +39,9 @@ public class Video {
 		this.startFrameNum = 0;
 		this.endFrameNum = this.getTotalNumFrames()-1;
 		this.stepSize = 1;
-		
-		int frameWidth = (int)vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
-		int frameHeight = (int)vidCap.get(Videoio.CAP_PROP_FRAME_HEIGHT);
-		this.arenaBounds = new Rectangle(0,0,frameWidth,frameHeight);
+		this.xPixelsPerCm = 6.5;
+		this.yPixelsPerCm = 6.5;
+		this.arenaBounds = new Rectangle(0,0,this.getFrameWidth(),this.getFrameHeight());
 	}
 		
 	public Rectangle getDefaultArenaBounds() {
@@ -54,6 +53,7 @@ public class Video {
 	public Rectangle getArenaBounds() {
 		return arenaBounds;
 	}
+	
 
 	public double getAvgPixelsPerCm() {
 		return (xPixelsPerCm + yPixelsPerCm)/2;
@@ -62,6 +62,15 @@ public class Video {
 
 	public synchronized int getCurrentFrameNum() {
 		return (int) vidCap.get(Videoio.CAP_PROP_POS_FRAMES);
+	}
+	
+
+	public synchronized int getFrameWidth() {
+		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_WIDTH);
+	}
+
+	public synchronized int getFrameHeight() {
+		return (int) vidCap.get(Videoio.CAP_PROP_FRAME_HEIGHT);
 	}
 		
 	public int getEmptyFrameNum() {
