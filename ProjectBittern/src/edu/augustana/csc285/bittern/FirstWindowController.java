@@ -26,6 +26,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -33,6 +34,7 @@ import utils.UtilsForOpenCV;
 
 public class FirstWindowController implements AutoTrackListener {
 
+	@FXML private Pane paneHoldingCanvas;
 	@FXML private BorderPane drawingBoard;
 	@FXML private Button backButton;
 	@FXML private Button confirmButton;
@@ -78,8 +80,10 @@ public class FirstWindowController implements AutoTrackListener {
 	
 	public void initializeWithStage(Stage stage) {
 		videoGC = videoCanvas.getGraphicsContext2D();
-		videoCanvas.widthProperty().bind(backButton.getScene().widthProperty());
-		videoCanvas.heightProperty().bind(backButton.getScene().heightProperty());
+		videoCanvas.widthProperty().bind(paneHoldingCanvas.widthProperty());
+		videoCanvas.heightProperty().bind(paneHoldingCanvas.heightProperty());
+		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
+		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 	}
 
 	

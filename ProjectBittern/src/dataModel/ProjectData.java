@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+//import com.google.gson.Gson;
+//import com.google.gson.GsonBuilder;
 
 public class ProjectData {
 	private Video video;
@@ -138,7 +138,7 @@ public class ProjectData {
 	}
 	
 	
-	public void saveToFile(File saveFile) throws FileNotFoundException {
+	/*public void saveToFile(File saveFile) throws FileNotFoundException {
 		String json = toJSON();
 		PrintWriter out = new PrintWriter(saveFile);
 		out.print(json);
@@ -160,6 +160,6 @@ public class ProjectData {
 		ProjectData data = gson.fromJson(jsonText, ProjectData.class);
 		data.getVideo();
 		return data;
-	}
+	}*/
 
 }
