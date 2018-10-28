@@ -3,6 +3,7 @@ package dataModel;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataExporter {
@@ -45,11 +46,22 @@ public class DataExporter {
 		}
 		return output;
 	}
-	
-	
-	
-	
 
-	
+	public static List<TimePoint> getCalibratedPositions(AnimalTrack track, Video video, TimePoint origin) {
+		List<TimePoint> calibratedTimePoints = new ArrayList<>();
+		
+		for (int i = 0; i < track.getPositions().size(); i++) {
+			TimePoint currentPoint = track.getPositions().get(i);
+			double newX = currentPoint.getX() / video.getXPixelsPerCm();
+			double newY = currentPoint.getY() / video.getYPixelsPerCm();
+				
+			newX -= origin.getX();
+			newY -= origin.getY();
+			calibratedTimePoints.add(new TimePoint(newX,newY,currentPoint.getFrameNum()));
+		}
+
+		return calibratedTimePoints;
+	}
+
 	
 }

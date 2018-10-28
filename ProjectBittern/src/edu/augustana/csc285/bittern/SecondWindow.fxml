@@ -16,54 +16,36 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800.0" prefWidth="750.0"
-	xmlns="http://javafx.com/javafx/8.0.171"
-	xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="edu.augustana.csc285.bittern.SecondWindowController">
+<BorderPane prefHeight="800.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.SecondWindowController">
 	<center>
-		<VBox prefHeight="200.0" prefWidth="100.0"
-			BorderPane.alignment="CENTER">
+		<VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
 			<children>
 				<MenuBar>
 					<menus>
 						<Menu mnemonicParsing="false" text="File">
 							<items>
-								<MenuItem mnemonicParsing="false"
-									onAction="#menuFileExit" text="Close" />
-								<MenuItem mnemonicParsing="false"
-									onAction="#menuFileSave" text="Save" />
-									<MenuItem mnemonicParsing="false"
-									onAction="#menuFileOpen" text="Open" />
+								<MenuItem mnemonicParsing="false" onAction="#menuFileExit" text="Close" />
+								<MenuItem mnemonicParsing="false" onAction="#menuFileSave" text="Save" />
+									<MenuItem mnemonicParsing="false" onAction="#menuFileOpen" text="Open" />
 							</items>
 						</Menu>
 						<Menu mnemonicParsing="false" text="Calibration Tool">
 							<items>
-								<MenuItem mnemonicParsing="false"
-									onAction="#menuCalibrationToolShowCoordiateSystem"
-									text="Show Coordinate System" />
-								<MenuItem mnemonicParsing="false"
-									onAction="#menuCalibrationToolHideCoordiateSystem"
-									text="Hide Coordinate System" />
-								<MenuItem mnemonicParsing="false"
-									onAction="#menuCalibrationToolShowArenaBound"
-									text="Show Arena Bound" />
-								<MenuItem mnemonicParsing="false"
-									onAction="#menuCalibrationToolHideArenaBound"
-									text="Hide Arena Bound" />
+								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationToolShowCoordiateSystem" text="Show Coordinate System" />
+								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationToolHideCoordiateSystem" text="Hide Coordinate System" />
+								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationToolShowArenaBound" text="Show Arena Bound" />
+								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationToolHideArenaBound" text="Hide Arena Bound" />
 							</items>
 						</Menu>
 						<Menu mnemonicParsing="false" text="Help">
 							<items>
-								<MenuItem mnemonicParsing="false"
-									onAction="#menuHelpInstruction" text="Instruction" />
-								<MenuItem mnemonicParsing="false"
-									onAction="#menuHelpAbout" text="About" />
+								<MenuItem mnemonicParsing="false" onAction="#menuHelpInstruction" text="Instruction" />
+								<MenuItem mnemonicParsing="false" onAction="#menuHelpAbout" text="About" />
 							</items>
 						</Menu>
 					</menus>
 				</MenuBar>
-				<Pane fx:id="paneHoldingVideoCanvas" prefHeight="559.0"
-					prefWidth="750.0">
+				<Pane fx:id="paneHoldingVideoCanvas" prefHeight="559.0" prefWidth="750.0">
 					<children>
 						<Canvas fx:id="videoCanvas" height="200.0" width="200.0" />
 					</children>
@@ -74,98 +56,60 @@
 		</VBox>
 	</center>
 	<bottom>
-		<AnchorPane prefHeight="200.0" prefWidth="200.0"
-			BorderPane.alignment="CENTER">
+		<AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 			<children>
-				<Button fx:id="exportButton" layoutX="686.0" layoutY="153.0"
-					mnemonicParsing="false" onAction="#handleExport" text="Export" />
-				<Button fx:id="backButton" layoutX="14.0" layoutY="153.0"
-					mnemonicParsing="false" onAction="#handleBack" text="Back" />
-				<GridPane layoutX="490.0" layoutY="47.0" prefHeight="81.0"
-					prefWidth="246.0">
+				<Button fx:id="exportButton" layoutX="686.0" layoutY="153.0" mnemonicParsing="false" onAction="#handleExport" text="Export" />
+				<Button fx:id="backButton" layoutX="14.0" layoutY="153.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
+				<GridPane layoutX="490.0" layoutY="47.0" prefHeight="81.0" prefWidth="246.0">
 					<columnConstraints>
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 					</columnConstraints>
 					<rowConstraints>
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
-						<ComboBox fx:id="tracksBox" onAction="#handleTracksBox"
-							prefHeight="25.0" prefWidth="115.0" promptText="Autotracks"
-							GridPane.rowIndex="1" />
-						<Button fx:id="addTrackButton" mnemonicParsing="false"
-							onAction="#handleAddTrack" prefHeight="25.0" prefWidth="115.0"
-							text="Add AutoTrack" GridPane.columnIndex="1"
-							GridPane.rowIndex="1" />
-						<Button fx:id="removeTrackButton" mnemonicParsing="false"
-							onAction="#handleRemoveAutoTrack" prefWidth="115.0"
-							text="Remove AutoTrack" GridPane.columnIndex="1" />
-						<ComboBox fx:id="usedTracksBox" prefWidth="115.0"
-							promptText="Used Tracks" />
-						<ComboBox fx:id="chicksBox" onAction="#handleChicksBox"
-							prefHeight="25.0" prefWidth="115.0" promptText="Current Chick"
-							visibleRowCount="3" GridPane.rowIndex="2" />
+						<ComboBox fx:id="tracksBox" onAction="#handleTracksBox" prefHeight="25.0" prefWidth="115.0" promptText="Autotracks" GridPane.rowIndex="1" />
+						<Button fx:id="addTrackButton" mnemonicParsing="false" onAction="#handleAddAutoTrack" prefHeight="25.0" prefWidth="115.0" text="Add AutoTrack" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+						<Button fx:id="removeTrackButton" mnemonicParsing="false" onAction="#handleRemoveAutoTrack" prefWidth="115.0" text="Remove AutoTrack" GridPane.columnIndex="1" />
+						<ComboBox fx:id="usedTracksBox" prefWidth="115.0" promptText="Used Tracks" />
+						<ComboBox fx:id="chicksBox" onAction="#handleChicksBox" prefHeight="25.0" prefWidth="115.0" promptText="Current Chick" visibleRowCount="3" GridPane.rowIndex="2" />
 					</children>
 				</GridPane>
-				<GridPane layoutX="227.0" layoutY="10.0" prefHeight="30.0"
-					prefWidth="269.0">
+				<GridPane layoutX="227.0" layoutY="10.0" prefHeight="30.0" prefWidth="269.0">
 					<columnConstraints>
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 					</columnConstraints>
 					<rowConstraints>
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							valignment="CENTER" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
-						<Button fx:id="playButton" mnemonicParsing="false"
-							onAction="#handlePlay" prefHeight="25.0" prefWidth="80.0"
-							text="Play" GridPane.columnIndex="1" />
-						<Button fx:id="nextButton" mnemonicParsing="false"
-							onAction="#handleNext" prefWidth="80.0" text="Forward"
-							GridPane.columnIndex="2" />
-						<Button fx:id="previousButton" minWidth="60.0"
-							mnemonicParsing="false" onAction="#handlePrevious"
-							prefHeight="25.0" prefWidth="80.0" text="Previous" />
+						<Button fx:id="playButton" mnemonicParsing="false" onAction="#handlePlay" prefHeight="25.0" prefWidth="80.0" text="Play" GridPane.columnIndex="1" />
+						<Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext" prefWidth="80.0" text="Forward" GridPane.columnIndex="2" />
+						<Button fx:id="previousButton" minWidth="60.0" mnemonicParsing="false" onAction="#handlePrevious" prefHeight="25.0" prefWidth="80.0" text="Previous" />
 					</children>
 				</GridPane>
 				<GridPane layoutX="14.0" layoutY="14.0">
 					<columnConstraints>
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
 					</columnConstraints>
 					<rowConstraints>
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
-						<Label fx:id="endFrameLabel" prefHeight="17.0"
-							prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-						<Label fx:id="currentFrameLabel" prefHeight="17.0"
-							prefWidth="60.0" GridPane.columnIndex="1" />
+						<Label fx:id="endFrameLabel" prefHeight="17.0" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+						<Label fx:id="currentFrameLabel" prefHeight="17.0" prefWidth="60.0" GridPane.columnIndex="1" />
 						<Label text="Current Time: " />
 						<Label text="Start Time: " GridPane.rowIndex="1" />
 						<Label text="End Time: " GridPane.rowIndex="2" />
-						<Label fx:id="startFrameLabel" prefHeight="17.0"
-							prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+						<Label fx:id="startFrameLabel" prefHeight="17.0" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 					</children>
 				</GridPane>
 			</children>
