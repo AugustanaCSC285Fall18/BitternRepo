@@ -473,8 +473,4 @@ public class FirstWindowController implements AutoTrackListener {
 		calibrationInstruction.showAndWait();
 	}
 	
-	
-	
-	
-
 }
