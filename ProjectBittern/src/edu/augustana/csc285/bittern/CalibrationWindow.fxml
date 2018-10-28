@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="800" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.augustana.csc285.bittern.CalibrationWindowController">
+   <top>
+      <BorderPane prefHeight="15.0" BorderPane.alignment="CENTER">
+         <right>
+            <Label prefHeight="17.0" prefWidth="85.0" text="Setup" BorderPane.alignment="CENTER" />
+         </right>
+         <left>
+            <Button fx:id="instruction" maxHeight="17.0" mnemonicParsing="false" onAction="#handleInstruction" prefHeight="17.0" prefWidth="22.0" text="?" BorderPane.alignment="CENTER" />
+         </left>
+      </BorderPane>
+   </top>
+   <center>
+      <VBox prefHeight="676.0" prefWidth="761.0" BorderPane.alignment="CENTER">
+         <children>
+            <BorderPane fx:id="drawingBoard" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" onMouseReleased="#handleMouseReleased">
+               <center>
+                  <ImageView fx:id="videoView" onMouseClicked="#getPoint" pickOnBounds="true" preserveRatio="true" />
+               </center>
+            </BorderPane>
+            <Slider fx:id="sliderBar" onDragDetected="#handleSlider" />
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="confirmButton" layoutX="673.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleConfirm" text="Confirm" />
+            <Button fx:id="backButton" layoutX="35.0" layoutY="157.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
+            <Label fx:id="showActualLengthY" layoutX="516.0" layoutY="77.0" prefHeight="17.0" prefWidth="202.0" text="Actual Vertical Length : " />
+            <Label fx:id="showActualLengthX" layoutX="515.0" layoutY="52.0" prefHeight="14.0" prefWidth="203.0" text="Actual Horizontal Length: " />
+            <ComboBox fx:id="stepBox" layoutX="35.0" layoutY="27.0" onAction="#handleStepBox" prefHeight="25.0" prefWidth="105.0" promptText="Time Step" />
+            <ComboBox fx:id="chicksBox" layoutX="35.0" layoutY="73.0" prefHeight="25.0" prefWidth="105.0" promptText="Chicks" />
+            <TextField fx:id="nameField" layoutX="159.0" layoutY="73.0" onAction="#handleName" prefHeight="25.0" prefWidth="103.0" promptText="chick name" />
+            <Button fx:id="originButton" layoutX="367.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleSetOriginButton" text="Set Origin" />
+            <Button fx:id="setAcutalLengthButton" layoutX="515.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleSetActualLengthButton" text="Set up actual length" />
+         </children>
+      </AnchorPane>
+   </bottom>
+</BorderPane>

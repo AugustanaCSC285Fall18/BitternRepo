@@ -33,25 +33,20 @@ public class DataExporter {
 			}
 		}
 	}
-		
+	
 	private static String getResult(AnimalTrack tracks, Video video) {
 		String output = "";	
-		TimePoint origin = new TimePoint(video.getOrigin().getX() / video.getXPixelsPerCm(),
-				video.getOrigin().getY() / video.getYPixelsPerCm(), 0) ;
-		
-		List<TimePoint> positions = getCalibratedPositions(tracks, video, origin);
-		for (int i = 0; i < positions.size(); i++) {
-			TimePoint currentPoint = positions.get(i);
+		List<TimePoint> timePoint = ProjectData.getCalibratedPosition(tracks, video);
+		for (int i = 0; i < timePoint.size(); i++) {
+			int frameNum = timePoint.get(i).getFrameNum();
+			output += "Time: " + video.getTime(frameNum) + ", Position in centimeters: (" 
+					+ (int) timePoint.get(i).getX() + ", " 
+					+ (int) timePoint.get(i).getY() + ")\n";
 			
-			output += "Time: " + video.getTime(currentPoint.getFrameNum()) 
-					+ ", Position in centimeters: (" 
-					+ (int) currentPoint.getX() + ", " 
-					+ (int) currentPoint.getY() + ")\nDistance from origin: "
-					+ currentPoint.getDistanceTo(origin) + " cm\n";
 		}
 		return output;
 	}
-	
+
 	public static List<TimePoint> getCalibratedPositions(AnimalTrack track, Video video, TimePoint origin) {
 		List<TimePoint> calibratedTimePoints = new ArrayList<>();
 		
@@ -67,5 +62,6 @@ public class DataExporter {
 
 		return calibratedTimePoints;
 	}
+
 	
 }

@@ -24,13 +24,16 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import utils.UtilsForOpenCV;
 
 /**
@@ -59,6 +62,7 @@ public class SecondWindowController {
 	@FXML private ComboBox<String> chicksBox;
 	@FXML private ComboBox<AnimalTrack> tracksBox;
 	@FXML private ComboBox<AnimalTrack> usedTracksBox;
+	@FXML private MenuBar myMenuBar;
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -66,6 +70,7 @@ public class SecondWindowController {
 	private GraphicsContext progressGC;
 	private AnimalTrack currentTrack;
 	private double frameWidthRatio;
+	private File chosenFile;
 	
 
 	public static final Color[] TRACK_COLORS = new Color[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN,
@@ -433,8 +438,13 @@ public class SecondWindowController {
 		project.saveToFile(output);
 	}
 	
-	@FXML public void menuFileOpen() {
-		//open method goes here 
+	@FXML public void menuFileOpen() throws FileNotFoundException {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Progress File");
+		Window window = myMenuBar.getScene().getWindow();
+		chosenFile = fileChooser.showOpenDialog(window);
+		project = project.loadFromFile(chosenFile);
+		//call setup() and adjust code to work for file opening
 	}
 
 	@FXML

@@ -2,3 +2,6 @@
 *.mp4
 *.avi
 *.csv
+*.txt
+*.log
+*.json
