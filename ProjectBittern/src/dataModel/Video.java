@@ -202,6 +202,14 @@ public class Video {
 		}
 		return false;
 	}
+	
+	public boolean timeRelativelyWithinBounds() {
+		if (Math.abs(this.getCurrentFrameNum() - this.endFrameNum) < this.getFrameRate()
+				&& Math.abs(this.getCurrentFrameNum() - this.startFrameNum) < this.getFrameRate()) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public String toString() {

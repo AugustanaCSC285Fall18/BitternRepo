@@ -115,6 +115,14 @@ public class FirstWindowController implements AutoTrackListener {
 	public void setup(ProjectData project) {
 		try {
 			this.project = project;
+			
+			chicksBox.getItems().clear();
+			if (project.getTracks().size() > 0) {
+				nextButton.setDisable(false);
+				for (AnimalTrack track : project.getTracks()) {
+					chicksBox.getItems().add(track.getID());
+				}
+			}
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 

@@ -64,7 +64,7 @@
                <children>
                   <ComboBox fx:id="tracksBox" onAction="#handleTracksBox" prefHeight="25.0" prefWidth="115.0" promptText="Autotracks" GridPane.rowIndex="1" />
                   <Button fx:id="addTrackButton" mnemonicParsing="false" onAction="#handleAddTrack" prefHeight="25.0" prefWidth="115.0" text="Add AutoTrack" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button fx:id="removeTrackButton" mnemonicParsing="false" onAction="#handleRemoveTrack" prefWidth="115.0" text="Remove AutoTrack" GridPane.columnIndex="1" />
+                  <Button fx:id="removeTrackButton" mnemonicParsing="false" onAction="#handleRemoveAutoTrack" prefWidth="115.0" text="Remove AutoTrack" GridPane.columnIndex="1" />
                   <ComboBox fx:id="usedTracksBox" prefWidth="115.0" promptText="Used Tracks" />
                   <ComboBox fx:id="chicksBox" onAction="#handleChicksBox" prefHeight="25.0" prefWidth="115.0" promptText="Current Chick" visibleRowCount="3" GridPane.rowIndex="2" />
                </children>
