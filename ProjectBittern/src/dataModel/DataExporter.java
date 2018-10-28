@@ -3,6 +3,7 @@ package dataModel;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 public class DataExporter {
 
@@ -15,7 +16,7 @@ public class DataExporter {
 			for (AnimalTrack track : project.getTracks()) {
 				fWriter.append(track.getID());
 				fWriter.append("\n");
-				fWriter.append(getPixelPositionsPerSecond(track, project.getVideo()));
+				fWriter.append(getsth(track, project.getVideo()));
 			}
 			System.out.println("CSV file was created successfully !!!");	
 		} catch (Exception e) {
@@ -30,6 +31,19 @@ public class DataExporter {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private static String getsth(AnimalTrack tracks, Video video) {
+		String output = "";	
+		List<TimePoint> timePoint = ProjectData.getCalibratedPosition(tracks, video);
+		for (int i = 0; i < timePoint.size(); i++) {
+			int frameNum = timePoint.get(i).getFrameNum();
+			output += "Time: " + video.getTime(frameNum) + ", Position: (" 
+					+ (int) timePoint.get(i).getX() + ", " 
+					+ (int) timePoint.get(i).getY() + ")\n";
+			
+		}
+		return output;
 	}
 	
 	private static String getPixelPositionsPerSecond(AnimalTrack tracks, Video video) {

@@ -157,6 +157,33 @@ public class ProjectData {
 
 		return closestTrack;
 	}
+	
+	
+	  public static List<TimePoint> getCalibratedPosition(AnimalTrack track, Video video){
+	 
+		List<TimePoint> calibratedTimePoint = track.getPositions();
+		for(int i =  0; i < track.getPositions().size(); i++) {
+			if(track.getPositions().get(i).getX() > video.getOrigin().getX()
+					&& track.getPositions().get(i).getX() > video.getOrigin().getX()) {
+				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())/video.getXPixelsPerCm());
+				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())/video.getYPixelsPerCm());
+			}else if(track.getPositions().get(i).getX() > video.getOrigin().getX()
+					&& track.getPositions().get(i).getY() > video.getOrigin().getY()){
+				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())/video.getXPixelsPerCm());
+				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())/video.getYPixelsPerCm());
+			}else if(track.getPositions().get(i).getX() < video.getOrigin().getX()
+					&& track.getPositions().get(i).getX() < video.getOrigin().getX()) {
+				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())/video.getXPixelsPerCm());
+				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())/video.getYPixelsPerCm());
+			}else {
+				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())/video.getXPixelsPerCm());
+				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())/video.getYPixelsPerCm());
+			}
+			
+		}
+		
+		return calibratedTimePoint;
+	} 
 
 
 //	public void saveToFile(File saveFile) throws FileNotFoundException {

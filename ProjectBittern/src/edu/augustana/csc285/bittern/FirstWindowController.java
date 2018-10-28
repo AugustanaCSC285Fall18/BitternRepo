@@ -111,6 +111,10 @@ public class FirstWindowController implements AutoTrackListener {
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		
+		//Still cant work property
+		paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> setUpAxis());
+		paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> setUpAxis());
+		
 		//remove debugging code
 		System.out.println(videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
 				+ videoCanvas.getLayoutY());
@@ -325,6 +329,7 @@ public class FirstWindowController implements AutoTrackListener {
 		yAxis.setStroke(Color.BLUE);
 		xAxis.setStrokeWidth(3.0f);
 		yAxis.setStrokeWidth(3.0f);
+		
 		
 	}
 
