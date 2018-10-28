@@ -26,6 +26,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -38,7 +40,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import utils.UtilsForOpenCV;
 
 public class FirstWindowController implements AutoTrackListener {
@@ -79,16 +83,18 @@ public class FirstWindowController implements AutoTrackListener {
 	private ProgressBar progressAutoTrack;
 	@FXML
 	private TextField nameField;
+	@FXML
+	private MenuBar myMenuBar;
 
 	private AutoTracker autotracker;
 	private GraphicsContext videoGC;
 	private ProjectData project;
 	private Rectangle mouseDragRect;
 	private Point startPoint;
+
 	private Circle origin;
 	private Line xAxis;
 	private Line yAxis;
-
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false;
 
@@ -300,6 +306,15 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	@FXML
+	public void handleMouseReleased(MouseEvent event) {
+		// set arenabound of the video
+		project.getVideo().setArenaBounds(new Rectangle(mouseDragRect.getX() / getImageScalingRatio(),
+				mouseDragRect.getY() / getImageScalingRatio(), mouseDragRect.getWidth() / getImageScalingRatio(),
+				mouseDragRect.getHeight() / getImageScalingRatio()));
+
+	}
+
+	@FXML
 	public void handleMousePressed(MouseEvent event) {
 		if (isAbleToSetArena) {
 			if (mouseDragRect != null) {
@@ -310,12 +325,9 @@ public class FirstWindowController implements AutoTrackListener {
 			mouseDragRect.setFill(null);
 			mouseDragRect.setStroke(Color.RED);
 			mouseDragRect.setStrokeWidth(5.0f);
-			//set arenabound of the video
-			project.getVideo().setArenaBounds(new Rectangle(mouseDragRect.getX() / getImageScalingRatio(),
-			mouseDragRect.getY() / getImageScalingRatio()));
-			
-			//make it show up on the screen 
+			// make it show up on the screen
 			paneHoldingVideoCanvas.getChildren().add(mouseDragRect);
+
 		} else if (isAbleToSetOrigin) {
 			if (origin != null) {
 				paneHoldingVideoCanvas.getChildren().remove(origin);
@@ -324,17 +336,20 @@ public class FirstWindowController implements AutoTrackListener {
 			}
 			origin = new Circle(event.getX(), event.getY(), 5, Color.BLUE);
 			setUpAxis();
-			
-			//set the origin, xAxis and yAxis of the Video
+
+			// set the origin, xAxis and yAxis of the Video
 			project.getVideo().setOrigin(new Point((int) (origin.getCenterX() / getImageScalingRatio()),
-			(int) (origin.getCenterY() / getImageScalingRatio())));
-			project.getVideo().setXAxis(new Line (xAxis.getStartX()/getImageScalingRatio(), xAxis.getStartY()/getImageScalingRatio() , xAxis.getEndX()/getImageScalingRatio(), 
-					xAxis.getEndY()/getImageScalingRatio()));
-			project.getVideo().setYAxis(new Line (yAxis.getStartX()/getImageScalingRatio(), yAxis.getStartY()/getImageScalingRatio() , yAxis.getEndX()/getImageScalingRatio(), 
-					yAxis.getEndY()/getImageScalingRatio()));			
-			
-			
-			//make it show up on the screen 
+					(int) (origin.getCenterY() / getImageScalingRatio())));
+			project.getVideo()
+					.setXAxis(new Line(xAxis.getStartX() / getImageScalingRatio(),
+							xAxis.getStartY() / getImageScalingRatio(), xAxis.getEndX() / getImageScalingRatio(),
+							xAxis.getEndY() / getImageScalingRatio()));
+			project.getVideo()
+					.setYAxis(new Line(yAxis.getStartX() / getImageScalingRatio(),
+							yAxis.getStartY() / getImageScalingRatio(), yAxis.getEndX() / getImageScalingRatio(),
+							yAxis.getEndY() / getImageScalingRatio()));
+
+			// make it show up on the screen
 			paneHoldingVideoCanvas.getChildren().add(origin);
 			paneHoldingVideoCanvas.getChildren().add(xAxis);
 			paneHoldingVideoCanvas.getChildren().add(yAxis);
@@ -409,22 +424,29 @@ public class FirstWindowController implements AutoTrackListener {
 		Platform.exit();
 	}
 
-	/**
-	 * menuFileSave saves users' progress
-	 */
 	@FXML
 	public void menuFileSave() throws FileNotFoundException {
-		File saveFile = new File(project.getVideo().getFilePath());
-		File output = new File("output." + saveFile.getName() + ".txt");
-		project.saveToFile(output);
+		try {
+			File saveFile = new File(project.getVideo().getFilePath());
+			File output = new File("output." + saveFile.getName() + ".json");
+			project.saveToFile(output);
+			System.out.println("File was saved successfully!");
+		} catch (Exception e) {
+			System.out.println("File was not saved successfully!");
+			e.printStackTrace();
+		}
+
 	}
 
 	@FXML
-	public void menuFileOpen() {
-		// open method goes here
-	}
+	public void menuFileOpen() throws FileNotFoundException {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Progress File");
+		Window window = myMenuBar.getScene().getWindow();
+		File chosenFile = fileChooser.showOpenDialog(window);
+		project = project.loadFromFile(chosenFile);
 
-	// CALIBRATION TOOL
+	}
 
 	/*
 	 * menuCalibrationSetArenaBounds

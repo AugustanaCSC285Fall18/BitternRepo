@@ -24,55 +24,44 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+
 import javafx.scene.shape.Line;
+
+import javafx.stage.FileChooser;
+
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import utils.UtilsForOpenCV;
 import javafx.scene.shape.Rectangle;
 
 public class SecondWindowController {
 
-	@FXML
-	private Pane paneHoldingVideoCanvas;
-	@FXML
-	private Button addTrackButton;
-	@FXML
-	private Button backButton;
-	@FXML
-	private Button exportButton;
-	@FXML
-	private Button nextButton;
-	@FXML
-	private Button playButton;
-	@FXML
-	private Button previousButton;
-	@FXML
-	private Button removeTrackButton;
-	@FXML
-	private Button showCurrentPathButton;
-	@FXML
-	private Canvas videoCanvas;
-	@FXML
-	private Canvas progressCanvas;
-	@FXML
-	private Label currentFrameLabel;
-	@FXML
-	private Label endFrameLabel;
-	@FXML
-	private Label startFrameLabel;
-	@FXML
-	private Slider sliderBar;
-	@FXML
-	private ComboBox<String> chicksBox;
-	@FXML
-	private ComboBox<AnimalTrack> tracksBox;
-	@FXML
-	private ComboBox<AnimalTrack> usedTracksBox;
+	@FXML private Pane paneHoldingVideoCanvas;
+	@FXML private Button addTrackButton;
+	@FXML private Button backButton;
+	@FXML private Button exportButton;
+	@FXML private Button nextButton;
+	@FXML private Button playButton;
+	@FXML private Button previousButton;
+	@FXML private Button removeTrackButton;
+	@FXML private Button showCurrentPathButton;
+	@FXML private Canvas videoCanvas;
+	@FXML private Canvas progressCanvas;
+	@FXML private Label currentFrameLabel;
+	@FXML private Label endFrameLabel;
+	@FXML private Label startFrameLabel;
+	@FXML private Slider sliderBar;
+	@FXML private ComboBox<String> chicksBox;
+	@FXML private ComboBox<AnimalTrack> tracksBox;
+	@FXML private ComboBox<AnimalTrack> usedTracksBox;
+	@FXML private MenuBar myMenuBar;
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -81,11 +70,18 @@ public class SecondWindowController {
 	private AnimalTrack currentTrack;
 	private double frameWidthRatio;
 
+
 	private Rectangle arenaBound;
 	private Circle origin;
 	private Line xAxis;
 	private Line yAxis;
 
+	private File chosenFile;
+	
+
+
+	public static final Color[] TRACK_COLORS = new Color[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN,
+			Color.MAGENTA, Color.BLUEVIOLET, Color.ORANGE };
 	@FXML
 	public void initialize() {
 		sliderBar.valueProperty().addListener((obs, oldV, newV) -> displayFrame(newV.intValue()));
@@ -133,10 +129,9 @@ public class SecondWindowController {
 
 	public void setupClick() {
 		videoCanvas.setOnMouseClicked((event) -> {
-			// if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(),
-			// event.getY()))
-			// && project.getVideo().timeWithinBounds()) {
-			if (project.getVideo().timeRelativelyWithinBounds()) {
+
+			if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
+					&& project.getVideo().timeRelativelyWithinBounds()) {
 				int curFrameNum = project.getVideo().getCurrentFrameNum();
 				double scalingRatio = getImageScalingRatio();
 				double unscaledX = event.getX() / scalingRatio;
@@ -222,8 +217,9 @@ public class SecondWindowController {
 		if (tracksBox.getItems().size() != 0) {
 			AnimalTrack autoTrack = tracksBox.getValue();
 			currentTrack.add(autoTrack.getPositions());
-			tracksBox.getItems().remove(autoTrack);
 			usedTracksBox.getItems().add(autoTrack);
+			project.getUnassignedSegments().remove(autoTrack); //hmmn
+			tracksBox.getItems().remove(autoTrack);
 			refillProgressCanvas();
 			tracksBox.setStyle("");
 		}
@@ -235,6 +231,7 @@ public class SecondWindowController {
 			AnimalTrack autoTrack = usedTracksBox.getValue();
 			currentTrack.remove(autoTrack.getPositions());
 			usedTracksBox.getItems().remove(autoTrack);
+			project.getUnassignedSegments().add(autoTrack);
 			refillProgressCanvas();
 			findAutoTracks();
 		}
@@ -254,7 +251,7 @@ public class SecondWindowController {
 	public void handleTracksBox() {
 		double scalingRatio = getImageScalingRatio();
 		if (tracksBox.getValue() != null) {
-			videoGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+			videoGC.setFill(Color.DARKBLUE);
 			for (TimePoint point : tracksBox.getValue().getPositions()) {
 				videoGC.fillOval(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
 			}
@@ -262,19 +259,13 @@ public class SecondWindowController {
 	}
 
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
-		for (int i = 0; i < project.getTracks().size(); i++) {
-			AnimalTrack track = project.getTracks().get(i);
-			Color trackColor = Color.color(Math.random(), Math.random(), Math.random());
-			Color trackPrevColor = trackColor.deriveColor(0, 0.5, 1.5, 1.0); // subtler variant
-			videoGC.setFill(trackPrevColor);
-			for (TimePoint prevPt : track.getTimePointsWithinInterval(frameNum - 90, frameNum).getPositions()) {
-				videoGC.fillOval(prevPt.getX() * scalingRatio - 3, prevPt.getY() * scalingRatio - 3, 7, 7);
-			}
-			TimePoint currPt = track.getTimePointAtTime(frameNum);
-			if (currPt != null) {
-				videoGC.setFill(trackColor);
-				videoGC.fillOval(currPt.getX() * scalingRatio - 7, currPt.getY() * scalingRatio - 7, 15, 15);
-			}
+		Color trackColor = TRACK_COLORS[project.getAnimalIndex(currentTrack.getID()) % TRACK_COLORS.length];
+		Color trackPrevColor = trackColor.deriveColor(0, 0.5, 1.5, 1.0); // subtler variant
+
+		videoGC.setFill(trackPrevColor);
+		for (TimePoint prevPt : currentTrack.getTimePointsWithinInterval(frameNum - 90, frameNum).getPositions()) {
+			videoGC.fillOval(prevPt.getX() * scalingRatio - 3, prevPt.getY() * scalingRatio - 3, 7, 7);
+
 		}
 	}
 
@@ -340,7 +331,7 @@ public class SecondWindowController {
 	public void jump(int stepSize) {
 		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
 		if (frameNum < project.getVideo().getEndFrameNum() + project.getVideo().getFrameRate()) {
-			sliderBar.setValue(frameNum);
+			displayFrame((int)frameNum);
 		}
 	}
 
@@ -361,9 +352,13 @@ public class SecondWindowController {
 		project.saveToFile(output);
 	}
 
-	@FXML
-	public void menuFileOpen() {
-		// open method goes here
+	@FXML public void menuFileOpen() throws FileNotFoundException {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Progress File");
+		Window window = myMenuBar.getScene().getWindow();
+		chosenFile = fileChooser.showOpenDialog(window);
+		project = project.loadFromFile(chosenFile);
+
 	}
 
 	@FXML
@@ -403,7 +398,7 @@ public class SecondWindowController {
 
 	@FXML
 	public void menuCalibrationToolShowArenaBound() {
-		if (arenaBound == null) {
+		
 			arenaBound = new Rectangle((project.getVideo().getArenaBounds().getX() * getImageScalingRatio()),
 					(project.getVideo().getArenaBounds().getY() * getImageScalingRatio()),
 					(project.getVideo().getArenaBounds().getWidth() * getImageScalingRatio()),
@@ -414,7 +409,7 @@ public class SecondWindowController {
 			arenaBound.setStrokeWidth(5.0f);
 
 			paneHoldingVideoCanvas.getChildren().add(arenaBound);
-		}
+		
 	}
 
 	@FXML

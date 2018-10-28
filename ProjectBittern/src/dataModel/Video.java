@@ -51,17 +51,10 @@ public class Video {
 		this.xPixelsPerCm = 6.5;
 		this.yPixelsPerCm = 6.5;
 		this.arenaBounds = new Rectangle(0,0,this.getFrameWidth(),this.getFrameHeight());
-		this.arenaBounds.setStroke(Color.RED);
-		this.arenaBounds.setFill(null);
-		this.arenaBounds.setStrokeWidth(5.0f);
 		this.origin = new Point(0,0);
-		this.xAxis = new Line(this.origin.getX(), this.origin.getY(), this.origin.getX(), this.getFrameWidth());
-		this.xAxis.setStroke(Color.BLUE);
-		this.xAxis.setStrokeWidth(3.0f);
-		this.yAxis = new Line (this.origin.getX(), this.origin.getY(), this.origin.getY(), this.getFrameHeight());
-		this.yAxis.setStroke(Color.BLUE);
-		this.yAxis.setStrokeWidth(3.0f);
-	
+		this.xAxis = new Line(this.origin.getX(), this.origin.getY(), this.getFrameWidth(), this.origin.getY());
+		this.yAxis = new Line (this.origin.getX(), this.origin.getY(), this.origin.getX(), this.getFrameHeight());
+		
 	}
 	
 	/**
@@ -144,8 +137,8 @@ public class Video {
 		return yPixelsPerCm;
 	}
 
-	public void setArenaBounds(Rectangle mouseDragRect) {
-		this.arenaBounds = mouseDragRect;
+	public void setArenaBounds(Rectangle rect) {
+		this.arenaBounds = rect;
 	}
 	
 	/**
@@ -158,7 +151,6 @@ public class Video {
 	}
 	
 	public void setYAxis(Line y) {
-		
 		this.yAxis = y ; 
 	}
 	
