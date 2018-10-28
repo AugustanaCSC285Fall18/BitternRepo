@@ -109,8 +109,8 @@ public class FirstWindowController implements AutoTrackListener {
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		
 		//Still cant work property
-		paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> setUpAxis());
-		paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> setUpAxis());
+	//	paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> setUpAxis());
+	//	paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> setUpAxis());
 		
 		//remove debugging code
 		System.out.println(videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
