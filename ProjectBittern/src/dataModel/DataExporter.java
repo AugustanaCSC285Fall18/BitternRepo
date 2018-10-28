@@ -16,7 +16,7 @@ public class DataExporter {
 			for (AnimalTrack track : project.getTracks()) {
 				fWriter.append(track.getID());
 				fWriter.append("\n");
-				fWriter.append(getPositionInCM(track, project.getVideo()));
+				fWriter.append(getResult(track, project.getVideo()));
 			}
 			System.out.println("CSV file was created successfully !!!");	
 		} catch (Exception e) {
@@ -33,7 +33,7 @@ public class DataExporter {
 		}
 	}
 	
-	private static String getPositionInCM(AnimalTrack tracks, Video video) {
+	private static String getResult(AnimalTrack tracks, Video video) {
 		String output = "";	
 		List<TimePoint> timePoint = ProjectData.getCalibratedPosition(tracks, video);
 		for (int i = 0; i < timePoint.size(); i++) {

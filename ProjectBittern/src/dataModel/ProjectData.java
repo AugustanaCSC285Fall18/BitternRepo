@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+	
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -159,28 +159,30 @@ public class ProjectData {
 
 		List<TimePoint> calibratedTimePoint = track.getPositions();
 		for (int i = 0; i < track.getPositions().size(); i++) {
+			calibratedTimePoint.get(i).getX();
+			calibratedTimePoint.get(i).getY();
 			if (track.getPositions().get(i).getX() > video.getOrigin().getX()
-					&& track.getPositions().get(i).getX() > video.getOrigin().getX()) {
+					&& track.getPositions().get(i).getY() < video.getOrigin().getY()) {
 				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
 						/ video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getY())
 						/ video.getYPixelsPerCm());
 			} else if (track.getPositions().get(i).getX() > video.getOrigin().getX()
 					&& track.getPositions().get(i).getY() > video.getOrigin().getY()) {
 				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
 						/ video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getY())
 						/ video.getYPixelsPerCm());
 			} else if (track.getPositions().get(i).getX() < video.getOrigin().getX()
-					&& track.getPositions().get(i).getX() < video.getOrigin().getX()) {
+					&& track.getPositions().get(i).getY() < video.getOrigin().getY()) {
 				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
 						/ video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getY())
 						/ video.getYPixelsPerCm());
 			} else {
 				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
 						/ video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getY())
 						/ video.getYPixelsPerCm());
 			}
 
@@ -188,6 +190,17 @@ public class ProjectData {
 
 		return calibratedTimePoint;
 	}
+	
+	public static List<TimePoint> getDistanceToOrigin (AnimalTrack track, Video video){
+		List<TimePoint> distance = track.getPositions();
+		for (int i = 0; i < track.getPositions().size(); i++) {
+			
+		}
+		
+		
+		return distance;
+	}
+	
 
 	public AnimalTrack getAnimalTrackInTracks(String id) {
 		for (AnimalTrack animal : tracks) {

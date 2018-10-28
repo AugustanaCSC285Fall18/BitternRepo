@@ -68,8 +68,9 @@ public class FirstWindowController implements AutoTrackListener {
 	private Rectangle mouseDragRect;
 	private Point startPoint;
 	private Circle origin;
-	private Line xAxis; 
-	private Line yAxis;
+	public static Line xAxis; 
+	public static Line yAxis;
+	public static double imageScaleRatio1win;
 	
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false; 
@@ -92,14 +93,14 @@ public class FirstWindowController implements AutoTrackListener {
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		
-		//Still cant work property
-		paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> setUpAxis());
-		paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> setUpAxis());
+		//Still cant work
+	paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
+	paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		
 		//remove debugging code
-		System.out.println(videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
+		System.out.println("Video Canvas: " + videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
 				+ videoCanvas.getLayoutY());
-		System.out.println(paneHoldingVideoCanvas.getHeight() + " " + paneHoldingVideoCanvas.getWidth() + " " + paneHoldingVideoCanvas.getLayoutX() + " "
+		System.out.println("Pane: " + paneHoldingVideoCanvas.getHeight() + " " + paneHoldingVideoCanvas.getWidth() + " " + paneHoldingVideoCanvas.getLayoutX() + " "
 				+ paneHoldingVideoCanvas.getLayoutY());
 	}
 
@@ -146,7 +147,9 @@ public class FirstWindowController implements AutoTrackListener {
 	private double getImageScalingRatio() {
 		double widthRatio = videoCanvas.getWidth() / project.getVideo().getFrameWidth();
 		double heightRatio = videoCanvas.getHeight() / project.getVideo().getFrameHeight();
+		imageScaleRatio1win = Math.min(widthRatio, heightRatio);
 		return Math.min(widthRatio, heightRatio);
+		
 	}
 
 	@FXML
@@ -294,17 +297,18 @@ public class FirstWindowController implements AutoTrackListener {
 			mouseDragRect.setFill(null);
 			mouseDragRect.setStroke(Color.RED);
 			mouseDragRect.setStrokeWidth(5.0f);
-
-			paneHoldingVideoCanvas.getChildren().add(mouseDragRect);
+			project.getVideo().setArenaBounds(mouseDragRect);
+			paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
 		} else if (isAbleToSetOrigin){
 			if (origin != null) {
-				paneHoldingVideoCanvas.getChildren().remove(origin);
+				paneHoldingVideoCanvas.getChildren().remove(new Circle(project.getVideo().getOrigin().getX(), project.getVideo().getOrigin().getY(), 5, Color.BLUE));
 				paneHoldingVideoCanvas.getChildren().remove(xAxis);
 				paneHoldingVideoCanvas.getChildren().remove(yAxis);
 			}
 			origin = new Circle(event.getX(), event.getY(), 5, Color.BLUE);
-			paneHoldingVideoCanvas.getChildren().add(origin);
 			project.getVideo().setOrigin(origin);
+			paneHoldingVideoCanvas.getChildren().add(new Circle(project.getVideo().getOrigin().getX(), project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+		
 			setUpAxis();
 			paneHoldingVideoCanvas.getChildren().add(xAxis);
 			paneHoldingVideoCanvas.getChildren().add(yAxis);
@@ -313,8 +317,8 @@ public class FirstWindowController implements AutoTrackListener {
 
 	
 	public void setUpAxis() {
-		xAxis = new Line(0,origin.getCenterY(), paneHoldingVideoCanvas.getWidth(),origin.getCenterY() );
-		yAxis = new Line(origin.getCenterX(), 0 ,origin.getCenterX(), paneHoldingVideoCanvas.getHeight() );
+		xAxis = new Line(0,origin.getCenterY(), videoCanvas.getWidth(),origin.getCenterY() );
+		yAxis = new Line(origin.getCenterX(), 0 ,origin.getCenterX(), videoCanvas.getHeight() );
 		xAxis.setStroke(Color.BLUE);
 		yAxis.setStroke(Color.BLUE);
 		xAxis.setStrokeWidth(3.0f);
@@ -384,6 +388,10 @@ public class FirstWindowController implements AutoTrackListener {
 		project.saveToFile(output);
 	}
 	
+	@FXML public void menuFileOpen() {
+		//open method goes here 
+	}
+	
 	//CALIBRATION TOOL 
 	@FXML public void menuCalibrationSetArenaBounds() {
 		isAbleToSetArena = true; 	
@@ -391,7 +399,12 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 
+	/**
+	 * 
+	 */
 	@FXML public void menuCalibrationSetActualLengths() {
+		isAbleToSetArena = false; 	
+		isAbleToSetOrigin = false;
 		if (mouseDragRect != null) {
 			project.getVideo().setArenaBounds(mouseDragRect);
 
@@ -415,18 +428,25 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 	
+	/**
+	 * Enables setting orgin 
+	 */
 	@FXML public void menuCalibrationSetOrgin() {
 		isAbleToSetOrigin = true; 
 		isAbleToSetArena = false; 	
 	}
 	
 	
-	//HELP
-	
+	/**
+	 * 
+	 */
 	@FXML public void menuHelpAbout() {
 		//Say something about our team
 	}
 	
+	/**
+	 * Provide instruction for Calibration
+	 */
 	@FXML public void menuHelpInstruction() {
 		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
 		calibrationInstruction.setTitle("Instructions for Calibration");
