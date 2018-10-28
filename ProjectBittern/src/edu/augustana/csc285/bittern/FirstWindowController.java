@@ -36,6 +36,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
@@ -67,7 +68,8 @@ public class FirstWindowController implements AutoTrackListener {
 	private Rectangle mouseDragRect;
 	private Point startPoint;
 	private Circle origin;
-//	private File saveFile;
+	private Line xAxis; 
+	private Line yAxis;
 	
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false; 
@@ -89,6 +91,10 @@ public class FirstWindowController implements AutoTrackListener {
 		videoCanvas.heightProperty().bind(paneHoldingVideoCanvas.heightProperty());
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
+		
+		//Still cant work property
+		paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> setUpAxis());
+		paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> setUpAxis());
 		
 		//remove debugging code
 		System.out.println(videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
@@ -293,11 +299,28 @@ public class FirstWindowController implements AutoTrackListener {
 		} else if (isAbleToSetOrigin){
 			if (origin != null) {
 				paneHoldingVideoCanvas.getChildren().remove(origin);
+				paneHoldingVideoCanvas.getChildren().remove(xAxis);
+				paneHoldingVideoCanvas.getChildren().remove(yAxis);
 			}
 			origin = new Circle(event.getX(), event.getY(), 5, Color.BLUE);
 			paneHoldingVideoCanvas.getChildren().add(origin);
 			project.getVideo().setOrigin(origin);
+			setUpAxis();
+			paneHoldingVideoCanvas.getChildren().add(xAxis);
+			paneHoldingVideoCanvas.getChildren().add(yAxis);
 		}
+	}
+
+	
+	public void setUpAxis() {
+		xAxis = new Line(0,origin.getCenterY(), paneHoldingVideoCanvas.getWidth(),origin.getCenterY() );
+		yAxis = new Line(origin.getCenterX(), 0 ,origin.getCenterX(), paneHoldingVideoCanvas.getHeight() );
+		xAxis.setStroke(Color.BLUE);
+		yAxis.setStroke(Color.BLUE);
+		xAxis.setStrokeWidth(3.0f);
+		yAxis.setStrokeWidth(3.0f);
+		
+		
 	}
 
 	@FXML
@@ -336,7 +359,7 @@ public class FirstWindowController implements AutoTrackListener {
 
 		//remove check
 		System.out.println("Pixel length Y: " + pixelLength);
-		System.out.println("Ratio Y: "+ pixelLength/actualLengthY );
+		System.out.println("Ratio Y: "+ pixelLength + "/" + actualLengthY + "="+ pixelLength/actualLengthY );
 		System.out.println("Pixel per cm Y: " + project.getVideo().getYPixelsPerCm());
 
 	}
