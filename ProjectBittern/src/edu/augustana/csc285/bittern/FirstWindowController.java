@@ -67,7 +67,7 @@ public class FirstWindowController implements AutoTrackListener {
 	private ProjectData project;
 	private Rectangle mouseDragRect;
 	private Point startPoint;
-	private Circle origin;
+	public static Circle origin;
 	public static Line xAxis; 
 	public static Line yAxis;
 	public static double imageScaleRatio1win;
@@ -301,13 +301,13 @@ public class FirstWindowController implements AutoTrackListener {
 			paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
 		} else if (isAbleToSetOrigin){
 			if (origin != null) {
-				paneHoldingVideoCanvas.getChildren().remove(new Circle(project.getVideo().getOrigin().getX(), project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+				paneHoldingVideoCanvas.getChildren().remove(origin);
 				paneHoldingVideoCanvas.getChildren().remove(xAxis);
 				paneHoldingVideoCanvas.getChildren().remove(yAxis);
 			}
 			origin = new Circle(event.getX(), event.getY(), 5, Color.BLUE);
 			project.getVideo().setOrigin(origin);
-			paneHoldingVideoCanvas.getChildren().add(new Circle(project.getVideo().getOrigin().getX(), project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+			paneHoldingVideoCanvas.getChildren().add(origin);
 		
 			setUpAxis();
 			paneHoldingVideoCanvas.getChildren().add(xAxis);

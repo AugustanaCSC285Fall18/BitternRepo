@@ -14,6 +14,7 @@ import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
 import edu.augustana.csc285.bittern.FirstWindowController;
+import edu.augustana.csc285.bittern.SecondWindowController;
 
 
 
@@ -45,7 +46,7 @@ public class Video {
 		this.stepSize = 1;
 		this.xPixelsPerCm = 6.5;
 		this.yPixelsPerCm = 6.5;
-		this.arenaBounds = new Rectangle(0,0,this.getFrameWidth()*FirstWindowController.imageScaleRatio1win ,this.getFrameHeight()*FirstWindowController.imageScaleRatio1win);
+		this.arenaBounds = new Rectangle(0,0,this.getFrameWidth(),this.getFrameHeight());
 		this.arenaBounds.setStroke(Color.RED);
 		this.arenaBounds.setFill(null);
 		this.arenaBounds.setStrokeWidth(5.0f);
