@@ -13,14 +13,13 @@ import autotracking.AutoTracker;
 import dataModel.AnimalTrack;
 import dataModel.ProjectData;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
@@ -29,7 +28,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -86,9 +84,8 @@ public class FirstWindowController implements AutoTrackListener {
 	private Rectangle mouseDragRect;
 	private Point startPoint;
 	private Circle origin;
-	private Line xAxis;
+	private Line xAxis; 
 	private Line yAxis;
-	
 	
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false; 
@@ -125,6 +122,14 @@ public class FirstWindowController implements AutoTrackListener {
 	public void setup(ProjectData project) {
 		try {
 			this.project = project;
+			
+			chicksBox.getItems().clear();
+			if (project.getTracks().size() > 0) {
+				nextButton.setDisable(false);
+				for (AnimalTrack track : project.getTracks()) {
+					chicksBox.getItems().add(track.getID());
+				}
+			}
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 
@@ -276,7 +281,7 @@ public class FirstWindowController implements AutoTrackListener {
 		project.getUnassignedSegments().clear();
 		project.getUnassignedSegments().addAll(trackedSegments);
 
-		for (AnimalTrack track : trackedSegments) {
+		for (AnimalTrack track : project.getUnassignedSegments()) {
 			System.out.println(track);
 		}
 
@@ -321,6 +326,7 @@ public class FirstWindowController implements AutoTrackListener {
 			paneHoldingVideoCanvas.getChildren().add(yAxis);
 		}
 	}
+
 	
 	public void setUpAxis() {
 		xAxis = new Line(0,origin.getCenterY(), paneHoldingVideoCanvas.getWidth(),origin.getCenterY() );
@@ -369,7 +375,7 @@ public class FirstWindowController implements AutoTrackListener {
 
 		//remove check
 		System.out.println("Pixel length Y: " + pixelLength);
-		System.out.println("Ratio Y: "+ pixelLength/actualLengthY );
+		System.out.println("Ratio Y: "+ pixelLength + "/" + actualLengthY + "="+ pixelLength/actualLengthY );
 		System.out.println("Pixel per cm Y: " + project.getVideo().getYPixelsPerCm());
 
 	}

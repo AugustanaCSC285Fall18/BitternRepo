@@ -250,7 +250,7 @@ public class ManualTrackWindowController {
 	//debug this
 	@FXML
 	public void handleShowCurrentPath() {
-		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+//		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
 		drawTrackPath(currentTrack);
 	}
 	

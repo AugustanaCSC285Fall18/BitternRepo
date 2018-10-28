@@ -16,7 +16,7 @@ public class DataExporter {
 			for (AnimalTrack track : project.getTracks()) {
 				fWriter.append(track.getID());
 				fWriter.append("\n");
-				fWriter.append(getsth(track, project.getVideo()));
+				fWriter.append(getPositionInCM(track, project.getVideo()));
 			}
 			System.out.println("CSV file was created successfully !!!");	
 		} catch (Exception e) {
@@ -33,12 +33,12 @@ public class DataExporter {
 		}
 	}
 	
-	private static String getsth(AnimalTrack tracks, Video video) {
+	private static String getPositionInCM(AnimalTrack tracks, Video video) {
 		String output = "";	
 		List<TimePoint> timePoint = ProjectData.getCalibratedPosition(tracks, video);
 		for (int i = 0; i < timePoint.size(); i++) {
 			int frameNum = timePoint.get(i).getFrameNum();
-			output += "Time: " + video.getTime(frameNum) + ", Position: (" 
+			output += "Time: " + video.getTime(frameNum) + ", Position in centimeters: (" 
 					+ (int) timePoint.get(i).getX() + ", " 
 					+ (int) timePoint.get(i).getY() + ")\n";
 			
@@ -46,19 +46,7 @@ public class DataExporter {
 		return output;
 	}
 	
-	private static String getPixelPositionsPerSecond(AnimalTrack tracks, Video video) {
-		String output = "";
-		for (int i = 0; i < tracks.getSize(); i++) {
-			int frameNum = tracks.getTimePointAtIndex(i).getFrameNum();
-			output += "Time: " + video.getTime(frameNum) + ", Position: (" 
-					+ (int) tracks.getTimePointAtIndex(i).getX() + ", " 
-					+ (int) tracks.getTimePointAtIndex(i).getY() + ")\n"
-					+ ", Distance to the Origin: " 
-					+ (int) tracks.getTimePointAtIndex(i).getDistanceTo(video.getOrigin()) + " cm\n";
-			
-		}
-		return output;
-	}
+	
 	
 	
 

@@ -1,6 +1,7 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -80,18 +81,21 @@ public class SecondWindowController {
 		try {
 			this.project = project;
 			project.getVideo().resetToStart();
+						
+			chicksBox.getItems().clear();
+			for (AnimalTrack track : project.getTracks()) {
+				chicksBox.getItems().add(track.getID());
+			}
+			
+			currentTrack = project.getTracks().get(0);
+			chicksBox.setValue(currentTrack.getID());
+			
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
 			
 			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
-			
-			for (AnimalTrack track : project.getTracks()) {
-				chicksBox.getItems().add(track.getID());
-			}
-			currentTrack = project.getTracks().get(0);
-			chicksBox.setValue(currentTrack.getID());
-			
+						
 			displayFrame(0);
 			
 		} catch (Exception e) {
@@ -101,20 +105,21 @@ public class SecondWindowController {
 
 	public void setupClick() {
 		videoCanvas.setOnMouseClicked((event) -> {
-			if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
-					&& project.getVideo().timeWithinBounds()) {
-				int curFrameNum = (int) sliderBar.getValue();
+			//if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
+			//		&& project.getVideo().timeWithinBounds()) {
+			if (project.getVideo().timeRelativelyWithinBounds()) {
+				int curFrameNum = project.getVideo().getCurrentFrameNum();
 				double scalingRatio = getImageScalingRatio();
 				double unscaledX = event.getX() / scalingRatio;
 				double unscaledY = event.getY() / scalingRatio;
 				currentTrack.add(new TimePoint(unscaledX, unscaledY, curFrameNum));
-				updateProgress(project.getVideo().getCurrentFrameNum());
+				updateProgress(curFrameNum);
 				jump(project.getVideo().getStepSize());
-			} 
+			}
 		});	
 
 	}
-	
+
 	//fix
 	public void refillProgressCanvas() {
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
@@ -135,23 +140,33 @@ public class SecondWindowController {
 		}
 	}
 	
+	public void updateProgress(int frameNumber) {
+		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
+		progressGC.setFill(Color.GREEN);
+		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
+	}
+
 	public void repaintCanvas() {
 		if (project != null) {
-			displayFrame((int) sliderBar.getValue()); 
+			displayFrame(project.getVideo().getCurrentFrameNum()); 
 		}
 	}
 	
-	@FXML 
-	public void handleAddTrack() {
-		if (tracksBox.getItems().size() != 0) {
-			project.addAutoTracks(tracksBox.getValue(), currentTrack.getID());
-			usedTracksBox.getItems().add(tracksBox.getValue());
-			tracksBox.getItems().removeAll(tracksBox.getItems());
-			tracksBox.setStyle("-fx-background-color: lightgrey");
-			tracksBox.setPromptText("AutoTracks");
-		}
+	public void displayFrame(int frameNum) {
+		sliderBar.setValue(frameNum);
+		project.getVideo().setCurrentFrameNum(frameNum);
+		findAutoTracks();
+		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
+		double scalingRatio = getImageScalingRatio();
+		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
+		videoGC.drawImage(curFrame, 0, 0, curFrame.getWidth() * scalingRatio, curFrame.getHeight() * scalingRatio);
+		drawAssignedAnimalTracks(scalingRatio, frameNum);
+		
+		Platform.runLater(() -> {
+			currentFrameLabel.setText(project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
+		});
 	}
-	
+
 	@FXML
 	public void handleBack() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("FirstWindow.fxml"));
@@ -171,49 +186,41 @@ public class SecondWindowController {
 	}
 
 	@FXML
-	public void handleChicksBox() {
-		if (currentTrack != null) { //rethink using this conditional
-			project.addTrack(currentTrack);
-		}
-		currentTrack = project.getAnimal(chicksBox.getValue()); 
-		sliderBar.setValue(project.getVideo().getStartFrameNum());
-		refillProgressCanvas();
-	}
-
-	@FXML
 	public void handleExport() throws IOException {
 		DataExporter.exportToCSV(project);
 	}
 
-	@FXML
-	public void handleNext() {
-		jump(project.getVideo().getStepSize());
-	}
-
-	@FXML
-	public void handlePlay() throws InterruptedException {
-		if (playButton.getText().equalsIgnoreCase("play")) {
-			playButton.setText("Pause");
-			startVideo();
-		} else {
-			timer.shutdown();
-			timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
-			playButton.setText("Play");
+	@FXML 
+	public void handleAddTrack() {
+		if (tracksBox.getItems().size() != 0) {					
+			AnimalTrack autoTrack = tracksBox.getValue();
+			currentTrack.add(autoTrack.getPositions());
+			tracksBox.getItems().remove(autoTrack);
+			usedTracksBox.getItems().add(autoTrack);
+			refillProgressCanvas();
+			tracksBox.setStyle("");
 		}
 	}
 
 	@FXML
-	public void handlePrevious() {
-		jump(-project.getVideo().getStepSize());
-	}
-
-	@FXML
-	public void handleRemoveTrack() {
+	public void handleRemoveAutoTrack() {
 		if (usedTracksBox.getItems().size() != 0) {
-			project.removeAutoTrack(usedTracksBox.getValue(), currentTrack.getID());
-			usedTracksBox.getItems().remove(usedTracksBox.getValue());
-			usedTracksBox.setPromptText("Used Tracks");
+			AnimalTrack autoTrack = usedTracksBox.getValue();
+			currentTrack.remove(autoTrack.getPositions());
+			usedTracksBox.getItems().remove(autoTrack);
+			refillProgressCanvas();
+			findAutoTracks();
 		}
+	}
+
+	@FXML
+	public void handleChicksBox() {
+		if (currentTrack != null) { 
+			project.addTrack(currentTrack);
+		}
+		currentTrack = project.getAnimalTrackInTracks((String)chicksBox.getValue()); 
+		sliderBar.setValue(project.getVideo().getStartFrameNum());
+		refillProgressCanvas();
 	}
 
 	@FXML
@@ -226,22 +233,7 @@ public class SecondWindowController {
 			}
 		}
 	}
-
-	public void displayFrame(int frameNum) {
-		findAutoTracks();
-		sliderBar.setValue(frameNum);
-		project.getVideo().setCurrentFrameNum(frameNum);
-		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
-		double scalingRatio = getImageScalingRatio();
-		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
-		videoGC.drawImage(curFrame, 0, 0, curFrame.getWidth() * scalingRatio, curFrame.getHeight() * scalingRatio);
-		drawAssignedAnimalTracks(scalingRatio, frameNum);
-		
-		Platform.runLater(() -> {
-			currentFrameLabel.setText(project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
-		});
-	}
-
+	
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
 		for (int i = 0; i < project.getTracks().size(); i++) {
 			AnimalTrack track = project.getTracks().get(i);
@@ -261,15 +253,17 @@ public class SecondWindowController {
 
 	public void findAutoTracks() {
 		tracksBox.getItems().removeAll(tracksBox.getItems());
-		if (project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum()).size() > 0) {
+		List<AnimalTrack> relevantTracks = 
+				project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum());
+		if (relevantTracks.size() > 0) {
 			tracksBox.setStyle("-fx-background-color: rgb(0,255,0)");
+			for (AnimalTrack track : relevantTracks) {
+				tracksBox.getItems().add(track);
+			}
 		} else {
-			tracksBox.setStyle("-fx-background-color: lightgrey");
+				tracksBox.setStyle("");
 		}
-		for (AnimalTrack track : project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum())) {
-			tracksBox.getItems().add(track);
-		}
-		tracksBox.setPromptText("Auto Tracks");
+		
 	}
 	
 	private double getImageScalingRatio() {
@@ -278,13 +272,18 @@ public class SecondWindowController {
 		return Math.min(widthRatio, heightRatio);
 	}
 
-	public void jump(int stepSize) {
-		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
-		if (frameNum < project.getVideo().getEndFrameNum()) {
-			sliderBar.setValue(frameNum);
+	@FXML
+	public void handlePlay() throws InterruptedException {
+		if (playButton.getText().equalsIgnoreCase("play")) {
+			playButton.setText("Pause");
+			startVideo();
+		} else {
+			timer.shutdown();
+			timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
+			playButton.setText("Play");
 		}
 	}
-	
+
 	public void startVideo() {
 		if (project.getVideo().isOpened()) {
 			Runnable frameGrabber = new Runnable() {
@@ -301,10 +300,21 @@ public class SecondWindowController {
 		}
 	}
 
-	public void updateProgress(int frameNumber) {
-		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
-		progressGC.setFill(Color.GREEN);
-		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
+	@FXML
+	public void handlePrevious() {
+		jump(-project.getVideo().getStepSize());
+	}
+
+	@FXML
+	public void handleNext() {
+		jump(project.getVideo().getStepSize());
+	}
+
+	public void jump(int stepSize) {
+		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
+		if (frameNum < project.getVideo().getEndFrameNum()) {
+			sliderBar.setValue(frameNum);
+		}
 	}
 	
 	@FXML public void menuFileExit() {

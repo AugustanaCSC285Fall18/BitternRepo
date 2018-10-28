@@ -40,20 +40,33 @@ public class ProjectData {
 
 	public boolean containsAutoTracksAtTime(int frameNum) {
 		for (AnimalTrack track : unassignedSegments) {
-			int quotient = (int) (frameNum / video.getFrameRate());
-			int startFrame = (int) (quotient * video.getFrameRate()) + 1;
-			int endFrame = (int) ((quotient + 1) * video.getFrameRate());
-			for (int i = startFrame; i <= endFrame; i++) {
-				if (track.containsPointAtTime(i)) {
-					return true;
-				}
+			if (containsPointAtTime(frameNum, track)) {
+				return true;
 			}
-
-			/*
-			 * if (track.containsPointAtTime(frameNum)) { return true; }
-			 */
 		}
 		return false;
+	}
+
+	public boolean containsPointAtTime(int frameNum, AnimalTrack track) {
+		int quotient = (int) (frameNum / video.getFrameRate());
+		int startFrame = (int) (quotient * video.getFrameRate()) + 1;
+		int endFrame = (int) ((quotient + 1) * video.getFrameRate());
+		for (int i = startFrame; i <= endFrame; i++) {
+			if (track.containsPointAtTime(i)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
+		List<AnimalTrack> relevantTracks = new ArrayList<>();
+		for (AnimalTrack track : unassignedSegments) {
+			if (containsPointAtTime(frameNum, track)) {
+				relevantTracks.add(track);
+			}
+		}
+		return relevantTracks;
 	}
 
 	public int getAnimalIndex(String id) {
@@ -93,17 +106,6 @@ public class ProjectData {
 		}
 	}
 
-	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
-		List<AnimalTrack> relevantTracks = new ArrayList<>();
-		for (AnimalTrack track : unassignedSegments) {
-			if (track.containsPointAtTime(frameNum)) {
-				relevantTracks.add(track);
-			}
-		}
-		return relevantTracks;
-	}
-
-	// should this be List<TimePoint> or AnimalTrack
 	// go through unassigned segments, finding each time point at frameNum
 	public List<TimePoint> getUnassignedTimePointsAtTime(int frameNum) {
 		List<TimePoint> pointsAtTime = new ArrayList<>();
@@ -157,57 +159,72 @@ public class ProjectData {
 
 		return closestTrack;
 	}
-	
-	
-	  public static List<TimePoint> getCalibratedPosition(AnimalTrack track, Video video){
-	 
+
+	public static List<TimePoint> getCalibratedPosition(AnimalTrack track, Video video) {
+
 		List<TimePoint> calibratedTimePoint = track.getPositions();
-		for(int i =  0; i < track.getPositions().size(); i++) {
-			if(track.getPositions().get(i).getX() > video.getOrigin().getX()
+		for (int i = 0; i < track.getPositions().size(); i++) {
+			if (track.getPositions().get(i).getX() > video.getOrigin().getX()
 					&& track.getPositions().get(i).getX() > video.getOrigin().getX()) {
-				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())/video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())/video.getYPixelsPerCm());
-			}else if(track.getPositions().get(i).getX() > video.getOrigin().getX()
-					&& track.getPositions().get(i).getY() > video.getOrigin().getY()){
-				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())/video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())/video.getYPixelsPerCm());
-			}else if(track.getPositions().get(i).getX() < video.getOrigin().getX()
+				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
+						/ video.getXPixelsPerCm());
+				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+						/ video.getYPixelsPerCm());
+			} else if (track.getPositions().get(i).getX() > video.getOrigin().getX()
+					&& track.getPositions().get(i).getY() > video.getOrigin().getY()) {
+				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
+						/ video.getXPixelsPerCm());
+				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+						/ video.getYPixelsPerCm());
+			} else if (track.getPositions().get(i).getX() < video.getOrigin().getX()
 					&& track.getPositions().get(i).getX() < video.getOrigin().getX()) {
-				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())/video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())/video.getYPixelsPerCm());
-			}else {
-				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())/video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())/video.getYPixelsPerCm());
+				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
+						/ video.getXPixelsPerCm());
+				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+						/ video.getYPixelsPerCm());
+			} else {
+				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
+						/ video.getXPixelsPerCm());
+				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+						/ video.getYPixelsPerCm());
 			}
-			
+
 		}
-		
+
 		return calibratedTimePoint;
-	} 
+	}
 
+	public AnimalTrack getAnimalTrackInTracks(String id) {
+		for (AnimalTrack animal : tracks) {
+			if (animal.getID().equals(id)) {
+				return animal;
+			}
+		}
+		return null;
+	}
+/**
+	public void saveToFile(File saveFile) throws FileNotFoundException {
+		String json = toJSON();
+		PrintWriter out = new PrintWriter(saveFile);
+		out.print(json);
+		out.close();
+	}
 
-//	public void saveToFile(File saveFile) throws FileNotFoundException {
-//		String json = toJSON();
-//		PrintWriter out = new PrintWriter(saveFile);
-//		out.print(json);
-//		out.close();
-//	}
-//	
-//	public String toJSON() {
-//		Gson gson = new GsonBuilder().setPrettyPrinting().create();		
-//		return gson.toJson(this);
-//	}
-//	
-//	public static ProjectData loadFromFile(File loadFile) throws FileNotFoundException {
-//		String json = new Scanner(loadFile).useDelimiter("\\Z").next();
-//		return fromJSON(json);
-//	}
-//	
-//	public static ProjectData fromJSON(String jsonText) throws FileNotFoundException {
-//		Gson gson = new Gson();
-//		ProjectData data = gson.fromJson(jsonText, ProjectData.class);
-//		data.getVideo().connectVideoCapture();
-//		return data;
-//	}
-	
+	public String toJSON() {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(this);
+	}
+
+	public static ProjectData loadFromFile(File loadFile) throws FileNotFoundException {
+		String json = new Scanner(loadFile).useDelimiter("\\Z").next();
+		return fromJSON(json);
+	}
+
+	public static ProjectData fromJSON(String jsonText) throws FileNotFoundException {
+		Gson gson = new Gson();
+		ProjectData data = gson.fromJson(jsonText, ProjectData.class);
+		data.getVideo().connectVideoCapture();
+		return data;
+	}
+**/
 }
