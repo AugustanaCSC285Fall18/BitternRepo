@@ -77,7 +77,7 @@ public class SecondWindowController {
 			Color.MAGENTA, Color.BLUEVIOLET, Color.ORANGE };
 	
 	/**
-	 * called to initialize this controller after its root element has been completely processed
+	 * initializes this controller after its root element has been completely processed
 	 */
 	@FXML
 	public void initialize() {
@@ -87,7 +87,7 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * called to setup the class' canvases to resize whenever the scene's size is changed
+	 * sets up this class' canvases to resize whenever the scene's size is changed
 	 * @param stage the stage that holds this controller's scene
 	 */
 	public void initializeWithStage(Stage stage) {
@@ -203,8 +203,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * sets the given frame number as the video's current frame, and displays the video image 
-	 * at the given frameNumber
+	 * sets the video's current frame to the given frame number, and displays the video image 
+	 * at that frameNumber
 	 * @param frameNum the time at which the video frame should be displayed
 	 */
 	public void displayFrame(int frameNum) {
@@ -287,7 +287,7 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * sets the ComboBox's value as the currentTrack and adjusts the controls to reflect this change
+	 * sets the currentTrack as the ComboBox's value and adjusts the controls to reflect this change
 	 */
 	@FXML
 	public void handleChicksBox() {

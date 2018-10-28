@@ -87,35 +87,37 @@ public class FirstWindowController implements AutoTrackListener {
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false; 
 	
+	/**
+	 * initializes this controller after its root element has been completely processed
+	 */
 	@FXML
 	public void initialize() {
 		nextButton.setDisable(true);
 		stepBox.getItems().addAll(1, 2, 3, 4, 5);
 		sliderBar.valueProperty().addListener((obs, oldV, newV) -> displayFrame(newV.intValue()));
-		System.out.println(videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
-				+ videoCanvas.getLayoutY());
-		System.out.println(paneHoldingVideoCanvas.getHeight() + " " + paneHoldingVideoCanvas.getWidth() + " " + paneHoldingVideoCanvas.getLayoutX() + " "
-				+ paneHoldingVideoCanvas.getLayoutY());
 	}
 
+	/**
+	 * sets up this class' canvases to resize whenever the scene's size is changed
+	 * @param stage the stage that holds this controller's scene
+	 */
 	public void initializeWithStage(Stage stage) {
 		videoGC = videoCanvas.getGraphicsContext2D();
 		videoCanvas.widthProperty().bind(paneHoldingVideoCanvas.widthProperty());
 		videoCanvas.heightProperty().bind(paneHoldingVideoCanvas.heightProperty());
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
-		
+
 		//Still cant work
-	paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
-	paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
-		
-		//remove debugging code
-		System.out.println("Video Canvas: " + videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
-				+ videoCanvas.getLayoutY());
-		System.out.println("Pane: " + paneHoldingVideoCanvas.getHeight() + " " + paneHoldingVideoCanvas.getWidth() + " " + paneHoldingVideoCanvas.getLayoutX() + " "
-				+ paneHoldingVideoCanvas.getLayoutY());
+		paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
+		paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 	}
 
+	/**
+	 * sets up the project this controller will work with and adjusts the GUI controls
+	 * to reflect the project's data
+	 * @param project the data this controller will work with
+	 */
 	public void setup(ProjectData project) {
 		try {
 			this.project = project;
@@ -139,12 +141,20 @@ public class FirstWindowController implements AutoTrackListener {
 		}
 	}
 
+	/**
+	 * called whenever the Scene's dimensions change and displays the video frame at that time
+	 */
 	public void repaintCanvas() {
 		if (project != null) {
 			displayFrame((int) sliderBar.getValue());
 		}
 	}
 
+	/**
+	 * sets the given frame number as the video's current frame, and displays the video image 
+	 * at the given frameNumber
+	 * @param frameNum the time at which the video frame should be displayed
+	 */
 	public void displayFrame(int frameNum) {
 		if (autotracker == null || !autotracker.isRunning()) {
 			project.getVideo().setCurrentFrameNum(frameNum);
@@ -156,6 +166,10 @@ public class FirstWindowController implements AutoTrackListener {
 		currentFrameLabel.setText(String.format("%05d", project.getVideo().getCurrentFrameNum()));
 	}
 
+	/**
+	 * calculates the ratio of the video canvas' dimensions to the project video's dimensions
+	 * @return the ratio of the video canvas' dimensions to the project video's dimensions
+	 */
 	private double getImageScalingRatio() {
 		double widthRatio = videoCanvas.getWidth() / project.getVideo().getFrameWidth();
 		double heightRatio = videoCanvas.getHeight() / project.getVideo().getFrameHeight();
@@ -164,6 +178,10 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 
+	/**
+	 * request an AnimalTrack name from the user and adds a new AnimalTrack
+	 * with that name to the project's list of tracks
+	 */
 	@FXML
 	public void handleAddChickButton() {
 		String suggestedInput = "Chick #" + (chicksBox.getItems().size() + 1);
@@ -185,6 +203,10 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 
+	/**
+	 * removes AnimalTrack with name <ComboBox value> from the projects list of tracks
+	 * and the chicks ComboBox
+	 */
 	@FXML
 	public void handleRemoveChickButton() {
 		String trackID = chicksBox.getValue();
@@ -192,12 +214,15 @@ public class FirstWindowController implements AutoTrackListener {
 		project.removeTrack(trackID);
 		if (chicksBox.getItems().size() == 0) {
 			nextButton.setDisable(true);
-			//add code to show prompt text
 		}
 			
 		
 	}
 
+	/**
+	 * loads and opens the previous window, and closes this controller's window
+	 * @throws IOException if an error occurs while loading "OpeningWindow.fxml" 
+	 */
 	@FXML
 	public void handleBack() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("OpeningWindow.fxml"));
@@ -215,6 +240,10 @@ public class FirstWindowController implements AutoTrackListener {
 		controller.setProject(project);
 	}
 
+	/**
+	 * loads and opens the next window, and closes this controller's window
+	 * @throws IOException if an error occurs while loading "SecondWindow.fxml" 
+	 */
 	@FXML
 	public void handleNext() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("SecondWindow.fxml"));
@@ -233,20 +262,31 @@ public class FirstWindowController implements AutoTrackListener {
 		controller.setup(project);
 	}
 
+	/**
+	 * sets the end time for tracking as the slider's value
+	 */
 	@FXML
 	public void handleEnd() {
 		project.getVideo().setEndFrameNum((int) sliderBar.getValue());
 		endTimeLabel.setText(project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 	}
 
+	/**
+	 * sets the start time for tracking as the slider's value
+	 */
 	@FXML
 	public void handleStart() {
 		project.getVideo().setStartFrameNum(project.getVideo().getCurrentFrameNum());
 		startTimeLabel.setText(project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 	}
 
+	/**
+	 * starts the autotracking process
+	 * @throws InterruptedException if the ExecutorService is interrupted while waiting
+	 * for termination
+	 */
 	@FXML
-	public void handleStartAutotracking() {
+	public void handleStartAutotracking() throws InterruptedException {
 		if (autotracker == null || !autotracker.isRunning()) {
 			autotracker = new AutoTracker();
 			autotracker.addAutoTrackListener(this);
@@ -261,6 +301,12 @@ public class FirstWindowController implements AutoTrackListener {
 		isAbleToSetArena = false; 	
 	}
 
+	/**
+	 * adjust the controls to show that the given frame has been tracked
+	 * @param frame
+	 * @param frameNumber the frame number that has been tracked
+	 * @param fractionComplete the fraction of the time interval that has been tracked
+	 */
 	@Override
 	public void handleTrackedFrame(Mat frame, int frameNumber, double fractionComplete) {
 		Image imgFrame = UtilsForOpenCV.matToJavaFXImage(frame);
@@ -275,14 +321,15 @@ public class FirstWindowController implements AutoTrackListener {
 		});
 	}
 
+	/**
+	 * adds all the autoTracks to the projects unassignedSegments array list 
+	 * while adjusting the controls to show that tracking is complete
+	 * @param trackedSegments the list of autotracks
+	 */
 	@Override
 	public void trackingComplete(List<AnimalTrack> trackedSegments) {
 		project.getUnassignedSegments().clear();
 		project.getUnassignedSegments().addAll(trackedSegments);
-
-		for (AnimalTrack track : project.getUnassignedSegments()) {
-			System.out.println(track);
-		}
 
 		Platform.runLater(() -> {
 			progressAutoTrack.setProgress(1.0);
@@ -290,6 +337,10 @@ public class FirstWindowController implements AutoTrackListener {
 		});
 	}
 
+	/**
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void handleMouseDragged(MouseEvent event) {
 		if (isAbleToSetArena) {
@@ -297,7 +348,11 @@ public class FirstWindowController implements AutoTrackListener {
 			mouseDragRect.setHeight(Math.abs(event.getY() - startPoint.getY()));
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void handleMousePressed(MouseEvent event) {
 		if (isAbleToSetArena) {
@@ -327,7 +382,9 @@ public class FirstWindowController implements AutoTrackListener {
 		}
 	}
 
-	
+	/**
+	 * 
+	 */
 	public void setUpAxis() {
 		xAxis = new Line(0,origin.getCenterY(), videoCanvas.getWidth(),origin.getCenterY() );
 		yAxis = new Line(origin.getCenterX(), 0 ,origin.getCenterX(), videoCanvas.getHeight() );
@@ -339,11 +396,17 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 
+	/**
+	 * sets the video's time step value to the ComboBox's value
+	 */
 	@FXML
 	public void handleStepBox() {
 		project.getVideo().setStepSize(stepBox.getValue());
 	}
 
+	/**
+	 * 
+	 */
 	public void askForXValue() {
 		TextInputDialog horizontalValue = new TextInputDialog("cm");
 		horizontalValue.setHeaderText("Set up horizontal length");
