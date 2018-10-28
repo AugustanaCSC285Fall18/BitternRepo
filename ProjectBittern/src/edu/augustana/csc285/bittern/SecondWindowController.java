@@ -29,10 +29,16 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
+/**
+ * This class is responsible for coordinating the behaviors of the GUI controls
+ * defined in "SecondWindow.fxml" to allow for manual tracking of animals in a video
+ * @author Group Bittern
+ *
+ */
 public class SecondWindowController {
 
 	@FXML private Pane paneHoldingVideoCanvas;
@@ -64,6 +70,10 @@ public class SecondWindowController {
 
 	public static final Color[] TRACK_COLORS = new Color[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN,
 			Color.MAGENTA, Color.BLUEVIOLET, Color.ORANGE };
+	
+	/**
+	 * called to initialize this controller after its root element has been completely processed
+	 */
 	@FXML
 	public void initialize() {
 		sliderBar.valueProperty().addListener((obs, oldV, newV) -> displayFrame(newV.intValue()));
@@ -71,6 +81,10 @@ public class SecondWindowController {
 
 	}
 
+	/**
+	 * called to setup the class' canvases to resize whenever the scene's size is changed
+	 * @param stage the stage that holds this controller's scene
+	 */
 	public void initializeWithStage(Stage stage) {
 		videoGC = videoCanvas.getGraphicsContext2D();
 		videoCanvas.widthProperty().bind(paneHoldingVideoCanvas.widthProperty());
@@ -83,6 +97,11 @@ public class SecondWindowController {
 		progressCanvas.widthProperty().addListener(observable -> refillProgressCanvas());
 	}
 
+	/**
+	 * sets up the project this controller will work with and adjusts the GUI controls
+	 * to reflect the project's data
+	 * @param project the data this controller will work with
+	 */
 	public void setup(ProjectData project) {
 		try {
 			this.project = project;
@@ -109,10 +128,21 @@ public class SecondWindowController {
 		}
 	}
 
+	/**
+	 * sets up a click on the videoCanvas to add a TimePoint with the appropriate parameter
+	 * to the current AnimalTrack and jump to the next second of the video with the progress 
+	 * canvas reflecting the added position
+	 */
 	public void setupClick() {
 		videoCanvas.setOnMouseClicked((event) -> {
 
-			if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
+			Rectangle arenaBounds = project.getVideo().getArenaBounds();
+			/*arenaBounds.setX();
+			arenaBounds.setY(value);
+			arenaBounds.setHeight(value);
+			arenaBounds.setWidth(value);*/
+			
+			if (arenaBounds.contains(new Point2D(event.getX(), event.getY()))
 					&& project.getVideo().timeRelativelyWithinBounds()) {
 				int curFrameNum = project.getVideo().getCurrentFrameNum();
 				double scalingRatio = getImageScalingRatio();
@@ -126,7 +156,11 @@ public class SecondWindowController {
 
 	}
 
-	// fix
+	
+	/**
+	 * called when either the current AnimalTrack or the Scene's dimensions are changed,
+	 * refilling the progress canvas to reflect these changes
+	 */
 	public void refillProgressCanvas() {
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 		double startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
@@ -144,18 +178,30 @@ public class SecondWindowController {
 		}
 	}
 
+	/**
+	 * refills the progress canvas to reflect an added TimePoint at the given frameNumber
+	 * @param frameNumber the time at which the point was added
+	 */
 	public void updateProgress(int frameNumber) {
 		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; // debug for ends
 		progressGC.setFill(Color.GREEN);
 		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
 	}
 
+	/**
+	 * called whenever the Scene's dimensions change and displays the video frame at that time
+	 */
 	public void repaintCanvas() {
 		if (project != null) {
 			displayFrame(project.getVideo().getCurrentFrameNum());
 		}
 	}
 
+	/**
+	 * sets the given frame number as the video's current frame, and displays the video image 
+	 * at the given frameNumber
+	 * @param frameNum the time at which the video frame should be displayed
+	 */
 	public void displayFrame(int frameNum) {
 		sliderBar.setValue(frameNum);
 		project.getVideo().setCurrentFrameNum(frameNum);
@@ -171,6 +217,10 @@ public class SecondWindowController {
 		});
 	}
 
+	/**
+	 * loads and opens the previous window, and closes this controller's window
+	 * @throws IOException if an error occurs while loading "FirstWindow.fxml" 
+	 */
 	@FXML
 	public void handleBack() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("FirstWindow.fxml"));
@@ -189,13 +239,21 @@ public class SecondWindowController {
 		controller.setup(project);
 	}
 
+	/**
+	 * creates a .csv file with the relevant information from this project
+	 * @throws IOException if an error occurs while loading the project
+	 */
 	@FXML
 	public void handleExport() throws IOException {
 		DataExporter.exportToCSV(project);
 	}
 
+	/**
+	 * adds the selected autorack's positions to the current AnimalTrack and adjust the 
+	 * controls to reflect this change
+	 */
 	@FXML
-	public void handleAddTrack() {
+	public void handleAddAutoTrack() {
 		if (tracksBox.getItems().size() != 0) {
 			AnimalTrack autoTrack = tracksBox.getValue();
 			currentTrack.add(autoTrack.getPositions());
@@ -207,6 +265,10 @@ public class SecondWindowController {
 		}
 	}
 
+	/**
+	 * removes the selected autotrack's position from the current AnimalTrack and adjusts the 
+	 * controls to reflect this change
+	 */
 	@FXML
 	public void handleRemoveAutoTrack() {
 		if (usedTracksBox.getItems().size() != 0) {
@@ -219,6 +281,9 @@ public class SecondWindowController {
 		}
 	}
 
+	/**
+	 * sets the ComboBox's value as the currentTrack and adjusts the controls to reflect this change
+	 */
 	@FXML
 	public void handleChicksBox() {
 		if (currentTrack != null) {
@@ -229,6 +294,9 @@ public class SecondWindowController {
 		refillProgressCanvas();
 	}
 
+	/**
+	 * draws the selected autoTracks path on the video canvas
+	 */
 	@FXML
 	public void handleTracksBox() {
 		double scalingRatio = getImageScalingRatio();
@@ -240,6 +308,11 @@ public class SecondWindowController {
 		}
 	}
 
+	/**
+	 * draws the current AnimalTrack's current positions as a point, along with its last three positions
+	 * @param scalingRatio the ratio of the videoCanvas' dimensions to the project video's dimensions
+	 * @param frameNum the time at which tracks should be drawn
+	 */
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
 		Color trackColor = TRACK_COLORS[project.getAnimalIndex(currentTrack.getID()) % TRACK_COLORS.length];
 		Color trackPrevColor = trackColor.deriveColor(0, 0.5, 1.5, 1.0); // subtler variant
@@ -251,6 +324,10 @@ public class SecondWindowController {
 		}
 	}
 
+	/**
+	 * checks for possible autoTracks at the current frame Number and when applicable, adds these
+	 * tracks to the autoTrack ComboBox
+	 */
 	public void findAutoTracks() {
 		tracksBox.getItems().removeAll(tracksBox.getItems());
 		List<AnimalTrack> relevantTracks = project
@@ -266,17 +343,26 @@ public class SecondWindowController {
 
 	}
 
+	/**
+	 * calculates the ratio of the video canvas' dimensions to the project video's dimensions
+	 * @return the ratio of the video canvas' dimensions to the project video's dimensions
+	 */
 	private double getImageScalingRatio() {
 		double widthRatio = videoCanvas.getWidth() / project.getVideo().getFrameWidth();
 		double heightRatio = videoCanvas.getHeight() / project.getVideo().getFrameHeight();
 		return Math.min(widthRatio, heightRatio);
 	}
 
+	/**
+	 * plays or pauses the video depending on the play button's text
+	 * @throws InterruptedException thrown if timer is interrupted while awaiting 
+	 * termination
+	 */
 	@FXML
 	public void handlePlay() throws InterruptedException {
 		if (playButton.getText().equalsIgnoreCase("play")) {
 			playButton.setText("Pause");
-			startVideo();
+			playVideo();
 		} else {
 			timer.shutdown();
 			timer.awaitTermination(1000, TimeUnit.MILLISECONDS);
@@ -284,7 +370,10 @@ public class SecondWindowController {
 		}
 	}
 
-	public void startVideo() {
+	/**
+	 * plays the video from the current frame number until timer is shutdown
+	 */
+	public void playVideo() {
 		if (project.getVideo().isOpened()) {
 			Runnable frameGrabber = new Runnable() {
 				@Override
@@ -300,16 +389,26 @@ public class SecondWindowController {
 		}
 	}
 
+	/**
+	 * displays the video frame at the configured "time step" before the current frame number
+	 */
 	@FXML
 	public void handlePrevious() {
 		jump(-project.getVideo().getStepSize());
 	}
 
+	/**
+	 * displays the video frame at the configured "time step" after the current frame number
+	 */
 	@FXML
 	public void handleNext() {
 		jump(project.getVideo().getStepSize());
 	}
 
+	/**
+	 * skips the given number of frames and displays the video at the resulting frame number 
+	 * @param stepSize the number of frames (time) the video should skip through
+	 */
 	public void jump(int stepSize) {
 		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
 		if (frameNum < project.getVideo().getEndFrameNum() + project.getVideo().getFrameRate()) {

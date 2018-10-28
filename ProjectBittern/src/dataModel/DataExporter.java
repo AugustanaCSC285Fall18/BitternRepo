@@ -67,11 +67,5 @@ public class DataExporter {
 
 		return calibratedTimePoints;
 	}
-
-
-
-	
-
-	
 	
 }

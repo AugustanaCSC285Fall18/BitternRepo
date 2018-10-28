@@ -41,6 +41,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
+/**
+ * This class is responsible for coordinating the behaviors of the GUI controls
+ * defined in "FirstWindow.fxml" to allow for automatic tracking of animals in a video
+ * @author Group Bittern
+ *
+ */
 public class FirstWindowController implements AutoTrackListener {
 
 	@FXML private Pane paneHoldingVideoCanvas;
