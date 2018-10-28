@@ -35,20 +35,33 @@ public class ProjectData {
 		
 	public boolean containsAutoTracksAtTime(int frameNum) {
 		for (AnimalTrack track : unassignedSegments) {
-			int quotient = (int) (frameNum / video.getFrameRate());
-			int startFrame = (int) (quotient * video.getFrameRate()) + 1;
-			int endFrame = (int) ((quotient + 1) * video.getFrameRate());
-			for (int i = startFrame; i <= endFrame; i++) {
-				if (track.containsPointAtTime(i)) {
-					return true;
-				}
-			}
-			
-			/*if (track.containsPointAtTime(frameNum)) {
+			if (containsPointAtTime(frameNum, track)) {
 				return true;
-			}*/
+			}
 		}
 		return false;
+	}
+	
+	public boolean containsPointAtTime(int frameNum, AnimalTrack track) {
+		int quotient = (int) (frameNum / video.getFrameRate());
+		int startFrame = (int) (quotient * video.getFrameRate()) + 1;
+		int endFrame = (int) ((quotient + 1) * video.getFrameRate());
+		for (int i = startFrame; i <= endFrame; i++) {
+			if (track.containsPointAtTime(i)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
+		List <AnimalTrack> relevantTracks = new ArrayList<>();
+		for (AnimalTrack track : unassignedSegments) {
+			if (containsPointAtTime(frameNum, track)) {
+				relevantTracks.add(track);
+			}
+		}		
+		return relevantTracks;
 	}
 
 	public int getAnimalIndex(String id) {
@@ -87,18 +100,6 @@ public class ProjectData {
 		}
 	}
 
-
-	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
-		List<AnimalTrack> relevantTracks = new ArrayList<>();
-		for (AnimalTrack track : unassignedSegments) {
-			if (track.containsPointAtTime(frameNum)) {
-				relevantTracks.add(track);
-			}
-		}
-		return relevantTracks;
-	}
-	
-	//should this be List<TimePoint> or AnimalTrack
 	// go through unassigned segments, finding each time point at frameNum
 	public List<TimePoint> getUnassignedTimePointsAtTime(int frameNum) {
 		List<TimePoint> pointsAtTime = new ArrayList<>();

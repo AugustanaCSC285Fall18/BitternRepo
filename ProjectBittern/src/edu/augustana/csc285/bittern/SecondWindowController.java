@@ -1,6 +1,7 @@
 package edu.augustana.csc285.bittern;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -103,12 +104,12 @@ public class SecondWindowController {
 		videoCanvas.setOnMouseClicked((event) -> {
 			if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
 					&& project.getVideo().timeWithinBounds()) {
-				int curFrameNum = (int) sliderBar.getValue();
+				int curFrameNum = project.getVideo().getCurrentFrameNum();
 				double scalingRatio = getImageScalingRatio();
 				double unscaledX = event.getX() / scalingRatio;
 				double unscaledY = event.getY() / scalingRatio;
 				currentTrack.add(new TimePoint(unscaledX, unscaledY, curFrameNum));
-				updateProgress(project.getVideo().getCurrentFrameNum());
+				updateProgress(curFrameNum);
 				jump(project.getVideo().getStepSize());
 			} 
 		});	
@@ -137,18 +138,7 @@ public class SecondWindowController {
 	
 	public void repaintCanvas() {
 		if (project != null) {
-			displayFrame((int) sliderBar.getValue()); 
-		}
-	}
-	
-	@FXML 
-	public void handleAddTrack() {
-		if (tracksBox.getItems().size() != 0) {
-			project.addAutoTracks(tracksBox.getValue(), currentTrack.getID());
-			usedTracksBox.getItems().add(tracksBox.getValue());
-			tracksBox.getItems().removeAll(tracksBox.getItems());
-			tracksBox.setStyle("-fx-background-color: lightgrey");
-			tracksBox.setPromptText("AutoTracks");
+			displayFrame(project.getVideo().getCurrentFrameNum()); 
 		}
 	}
 	
@@ -172,7 +162,7 @@ public class SecondWindowController {
 
 	@FXML
 	public void handleChicksBox() {
-		if (currentTrack != null) { //rethink using this conditional
+		if (currentTrack != null) { 
 			project.addTrack(currentTrack);
 		}
 		currentTrack = project.getAnimal(chicksBox.getValue()); 
@@ -207,12 +197,23 @@ public class SecondWindowController {
 		jump(-project.getVideo().getStepSize());
 	}
 
+	@FXML 
+	public void handleAddTrack() {
+		if (tracksBox.getItems().size() != 0) {
+			project.addAutoTracks(tracksBox.getValue(), currentTrack.getID());
+			usedTracksBox.getItems().add(tracksBox.getValue());
+			tracksBox.getItems().removeAll(tracksBox.getItems());
+			tracksBox.setStyle("");
+		}
+	}
+
 	@FXML
 	public void handleRemoveTrack() {
 		if (usedTracksBox.getItems().size() != 0) {
 			project.removeAutoTrack(usedTracksBox.getValue(), currentTrack.getID());
 			usedTracksBox.getItems().remove(usedTracksBox.getValue());
 			usedTracksBox.setPromptText("Used Tracks");
+			findAutoTracks();
 		}
 	}
 
@@ -228,9 +229,9 @@ public class SecondWindowController {
 	}
 
 	public void displayFrame(int frameNum) {
-		findAutoTracks();
 		sliderBar.setValue(frameNum);
 		project.getVideo().setCurrentFrameNum(frameNum);
+		findAutoTracks();
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
 		double scalingRatio = getImageScalingRatio();
 		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
@@ -238,7 +239,8 @@ public class SecondWindowController {
 		drawAssignedAnimalTracks(scalingRatio, frameNum);
 		
 		Platform.runLater(() -> {
-			currentFrameLabel.setText(project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
+			currentFrameLabel.setText("" + sliderBar.getValue());
+			//currentFrameLabel.setText(project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
 		});
 	}
 
@@ -261,15 +263,17 @@ public class SecondWindowController {
 
 	public void findAutoTracks() {
 		tracksBox.getItems().removeAll(tracksBox.getItems());
-		if (project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum()).size() > 0) {
+		List<AnimalTrack> relevantTracks = 
+				project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum());
+		if (relevantTracks.size() > 0) {
 			tracksBox.setStyle("-fx-background-color: rgb(0,255,0)");
+			for (AnimalTrack track : relevantTracks) {
+				tracksBox.getItems().add(track);
+			}
 		} else {
-			tracksBox.setStyle("-fx-background-color: lightgrey");
+				tracksBox.setStyle("");
 		}
-		for (AnimalTrack track : project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum())) {
-			tracksBox.getItems().add(track);
-		}
-		tracksBox.setPromptText("Auto Tracks");
+		
 	}
 	
 	private double getImageScalingRatio() {
