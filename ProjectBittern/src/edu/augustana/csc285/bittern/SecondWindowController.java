@@ -1,5 +1,7 @@
 package edu.augustana.csc285.bittern;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -324,8 +326,10 @@ public class SecondWindowController {
 	/**
 	 * Save to Json?
 	 */
-	@FXML public void menuFileSave() {
-		//save method goes here @Dakota @Evan
+	@FXML public void menuFileSave() throws FileNotFoundException {
+		File saveFile = new File(project.getVideo().getFilePath());
+		File output = new File("output." + saveFile.getName() + ".txt");
+		project.saveToFile(output);
 	}
 	
 	@FXML public void menuHelpAbout() {
