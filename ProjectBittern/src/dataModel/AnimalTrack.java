@@ -1,8 +1,11 @@
 package dataModel;
 
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 
 
 public class AnimalTrack {
@@ -163,6 +166,7 @@ public class AnimalTrack {
 			positions.add(newPoint);
 		}
 	}
+	
 	
 	public String toString() {
 		int startFrame = positions.get(0).getFrameNum();

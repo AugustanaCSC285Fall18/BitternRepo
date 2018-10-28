@@ -169,6 +169,8 @@ public class FirstWindowController implements AutoTrackListener {
 		}
 		
 		nextButton.setDisable(false);
+		
+		
 	}
 
 	@FXML
@@ -242,6 +244,9 @@ public class FirstWindowController implements AutoTrackListener {
 			autotracker.cancelAnalysis();
 			autoTrackButton.setText("Start auto-tracking");
 		}
+		
+		isAbleToSetOrigin = false; 
+		isAbleToSetArena = false; 	
 	}
 
 	@Override
@@ -299,6 +304,7 @@ public class FirstWindowController implements AutoTrackListener {
 			}
 			origin = new Circle(event.getX(), event.getY(), 5, Color.BLUE);
 			paneHoldingVideoCanvas.getChildren().add(origin);
+			project.getVideo().setOrigin(origin);
 		}
 	}
 
@@ -315,11 +321,13 @@ public class FirstWindowController implements AutoTrackListener {
 
 		int actualLengthX = Integer.parseInt(horizontalValue.getResult());
 		double pixelLength = mouseDragRect.getWidth();
-		project.getVideo().setYPixelsPerCm(pixelLength / actualLengthX);
+		project.getVideo().setXPixelsPerCm(pixelLength / actualLengthX);
 		showActualLengthX.setText("Actual Horizontal Length: " + actualLengthX + " cm");
 
 		//remove check
-		System.out.println(project.getVideo().getXPixelsPerCm());
+		System.out.println("Pixel length X: " + pixelLength);
+		System.out.println("Ratio X: " + pixelLength + "/" + actualLengthX + "="+ pixelLength/actualLengthX );
+		System.out.println("Pixel per cm X: " + project.getVideo().getXPixelsPerCm());
 
 	}
 
@@ -335,14 +343,17 @@ public class FirstWindowController implements AutoTrackListener {
 		showActualLengthY.setText("Actual Vertical Length: " + actualLengthY + " cm");
 
 		//remove check
-		System.out.println(project.getVideo().getYPixelsPerCm());
+		System.out.println("Pixel length Y: " + pixelLength);
+		System.out.println("Ratio Y: "+ pixelLength/actualLengthY );
+		System.out.println("Pixel per cm Y: " + project.getVideo().getYPixelsPerCm());
 
 	}
 
 	// MENU EVENTS HANDLING
-	
-	//FILE 
-	/*
+	//File
+
+
+	/**
 	 * Close the program
 	 */
 	@FXML public void menuFileExit() {
@@ -350,7 +361,7 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 	
 	/**
-	 * Save to Json?
+	 * Using Json to save project
 	 */
 	@FXML public void menuFileSave() {
 		//save method goes here @Dakota @Evan
@@ -360,10 +371,13 @@ public class FirstWindowController implements AutoTrackListener {
 	@FXML public void menuCalibrationSetArenaBounds() {
 		isAbleToSetArena = true; 	
 		isAbleToSetOrigin = false;
+		
 	}
 
 	@FXML public void menuCalibrationSetActualLengths() {
 		if (mouseDragRect != null) {
+			project.getVideo().setArenaBounds(mouseDragRect);
+
 			ArrayList<String> choices = new ArrayList();
 			choices.add("Vertical");
 			choices.add("Horizon");
@@ -381,6 +395,7 @@ public class FirstWindowController implements AutoTrackListener {
 				}
 			}
 		}
+		
 	}
 	
 	@FXML public void menuCalibrationSetOrgin() {
