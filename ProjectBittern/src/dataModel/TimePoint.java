@@ -2,6 +2,12 @@ package dataModel;
 
 import java.awt.Point;
 
+/**
+ * This class represents a point at a frame number and contains methods 
+ * for 
+ * @author Group Bittern
+ *
+ */
 public class TimePoint implements Comparable<TimePoint> {
 	private double x;     // location
 	private double y;      
@@ -17,6 +23,14 @@ public class TimePoint implements Comparable<TimePoint> {
 		this.frameNum = frameNum;
 	}
 	
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
 	public double getX() {
 		return x;
 	}
@@ -37,14 +51,6 @@ public class TimePoint implements Comparable<TimePoint> {
 		return new java.awt.Point((int)x,(int)y);
 	}
 
-	public void setX(double x) {
-		this.x = x;
-	}
-		
-	public void setY(double y) {
-		this.y = y;
-	}
-	
 	@Override
 	public String toString() {
 		return String.format("(%.1f,%.1f@T=%d)",x,y,frameNum);
@@ -69,7 +75,7 @@ public class TimePoint implements Comparable<TimePoint> {
 		return this.frameNum - frameNum;
 	}
 	
-	public boolean atSameTime(int frameNum) {
+	public boolean isAtSameTime(int frameNum) {
 		return (this.getFrameNum() == frameNum);
 	}
 	
@@ -85,7 +91,7 @@ public class TimePoint implements Comparable<TimePoint> {
 		if (object instanceof TimePoint) {
 			TimePoint other = (TimePoint) object;
 			return (this.x == other.getX() && this.y == other.getY()
-					&& atSameTime(other.getFrameNum()));
+					&& isAtSameTime(other.getFrameNum()));
 		} else {
 			return false;
 		}

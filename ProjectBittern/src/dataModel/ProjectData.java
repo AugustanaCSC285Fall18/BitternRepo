@@ -106,7 +106,7 @@ public class ProjectData {
 		List<TimePoint> pointsAtTime = new ArrayList<>();
 		for (AnimalTrack track : unassignedSegments) {
 			for (TimePoint point : track.getPositions()) {
-				if (point.atSameTime(frameNum)) {
+				if (point.isAtSameTime(frameNum)) {
 					pointsAtTime.add(point);
 				}
 			}
