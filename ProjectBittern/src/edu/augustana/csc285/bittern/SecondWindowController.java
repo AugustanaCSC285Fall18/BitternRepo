@@ -312,7 +312,7 @@ public class SecondWindowController {
 
 	public void jump(int stepSize) {
 		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
-		if (frameNum < project.getVideo().getEndFrameNum()) {
+		if (frameNum < project.getVideo().getEndFrameNum() + project.getVideo().getFrameRate()) {
 			sliderBar.setValue(frameNum);
 		}
 	}
