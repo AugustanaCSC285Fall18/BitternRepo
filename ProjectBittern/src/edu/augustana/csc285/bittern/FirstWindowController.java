@@ -26,6 +26,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -38,7 +40,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import utils.UtilsForOpenCV;
 
 public class FirstWindowController implements AutoTrackListener {
@@ -61,6 +65,7 @@ public class FirstWindowController implements AutoTrackListener {
 	@FXML private Label startTimeLabel;
 	@FXML private ProgressBar progressAutoTrack;
 	@FXML private TextField nameField;
+	@FXML private MenuBar myMenuBar;
 
 	private AutoTracker autotracker;
 	private GraphicsContext videoGC;
@@ -71,6 +76,7 @@ public class FirstWindowController implements AutoTrackListener {
 	public static Line xAxis; 
 	public static Line yAxis;
 	public static double imageScaleRatio1win;
+	private File chosenFile;
 	
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false; 
@@ -383,13 +389,24 @@ public class FirstWindowController implements AutoTrackListener {
 	 * Using Json to save project
 	 */
 	@FXML public void menuFileSave() throws FileNotFoundException {
-		File saveFile = new File(project.getVideo().getFilePath());
-		File output = new File("output." + saveFile.getName() + ".txt");
-		project.saveToFile(output);
+		try {
+			File saveFile = new File(project.getVideo().getFilePath());
+			File output = new File("output." + saveFile.getName() + ".json");
+			project.saveToFile(output);
+			System.out.println("File was saved successfully!");
+		} catch (Exception e) {
+			System.out.println("File was not saved successfully!");
+			e.printStackTrace();
+		}
+		
 	}
 	
-	@FXML public void menuFileOpen() {
-		//open method goes here 
+	@FXML public void menuFileOpen() throws FileNotFoundException {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Progress File");
+		Window window = myMenuBar.getScene().getWindow();
+		chosenFile = fileChooser.showOpenDialog(window);
+		project = project.loadFromFile(chosenFile);
 	}
 	
 	//CALIBRATION TOOL 
