@@ -255,10 +255,11 @@ public class FirstWindowController implements AutoTrackListener {
 		Platform.runLater(() -> {
 			double scalingRatio = getImageScalingRatio();
 			videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
-			videoGC.drawImage(imgFrame, 0, 0, imgFrame.getWidth() * scalingRatio, imgFrame.getHeight() * scalingRatio);
+			videoGC.drawImage(imgFrame, 0, 0, imgFrame.getWidth() * scalingRatio, 
+					imgFrame.getHeight() * scalingRatio);
 			progressAutoTrack.setProgress(fractionComplete);
 			sliderBar.setValue(frameNumber);
-			currentFrameLabel.setText("" + project.getVideo().getTime(frameNumber));
+			currentFrameLabel.setText(project.getVideo().getTime(frameNumber));
 		});
 	}
 
