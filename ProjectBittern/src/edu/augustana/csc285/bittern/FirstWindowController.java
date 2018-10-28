@@ -391,6 +391,9 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 
+	/**
+	 * 
+	 */
 	@FXML public void menuCalibrationSetActualLengths() {
 		if (mouseDragRect != null) {
 			project.getVideo().setArenaBounds(mouseDragRect);
@@ -415,18 +418,25 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 	
+	/**
+	 * Enables setting orgin 
+	 */
 	@FXML public void menuCalibrationSetOrgin() {
 		isAbleToSetOrigin = true; 
 		isAbleToSetArena = false; 	
 	}
 	
 	
-	//HELP
-	
+	/**
+	 * 
+	 */
 	@FXML public void menuHelpAbout() {
 		//Say something about our team
 	}
 	
+	/**
+	 * Provide instruction for Calibration
+	 */
 	@FXML public void menuHelpInstruction() {
 		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
 		calibrationInstruction.setTitle("Instructions for Calibration");
