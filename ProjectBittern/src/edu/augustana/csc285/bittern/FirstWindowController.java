@@ -65,11 +65,11 @@ public class FirstWindowController implements AutoTrackListener {
 	private AutoTracker autotracker;
 	private GraphicsContext videoGC;
 	private ProjectData project;
-	private Rectangle mouseDragRect;
+	public static Rectangle mouseDragRect;
 	private Point startPoint;
-	private Circle origin;
-	private Line xAxis; 
-	private Line yAxis;
+	public static Circle origin;
+	public static Line xAxis; 
+	public static Line yAxis;
 	
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false; 
@@ -92,14 +92,14 @@ public class FirstWindowController implements AutoTrackListener {
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		
-		//Still cant work property
-	//	paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> setUpAxis());
-	//	paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> setUpAxis());
+		//Still cant work
+	paneHoldingVideoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
+	paneHoldingVideoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		
 		//remove debugging code
-		System.out.println(videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
+		System.out.println("Video Canvas: " + videoCanvas.getHeight() + " " + videoCanvas.getWidth() + " " + videoCanvas.getLayoutX() + " "
 				+ videoCanvas.getLayoutY());
-		System.out.println(paneHoldingVideoCanvas.getHeight() + " " + paneHoldingVideoCanvas.getWidth() + " " + paneHoldingVideoCanvas.getLayoutX() + " "
+		System.out.println("Pane: " + paneHoldingVideoCanvas.getHeight() + " " + paneHoldingVideoCanvas.getWidth() + " " + paneHoldingVideoCanvas.getLayoutX() + " "
 				+ paneHoldingVideoCanvas.getLayoutY());
 	}
 
@@ -313,8 +313,8 @@ public class FirstWindowController implements AutoTrackListener {
 
 	
 	public void setUpAxis() {
-		xAxis = new Line(0,origin.getCenterY(), paneHoldingVideoCanvas.getWidth(),origin.getCenterY() );
-		yAxis = new Line(origin.getCenterX(), 0 ,origin.getCenterX(), paneHoldingVideoCanvas.getHeight() );
+		xAxis = new Line(0,origin.getCenterY(), videoCanvas.getWidth(),origin.getCenterY() );
+		yAxis = new Line(origin.getCenterX(), 0 ,origin.getCenterX(), videoCanvas.getHeight() );
 		xAxis.setStroke(Color.BLUE);
 		yAxis.setStroke(Color.BLUE);
 		xAxis.setStrokeWidth(3.0f);

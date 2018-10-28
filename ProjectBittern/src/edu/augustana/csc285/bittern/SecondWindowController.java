@@ -319,6 +319,9 @@ public class SecondWindowController {
 		}
 	}
 	
+	
+	//MENU HANDLING CODES
+	
 	@FXML public void menuFileExit() {
 		Platform.exit();
 	}
@@ -330,6 +333,35 @@ public class SecondWindowController {
 		File saveFile = new File(project.getVideo().getFilePath());
 		File output = new File("output." + saveFile.getName() + ".txt");
 		project.saveToFile(output);
+	}
+	
+	@FXML public void menuCalibrationToolShowCoordiateSystem() {
+		if(FirstWindowController.origin != null) {
+			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.origin);
+			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.xAxis);
+			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.yAxis);
+		}
+	}
+	
+	@FXML public void menuCalibrationToolHideCoordiateSystem() {
+		if(paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.origin)) {
+			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.origin);
+			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.yAxis);
+			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.xAxis);
+		}
+	}
+	
+	@FXML public void menuCalibrationToolShowArenaBound() {
+		if(FirstWindowController.mouseDragRect != null) {
+			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.mouseDragRect);
+			
+		}
+	}
+	
+	@FXML public void menuCalibrationToolHideArenaBound() {
+		if(paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.mouseDragRect)) {
+			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.mouseDragRect);
+		}
 	}
 	
 	@FXML public void menuHelpAbout() {

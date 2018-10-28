@@ -1,5 +1,6 @@
 package dataModel;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
@@ -43,6 +44,10 @@ public class Video {
 		this.xPixelsPerCm = 6.5;
 		this.yPixelsPerCm = 6.5;
 		this.arenaBounds = new Rectangle(0,0,this.getFrameWidth(),this.getFrameHeight());
+		this.arenaBounds.setStroke(Color.RED);
+		this.arenaBounds.setFill(null);
+		this.arenaBounds.setStrokeWidth(5.0f);
+	
 	}
 		
 	public Rectangle getArenaBounds() {
