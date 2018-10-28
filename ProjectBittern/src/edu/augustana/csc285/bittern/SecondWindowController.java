@@ -79,16 +79,12 @@ public class SecondWindowController {
 	private AnimalTrack currentTrack;
 	private double frameWidthRatio;
 
-
 	private Rectangle arenaBound;
 	private Circle origin;
 	private Line xAxis;
 	private Line yAxis;
-
 	private File chosenFile;
 	
-
-
 	public static final Color[] TRACK_COLORS = new Color[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN,
 			Color.MAGENTA, Color.BLUEVIOLET, Color.ORANGE };
 	
@@ -156,19 +152,13 @@ public class SecondWindowController {
 	 */
 	public void setupClick() {
 		videoCanvas.setOnMouseClicked((event) -> {
-
-			Rectangle arenaBounds = project.getVideo().getArenaBounds();
-			/*arenaBounds.setX();
-			arenaBounds.setY(value);
-			arenaBounds.setHeight(value);
-			arenaBounds.setWidth(value);*/
+			double scalingRatio = getImageScalingRatio();
+			double unscaledX = event.getX() / scalingRatio;
+			double unscaledY = event.getY() / scalingRatio;		
+			int curFrameNum = project.getVideo().getCurrentFrameNum();
 			
-			if (arenaBounds.contains(new Point2D(event.getX(), event.getY()))
+			if (project.getVideo().getArenaBounds().contains(new Point2D(unscaledX, unscaledY))
 					&& project.getVideo().timeRelativelyWithinBounds()) {
-				int curFrameNum = project.getVideo().getCurrentFrameNum();
-				double scalingRatio = getImageScalingRatio();
-				double unscaledX = event.getX() / scalingRatio;
-				double unscaledY = event.getY() / scalingRatio;
 				currentTrack.add(new TimePoint(unscaledX, unscaledY, curFrameNum));
 				updateProgress(curFrameNum);
 				jump(project.getVideo().getStepSize());
