@@ -30,11 +30,19 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+
+import javafx.scene.shape.Circle;
+
+import javafx.scene.shape.Line;
+
 import javafx.scene.shape.Rectangle;
+
 import javafx.stage.FileChooser;
+
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import utils.UtilsForOpenCV;
+
 
 /**
  * This class is responsible for coordinating the behaviors of the GUI controls
@@ -70,8 +78,16 @@ public class SecondWindowController {
 	private GraphicsContext progressGC;
 	private AnimalTrack currentTrack;
 	private double frameWidthRatio;
+
+
+	private Rectangle arenaBound;
+	private Circle origin;
+	private Line xAxis;
+	private Line yAxis;
+
 	private File chosenFile;
 	
+
 
 	public static final Color[] TRACK_COLORS = new Color[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN,
 			Color.MAGENTA, Color.BLUEVIOLET, Color.ORANGE };
@@ -437,53 +453,81 @@ public class SecondWindowController {
 		File output = new File("output." + saveFile.getName() + ".txt");
 		project.saveToFile(output);
 	}
-	
+
 	@FXML public void menuFileOpen() throws FileNotFoundException {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Progress File");
 		Window window = myMenuBar.getScene().getWindow();
 		chosenFile = fileChooser.showOpenDialog(window);
 		project = project.loadFromFile(chosenFile);
-		//call setup() and adjust code to work for file opening
+
 	}
 
 	@FXML
 	public void menuCalibrationToolShowCoordiateSystem() {
-		if (!paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.origin)) {
-			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.origin);
-			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.yAxis);
-			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.xAxis);
-		}
+		if (origin == null && xAxis == null && yAxis == null) {
+			origin = new Circle(project.getVideo().getOrigin().getX() * getImageScalingRatio(),
+					project.getVideo().getOrigin().getY() * getImageScalingRatio(), 5, Color.BLUE);
+			xAxis = new Line(project.getVideo().getXAxis().getStartX() * getImageScalingRatio(),
+					project.getVideo().getXAxis().getStartY() * getImageScalingRatio(),
+					project.getVideo().getXAxis().getEndX() * getImageScalingRatio(),
+					project.getVideo().getXAxis().getEndY() * getImageScalingRatio());
+			yAxis = new Line(project.getVideo().getYAxis().getStartX() * getImageScalingRatio(),
+					project.getVideo().getYAxis().getStartY() * getImageScalingRatio(),
+					project.getVideo().getYAxis().getEndX() * getImageScalingRatio(),
+					project.getVideo().getYAxis().getEndY() * getImageScalingRatio());
 
+			xAxis.setStroke(Color.BLUE);
+			xAxis.setStrokeWidth(3.0f);
+			yAxis.setStroke(Color.BLUE);
+			yAxis.setStrokeWidth(3.0f);
+
+			paneHoldingVideoCanvas.getChildren().add(origin);
+			paneHoldingVideoCanvas.getChildren().add(xAxis);
+			paneHoldingVideoCanvas.getChildren().add(yAxis);
+		}
 	}
 
 	@FXML
 	public void menuCalibrationToolHideCoordiateSystem() {
-		if (paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.origin)) {
-			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.origin);
-			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.yAxis);
-			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.xAxis);
+		if (origin != null && xAxis != null && yAxis != null) {
+			paneHoldingVideoCanvas.getChildren().remove(origin);
+			paneHoldingVideoCanvas.getChildren().remove(yAxis);
+			paneHoldingVideoCanvas.getChildren().remove(xAxis);
 		}
+
 	}
 
 	@FXML
 	public void menuCalibrationToolShowArenaBound() {
-		if (!paneHoldingVideoCanvas.getChildren().contains(project.getVideo().getArenaBounds())) {
-			paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
-		}
-		System.out.println(project.getVideo().getArenaBounds());
+		
+			arenaBound = new Rectangle((project.getVideo().getArenaBounds().getX() * getImageScalingRatio()),
+					(project.getVideo().getArenaBounds().getY() * getImageScalingRatio()),
+					(project.getVideo().getArenaBounds().getWidth() * getImageScalingRatio()),
+					(project.getVideo().getArenaBounds().getHeight() * getImageScalingRatio()));
+			
+			arenaBound.setFill(null);
+			arenaBound.setStroke(Color.RED);
+			arenaBound.setStrokeWidth(5.0f);
+
+			paneHoldingVideoCanvas.getChildren().add(arenaBound);
+		
 	}
 
 	@FXML
 	public void menuCalibrationToolHideArenaBound() {
-		if (paneHoldingVideoCanvas.getChildren().contains(project.getVideo().getArenaBounds())) {
-			paneHoldingVideoCanvas.getChildren().remove(project.getVideo().getArenaBounds());
+		if (arenaBound != null) {
+			paneHoldingVideoCanvas.getChildren().remove(arenaBound);
 		}
 	}
 
 	@FXML
 	public void menuHelpAbout() {
-		// Say something about our team
+		Alert aboutUs = new Alert(AlertType.INFORMATION);
+		aboutUs.setTitle("About Us");
+		aboutUs.setHeaderText(null);
+		aboutUs.setContentText(" ");
+		aboutUs.showAndWait();
 	}
 
 	@FXML
