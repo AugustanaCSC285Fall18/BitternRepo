@@ -25,7 +25,7 @@ public class Video {
 	private double xPixelsPerCm;
 	private double yPixelsPerCm;
 	private Point origin = new Point();
-	private Rectangle arenaBounds; 
+	private transient Rectangle arenaBounds; 
 	private int stepSize;
 	
 		
@@ -223,11 +223,11 @@ public class Video {
 	 * ignore this for now, was trying something but realized that it's
 	 * probably redundant, will fix later. - Dakota
 	 */
-//	synchronized void connectVideoCapture() throws FileNotFoundException {
-//		this.vidCap = new VideoCapture(filePath);
-//		if (!vidCap.isOpened()) {
-//			throw new FileNotFoundException("Unable to open video file: " + filePath);
-//		}
-//	}
+	synchronized void connectVideoCapture() throws FileNotFoundException {
+		this.vidCap = new VideoCapture(filePath);
+		if (!vidCap.isOpened()) {
+			throw new FileNotFoundException("Unable to open video file: " + filePath);
+		}
+	}
 
 }
