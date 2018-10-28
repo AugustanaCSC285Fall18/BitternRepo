@@ -175,7 +175,7 @@ public class SecondWindowController {
 		if (currentTrack != null) { //rethink using this conditional
 			project.addTrack(currentTrack);
 		}
-		currentTrack = project.getAnimal(chicksBox.getValue()); 
+		currentTrack = project.getAnimalTrackInTracks((String)chicksBox.getValue()); 
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 		refillProgressCanvas();
 	}
@@ -224,6 +224,15 @@ public class SecondWindowController {
 			for (TimePoint point : tracksBox.getValue().getPositions()) {
 				videoGC.fillOval(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
 			}
+		}
+	}
+	
+	public void drawPoint(TimePoint point) {
+		if (point != null) { //rethink this conditional
+			videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
+			videoGC.setFill(Color.CYAN);
+			videoGC.fillOval(point.getX()-3, point.getY(), 6, 6);
+			
 		}
 	}
 

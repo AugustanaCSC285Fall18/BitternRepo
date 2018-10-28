@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
 //
@@ -156,6 +157,15 @@ public class ProjectData {
 		}
 
 		return closestTrack;
+	}
+	
+	public AnimalTrack getAnimalTrackInTracks(String id) {
+		for(AnimalTrack animal : tracks) {
+			if(animal.getID().equals(id)) {
+				return animal;
+			}
+		}
+		return null;
 	}
 
 
