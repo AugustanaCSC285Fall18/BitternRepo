@@ -363,10 +363,8 @@ public class SecondWindowController {
 
 	@FXML
 	public void menuCalibrationToolShowCoordiateSystem() {
-		if (!paneHoldingVideoCanvas.getChildren().contains(new Circle(project.getVideo().getOrigin().getX(),
-				project.getVideo().getOrigin().getY(), 5, Color.BLUE))) {
-			paneHoldingVideoCanvas.getChildren().add(new Circle(project.getVideo().getOrigin().getX(),
-					project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+		if (!paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.origin)) {
+			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.origin);
 			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.yAxis);
 			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.xAxis);
 		}
@@ -375,10 +373,8 @@ public class SecondWindowController {
 
 	@FXML
 	public void menuCalibrationToolHideCoordiateSystem() {
-		if (paneHoldingVideoCanvas.getChildren().contains(new Circle(project.getVideo().getOrigin().getX(),
-				project.getVideo().getOrigin().getY(), 5, Color.BLUE))) {
-			paneHoldingVideoCanvas.getChildren().remove(new Circle(project.getVideo().getOrigin().getX(),
-					project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+		if (paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.origin)) {
+			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.origin);
 			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.yAxis);
 			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.xAxis);
 		}
@@ -389,6 +385,7 @@ public class SecondWindowController {
 		if (!paneHoldingVideoCanvas.getChildren().contains(project.getVideo().getArenaBounds())) {
 			paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
 		}
+		System.out.println(project.getVideo().getArenaBounds());
 	}
 
 	@FXML
