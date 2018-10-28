@@ -49,15 +49,21 @@ public class DataExporter {
 	 * @return the relevant tracking information from the given AnimalTrack
 	 */
 	private static String getResult(AnimalTrack track, Video video) {
+		double scaledOriginX = video.getOrigin().getX()/video.getXPixelsPerCm();
+		double scaledOriginY = video.getOrigin().getY()/video.getYPixelsPerCm();
+		TimePoint origin = new TimePoint(scaledOriginX, scaledOriginY, 0);
+		
+		List<TimePoint> adjustedPositions = getCalibratedPositions(track, video, origin);
 		String output = "";	
-		List<TimePoint> timePoint = ProjectData.getCalibratedPosition(track, video);
-		for (int i = 0; i < timePoint.size(); i++) {
-			int frameNum = timePoint.get(i).getFrameNum();
-			output += "Time: " + video.getTime(frameNum) + ", Position in centimeters: (" 
-					+ (int) timePoint.get(i).getX() + ", " 
-					+ (int) timePoint.get(i).getY() + ")\n";
-			
+		
+		for (int i = 0; i < adjustedPositions.size(); i++) {
+			TimePoint currentPoint = adjustedPositions.get(i);
+			output += "Time: " + video.getTime(currentPoint.getFrameNum()) + ", Position in centimeters: (" 
+					+ (int) currentPoint.getX() + ", " 
+					+ (int) currentPoint.getY() + ") Distance from origin: "
+					+ currentPoint.getDistanceTo(origin);
 		}
+		
 		return output;
 	}
 
