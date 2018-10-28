@@ -1,6 +1,8 @@
 package edu.augustana.csc285.bittern;
 
 import java.awt.Point;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,42 +43,24 @@ import utils.UtilsForOpenCV;
 
 public class FirstWindowController implements AutoTrackListener {
 
-	@FXML
-	private Pane paneHoldingVideoCanvas;
-	@FXML
-	private Button backButton;
-	@FXML
-	private Button confirmButton;
-	@FXML
-	private Button startTimeButton;
-	@FXML
-	private Button autoTrackButton;
-	@FXML
-	private Button endTimeButton;
-	@FXML
-	private Button nextButton;
-	@FXML
-	private Slider sliderBar;
-	@FXML
-	private Canvas videoCanvas;
-	@FXML
-	private ComboBox<Integer> stepBox;
-	@FXML
-	private ComboBox<String> chicksBox;
-	@FXML
-	private Label showActualLengthX;
-	@FXML
-	private Label showActualLengthY;
-	@FXML
-	private Label currentFrameLabel;
-	@FXML
-	private Label endTimeLabel;
-	@FXML
-	private Label startTimeLabel;
-	@FXML
-	private ProgressBar progressAutoTrack;
-	@FXML
-	private TextField nameField;
+	@FXML private Pane paneHoldingVideoCanvas;
+	@FXML private Button backButton;
+	@FXML private Button confirmButton;
+	@FXML private Button startTimeButton;
+	@FXML private Button autoTrackButton;
+	@FXML private Button endTimeButton;
+	@FXML private Button nextButton;
+	@FXML private Slider sliderBar;
+	@FXML private Canvas videoCanvas;
+	@FXML private ComboBox<Integer> stepBox;
+	@FXML private ComboBox<String> chicksBox;
+	@FXML private Label showActualLengthX;
+	@FXML private Label showActualLengthY;
+	@FXML private Label currentFrameLabel;
+	@FXML private Label endTimeLabel;
+	@FXML private Label startTimeLabel;
+	@FXML private ProgressBar progressAutoTrack;
+	@FXML private TextField nameField;
 
 	private AutoTracker autotracker;
 	private GraphicsContext videoGC;
@@ -394,8 +378,10 @@ public class FirstWindowController implements AutoTrackListener {
 	/**
 	 * Using Json to save project
 	 */
-	@FXML public void menuFileSave() {
-		//save method goes here @Dakota @Evan
+	@FXML public void menuFileSave() throws FileNotFoundException {
+		File saveFile = new File(project.getVideo().getFilePath());
+		File output = new File("output." + saveFile.getName() + ".txt");
+		project.saveToFile(output);
 	}
 	
 	//CALIBRATION TOOL 
@@ -405,6 +391,9 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 
+	/**
+	 * 
+	 */
 	@FXML public void menuCalibrationSetActualLengths() {
 		isAbleToSetArena = false; 	
 		isAbleToSetOrigin = false;
@@ -431,18 +420,25 @@ public class FirstWindowController implements AutoTrackListener {
 		
 	}
 	
+	/**
+	 * Enables setting orgin 
+	 */
 	@FXML public void menuCalibrationSetOrgin() {
 		isAbleToSetOrigin = true; 
 		isAbleToSetArena = false; 	
 	}
 	
 	
-	//HELP
-	
+	/**
+	 * 
+	 */
 	@FXML public void menuHelpAbout() {
 		//Say something about our team
 	}
 	
+	/**
+	 * Provide instruction for Calibration
+	 */
 	@FXML public void menuHelpInstruction() {
 		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
 		calibrationInstruction.setTitle("Instructions for Calibration");
