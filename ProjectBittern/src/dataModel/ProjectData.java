@@ -6,15 +6,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-
-//import com.google.gson.Gson;
-//import com.google.gson.GsonBuilder;
-//
-//import datamodel.ProjectData;
-
-//import com.google.gson.Gson;
-//import com.google.gson.GsonBuilder;
+	
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ProjectData {
 	private Video video;
@@ -47,7 +41,7 @@ public class ProjectData {
 		}
 		return false;
 	}
-	
+
 	public boolean containsPointAtTime(int frameNum, AnimalTrack track) {
 		int quotient = (int) (frameNum / video.getFrameRate());
 		int startFrame = (int) (quotient * video.getFrameRate()) + 1;
@@ -61,12 +55,12 @@ public class ProjectData {
 	}
 
 	public List<AnimalTrack> getUnassignedSegmentsThatContainTime(int frameNum) {
-		List <AnimalTrack> relevantTracks = new ArrayList<>();
+		List<AnimalTrack> relevantTracks = new ArrayList<>();
 		for (AnimalTrack track : unassignedSegments) {
 			if (containsPointAtTime(frameNum, track)) {
 				relevantTracks.add(track);
 			}
-		}		
+		}
 		return relevantTracks;
 	}
 
@@ -160,39 +154,49 @@ public class ProjectData {
 
 		return closestTrack;
 	}
+
+	public static List<TimePoint> getDistanceToOrigin (AnimalTrack track, Video video){
+		List<TimePoint> distance = track.getPositions();
+		for (int i = 0; i < track.getPositions().size(); i++) {
+			
+		}
+		
+		
+		return distance;
+	}
 	
+
 	public AnimalTrack getAnimalTrackInTracks(String id) {
-		for(AnimalTrack animal : tracks) {
-			if(animal.getID().equals(id)) {
+		for (AnimalTrack animal : tracks) {
+			if (animal.getID().equals(id)) {
 				return animal;
 			}
 		}
 		return null;
 	}
-
-
-//	public void saveToFile(File saveFile) throws FileNotFoundException {
-//		String json = toJSON();
-//		PrintWriter out = new PrintWriter(saveFile);
-//		out.print(json);
-//		out.close();
-//	}
-//	
-//	public String toJSON() {
-//		Gson gson = new GsonBuilder().setPrettyPrinting().create();		
-//		return gson.toJson(this);
-//	}
-//	
-//	public static ProjectData loadFromFile(File loadFile) throws FileNotFoundException {
-//		String json = new Scanner(loadFile).useDelimiter("\\Z").next();
-//		return fromJSON(json);
-//	}
-//	
-//	public static ProjectData fromJSON(String jsonText) throws FileNotFoundException {
-//		Gson gson = new Gson();
-//		ProjectData data = gson.fromJson(jsonText, ProjectData.class);
-//		data.getVideo().connectVideoCapture();
-//		return data;
-//	}
+	
+	public void saveToFile(File saveFile) throws FileNotFoundException {
+		String json = toJSON();
+		PrintWriter out = new PrintWriter(saveFile);
+		out.print(json);
+		out.close();
+	}
+	
+	public String toJSON() {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();		
+		return gson.toJson(this);
+	}
+	
+	public static ProjectData loadFromFile(File loadFile) throws FileNotFoundException {
+		String json = new Scanner(loadFile).useDelimiter("\\Z").next();
+		return fromJSON(json);
+	}
+	
+	public static ProjectData fromJSON(String jsonText) throws FileNotFoundException {
+		Gson gson = new Gson();
+		ProjectData data = gson.fromJson(jsonText, ProjectData.class);
+		data.getVideo().connectVideoCapture();
+		return data;
+	}
 	
 }
