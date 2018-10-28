@@ -2,6 +2,7 @@ package dataModel;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 import java.awt.Point;
@@ -28,9 +29,12 @@ public class Video {
 	
 	private double xPixelsPerCm;
 	private double yPixelsPerCm;
-	private Point origin = new Point();
+	private transient Point origin;
+	private transient Line xAxis;
+	private transient Line yAxis;
 	private transient Rectangle arenaBounds; 
 	private int stepSize;
+	
 	
 		
 	public Video(String filePath) throws FileNotFoundException {
@@ -51,14 +55,26 @@ public class Video {
 		this.arenaBounds.setFill(null);
 		this.arenaBounds.setStrokeWidth(5.0f);
 		this.origin = new Point(0,0);
+		this.xAxis = new Line(this.origin.getX(), this.origin.getY(), this.origin.getX(), this.getFrameWidth());
+		this.xAxis.setStroke(Color.BLUE);
+		this.xAxis.setStrokeWidth(3.0f);
+		this.yAxis = new Line (this.origin.getX(), this.origin.getY(), this.origin.getY(), this.getFrameHeight());
+		this.yAxis.setStroke(Color.BLUE);
+		this.yAxis.setStrokeWidth(3.0f);
 	
 	}
-		
+	
+	/**
+	 * @return the retangle arenaBounds of the video object
+	 * 
+	 */
 	public Rectangle getArenaBounds() {
 		return arenaBounds;
 	}
 	
-
+	/**
+	 * @return the average pixels per centimeter
+	 */
 	public double getAvgPixelsPerCm() {
 		return (xPixelsPerCm + yPixelsPerCm)/2;
 	}
@@ -121,12 +137,37 @@ public class Video {
 		return xPixelsPerCm;
 	}
 
+	/**
+	 * @return number of pixels per centimeters vertically
+	 */
 	public  double getYPixelsPerCm() {
 		return yPixelsPerCm;
 	}
 
 	public void setArenaBounds(Rectangle mouseDragRect) {
 		this.arenaBounds = mouseDragRect;
+	}
+	
+	/**
+	 * setXAxis 
+	 * @param x
+	 */
+	public void setXAxis(Line x) {
+		this.xAxis = x;
+		
+	}
+	
+	public void setYAxis(Line y) {
+		
+		this.yAxis = y ; 
+	}
+	
+	public Line getXAxis() {
+		return this.xAxis;
+	}
+	
+	public Line getYAxis() {
+		return this.yAxis;
 	}
 
 
@@ -172,8 +213,8 @@ public class Video {
 		this.yPixelsPerCm = yPixelsPerCm;
 	}
 	
-	public void setOrigin(Circle c) {
-		this.origin.setLocation(c.getCenterX(), c.getCenterY());
+	public void setOrigin(Point p) {
+		this.origin.setLocation(p.getX(), p.getY());
 	}
 	
 	public Point getOrigin() {
