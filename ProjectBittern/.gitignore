@@ -3,3 +3,5 @@
 *.avi
 *.csv
 /output.sample1.mp4.txt
+/hs_err_pid85736.log
+/output.sample1.mp4.json
