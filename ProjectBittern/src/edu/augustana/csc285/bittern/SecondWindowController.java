@@ -66,8 +66,9 @@ public class SecondWindowController {
 	private double frameWidthRatio;
 	private File chosenFile;
 	
-	public static double imageScaleRatio2win;
 
+	public static final Color[] TRACK_COLORS = new Color[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN,
+			Color.MAGENTA, Color.BLUEVIOLET, Color.ORANGE };
 	@FXML
 	public void initialize() {
 		sliderBar.valueProperty().addListener((obs, oldV, newV) -> displayFrame(newV.intValue()));
@@ -115,10 +116,9 @@ public class SecondWindowController {
 
 	public void setupClick() {
 		videoCanvas.setOnMouseClicked((event) -> {
-			// if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(),
-			// event.getY()))
-			// && project.getVideo().timeWithinBounds()) {
-			if (project.getVideo().timeRelativelyWithinBounds()) {
+
+			if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
+					&& project.getVideo().timeRelativelyWithinBounds()) {
 				int curFrameNum = project.getVideo().getCurrentFrameNum();
 				double scalingRatio = getImageScalingRatio();
 				double unscaledX = event.getX() / scalingRatio;
@@ -204,8 +204,9 @@ public class SecondWindowController {
 		if (tracksBox.getItems().size() != 0) {
 			AnimalTrack autoTrack = tracksBox.getValue();
 			currentTrack.add(autoTrack.getPositions());
-			tracksBox.getItems().remove(autoTrack);
 			usedTracksBox.getItems().add(autoTrack);
+			project.getUnassignedSegments().remove(autoTrack); //hmmn
+			tracksBox.getItems().remove(autoTrack);
 			refillProgressCanvas();
 			tracksBox.setStyle("");
 		}
@@ -217,6 +218,7 @@ public class SecondWindowController {
 			AnimalTrack autoTrack = usedTracksBox.getValue();
 			currentTrack.remove(autoTrack.getPositions());
 			usedTracksBox.getItems().remove(autoTrack);
+			project.getUnassignedSegments().add(autoTrack);
 			refillProgressCanvas();
 			findAutoTracks();
 		}
@@ -236,7 +238,7 @@ public class SecondWindowController {
 	public void handleTracksBox() {
 		double scalingRatio = getImageScalingRatio();
 		if (tracksBox.getValue() != null) {
-			videoGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+			videoGC.setFill(Color.DARKBLUE);
 			for (TimePoint point : tracksBox.getValue().getPositions()) {
 				videoGC.fillOval(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
 			}
@@ -244,19 +246,13 @@ public class SecondWindowController {
 	}
 
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
-		for (int i = 0; i < project.getTracks().size(); i++) {
-			AnimalTrack track = project.getTracks().get(i);
-			Color trackColor = Color.color(Math.random(), Math.random(), Math.random());
-			Color trackPrevColor = trackColor.deriveColor(0, 0.5, 1.5, 1.0); // subtler variant
-			videoGC.setFill(trackPrevColor);
-			for (TimePoint prevPt : track.getTimePointsWithinInterval(frameNum - 90, frameNum).getPositions()) {
-				videoGC.fillOval(prevPt.getX() * scalingRatio - 3, prevPt.getY() * scalingRatio - 3, 7, 7);
-			}
-			TimePoint currPt = track.getTimePointAtTime(frameNum);
-			if (currPt != null) {
-				videoGC.setFill(trackColor);
-				videoGC.fillOval(currPt.getX() * scalingRatio - 7, currPt.getY() * scalingRatio - 7, 15, 15);
-			}
+		Color trackColor = TRACK_COLORS[project.getAnimalIndex(currentTrack.getID()) % TRACK_COLORS.length];
+		Color trackPrevColor = trackColor.deriveColor(0, 0.5, 1.5, 1.0); // subtler variant
+
+		videoGC.setFill(trackPrevColor);
+		for (TimePoint prevPt : currentTrack.getTimePointsWithinInterval(frameNum - 90, frameNum).getPositions()) {
+			videoGC.fillOval(prevPt.getX() * scalingRatio - 3, prevPt.getY() * scalingRatio - 3, 7, 7);
+
 		}
 	}
 
@@ -278,7 +274,6 @@ public class SecondWindowController {
 	private double getImageScalingRatio() {
 		double widthRatio = videoCanvas.getWidth() / project.getVideo().getFrameWidth();
 		double heightRatio = videoCanvas.getHeight() / project.getVideo().getFrameHeight();
-		imageScaleRatio2win = Math.min(widthRatio, heightRatio);
 		return Math.min(widthRatio, heightRatio);
 	}
 
@@ -323,7 +318,7 @@ public class SecondWindowController {
 	public void jump(int stepSize) {
 		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
 		if (frameNum < project.getVideo().getEndFrameNum() + project.getVideo().getFrameRate()) {
-			sliderBar.setValue(frameNum);
+			displayFrame((int)frameNum);
 		}
 	}
 
@@ -354,10 +349,8 @@ public class SecondWindowController {
 
 	@FXML
 	public void menuCalibrationToolShowCoordiateSystem() {
-		if (!paneHoldingVideoCanvas.getChildren().contains(new Circle(project.getVideo().getOrigin().getX(),
-				project.getVideo().getOrigin().getY(), 5, Color.BLUE))) {
-			paneHoldingVideoCanvas.getChildren().add(new Circle(project.getVideo().getOrigin().getX(),
-					project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+		if (!paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.origin)) {
+			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.origin);
 			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.yAxis);
 			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.xAxis);
 		}
@@ -366,10 +359,8 @@ public class SecondWindowController {
 
 	@FXML
 	public void menuCalibrationToolHideCoordiateSystem() {
-		if (paneHoldingVideoCanvas.getChildren().contains(new Circle(project.getVideo().getOrigin().getX(),
-				project.getVideo().getOrigin().getY(), 5, Color.BLUE))) {
-			paneHoldingVideoCanvas.getChildren().remove(new Circle(project.getVideo().getOrigin().getX(),
-					project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+		if (paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.origin)) {
+			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.origin);
 			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.yAxis);
 			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.xAxis);
 		}
@@ -380,6 +371,7 @@ public class SecondWindowController {
 		if (!paneHoldingVideoCanvas.getChildren().contains(project.getVideo().getArenaBounds())) {
 			paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
 		}
+		System.out.println(project.getVideo().getArenaBounds());
 	}
 
 	@FXML
