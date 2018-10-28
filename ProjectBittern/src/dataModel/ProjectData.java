@@ -165,27 +165,27 @@ public class ProjectData {
 		List<TimePoint> calibratedTimePoint = track.getPositions();
 		for (int i = 0; i < track.getPositions().size(); i++) {
 			if (track.getPositions().get(i).getX() > video.getOrigin().getX()
-					&& track.getPositions().get(i).getX() > video.getOrigin().getX()) {
+					&& track.getPositions().get(i).getY() < video.getOrigin().getY()) {
 				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
 						/ video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getY())
 						/ video.getYPixelsPerCm());
 			} else if (track.getPositions().get(i).getX() > video.getOrigin().getX()
 					&& track.getPositions().get(i).getY() > video.getOrigin().getY()) {
 				calibratedTimePoint.get(i).setX(Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
 						/ video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getY())
 						/ video.getYPixelsPerCm());
 			} else if (track.getPositions().get(i).getX() < video.getOrigin().getX()
-					&& track.getPositions().get(i).getX() < video.getOrigin().getX()) {
+					&& track.getPositions().get(i).getY() < video.getOrigin().getY()) {
 				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
 						/ video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+				calibratedTimePoint.get(i).setY(Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getY())
 						/ video.getYPixelsPerCm());
 			} else {
 				calibratedTimePoint.get(i).setX(-Math.abs(track.getPositions().get(i).getX() - video.getOrigin().getX())
 						/ video.getXPixelsPerCm());
-				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getX())
+				calibratedTimePoint.get(i).setY(-Math.abs(video.getOrigin().getY() - track.getPositions().get(i).getY())
 						/ video.getYPixelsPerCm());
 			}
 
