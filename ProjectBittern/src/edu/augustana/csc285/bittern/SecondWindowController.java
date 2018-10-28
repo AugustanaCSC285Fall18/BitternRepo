@@ -29,51 +29,72 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import utils.UtilsForOpenCV;
 
 public class SecondWindowController {
 
-	@FXML private Pane paneHoldingVideoCanvas;
-	@FXML private Button addTrackButton;
-	@FXML private Button backButton;
-	@FXML private Button exportButton;
-	@FXML private Button nextButton;
-	@FXML private Button playButton;
-	@FXML private Button previousButton;
-	@FXML private Button removeTrackButton;
-	@FXML private Button showCurrentPathButton;
-	@FXML private Canvas videoCanvas;
-	@FXML private Canvas progressCanvas;
-	@FXML private Label currentFrameLabel;
-	@FXML private Label endFrameLabel;
-	@FXML private Label startFrameLabel;
-	@FXML private Slider sliderBar;
-	@FXML private ComboBox<String> chicksBox;
-	@FXML private ComboBox<AnimalTrack> tracksBox;
-	@FXML private ComboBox<AnimalTrack> usedTracksBox;
-	
+	@FXML
+	private Pane paneHoldingVideoCanvas;
+	@FXML
+	private Button addTrackButton;
+	@FXML
+	private Button backButton;
+	@FXML
+	private Button exportButton;
+	@FXML
+	private Button nextButton;
+	@FXML
+	private Button playButton;
+	@FXML
+	private Button previousButton;
+	@FXML
+	private Button removeTrackButton;
+	@FXML
+	private Button showCurrentPathButton;
+	@FXML
+	private Canvas videoCanvas;
+	@FXML
+	private Canvas progressCanvas;
+	@FXML
+	private Label currentFrameLabel;
+	@FXML
+	private Label endFrameLabel;
+	@FXML
+	private Label startFrameLabel;
+	@FXML
+	private Slider sliderBar;
+	@FXML
+	private ComboBox<String> chicksBox;
+	@FXML
+	private ComboBox<AnimalTrack> tracksBox;
+	@FXML
+	private ComboBox<AnimalTrack> usedTracksBox;
+
 	private ProjectData project;
 	private ScheduledExecutorService timer;
 	private GraphicsContext videoGC;
 	private GraphicsContext progressGC;
 	private AnimalTrack currentTrack;
-	private double frameWidthRatio; 
+	private double frameWidthRatio;
 	
+	public static double imageScaleRatio2win;
+
 	@FXML
 	public void initialize() {
 		sliderBar.valueProperty().addListener((obs, oldV, newV) -> displayFrame(newV.intValue()));
 		setupClick();
-			
+
 	}
-	
+
 	public void initializeWithStage(Stage stage) {
 		videoGC = videoCanvas.getGraphicsContext2D();
 		videoCanvas.widthProperty().bind(paneHoldingVideoCanvas.widthProperty());
 		videoCanvas.heightProperty().bind(paneHoldingVideoCanvas.heightProperty());
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
-		
+
 		progressGC = progressCanvas.getGraphicsContext2D();
 		progressCanvas.widthProperty().bind(progressCanvas.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillProgressCanvas());
@@ -83,32 +104,33 @@ public class SecondWindowController {
 		try {
 			this.project = project;
 			project.getVideo().resetToStart();
-						
+
 			chicksBox.getItems().clear();
 			for (AnimalTrack track : project.getTracks()) {
 				chicksBox.getItems().add(track.getID());
 			}
-			
+
 			currentTrack = project.getTracks().get(0);
 			chicksBox.setValue(currentTrack.getID());
-			
+
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
-			
+
 			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
-						
+
 			displayFrame(0);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	public void setupClick() {
 		videoCanvas.setOnMouseClicked((event) -> {
-			//if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(), event.getY()))
-			//		&& project.getVideo().timeWithinBounds()) {
+			// if (project.getVideo().getArenaBounds().contains(new Point2D(event.getX(),
+			// event.getY()))
+			// && project.getVideo().timeWithinBounds()) {
 			if (project.getVideo().timeRelativelyWithinBounds()) {
 				int curFrameNum = project.getVideo().getCurrentFrameNum();
 				double scalingRatio = getImageScalingRatio();
@@ -118,11 +140,11 @@ public class SecondWindowController {
 				updateProgress(curFrameNum);
 				jump(project.getVideo().getStepSize());
 			}
-		});	
+		});
 
 	}
 
-	//fix
+	// fix
 	public void refillProgressCanvas() {
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
 		double startWidth = project.getVideo().getStartFrameNum() / frameWidthRatio;
@@ -130,30 +152,28 @@ public class SecondWindowController {
 
 		progressGC.setFill(Color.GRAY);
 		progressGC.fillRect(0, 0, startWidth, progressCanvas.getHeight());
-		progressGC.fillRect(endWidth, 0, progressCanvas.getWidth() - endWidth, 
-				progressCanvas.getHeight());
-		
+		progressGC.fillRect(endWidth, 0, progressCanvas.getWidth() - endWidth, progressCanvas.getHeight());
+
 		progressGC.setFill(Color.RED);
-		progressGC.fillRect(startWidth, 0, endWidth - startWidth,
-				progressCanvas.getHeight());
+		progressGC.fillRect(startWidth, 0, endWidth - startWidth, progressCanvas.getHeight());
 
 		for (TimePoint position : currentTrack.getPositions()) {
 			updateProgress(position.getFrameNum());
 		}
 	}
-	
+
 	public void updateProgress(int frameNumber) {
-		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; //debug for ends
+		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; // debug for ends
 		progressGC.setFill(Color.GREEN);
 		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
 	}
 
 	public void repaintCanvas() {
 		if (project != null) {
-			displayFrame(project.getVideo().getCurrentFrameNum()); 
+			displayFrame(project.getVideo().getCurrentFrameNum());
 		}
 	}
-	
+
 	public void displayFrame(int frameNum) {
 		sliderBar.setValue(frameNum);
 		project.getVideo().setCurrentFrameNum(frameNum);
@@ -163,7 +183,7 @@ public class SecondWindowController {
 		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
 		videoGC.drawImage(curFrame, 0, 0, curFrame.getWidth() * scalingRatio, curFrame.getHeight() * scalingRatio);
 		drawAssignedAnimalTracks(scalingRatio, frameNum);
-		
+
 		Platform.runLater(() -> {
 			currentFrameLabel.setText(project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
 		});
@@ -173,15 +193,15 @@ public class SecondWindowController {
 	public void handleBack() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("FirstWindow.fxml"));
 		BorderPane root = (BorderPane) loader.load();
-	
+
 		Scene nextScene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
 		nextScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-	
+
 		Stage primary = (Stage) backButton.getScene().getWindow();
 		primary.setTitle("Setup Window");
 		primary.setScene(nextScene);
 		primary.show();
-	
+
 		FirstWindowController controller = loader.getController();
 		controller.initializeWithStage(primary);
 		controller.setup(project);
@@ -192,9 +212,9 @@ public class SecondWindowController {
 		DataExporter.exportToCSV(project);
 	}
 
-	@FXML 
+	@FXML
 	public void handleAddTrack() {
-		if (tracksBox.getItems().size() != 0) {					
+		if (tracksBox.getItems().size() != 0) {
 			AnimalTrack autoTrack = tracksBox.getValue();
 			currentTrack.add(autoTrack.getPositions());
 			tracksBox.getItems().remove(autoTrack);
@@ -217,10 +237,10 @@ public class SecondWindowController {
 
 	@FXML
 	public void handleChicksBox() {
-		if (currentTrack != null) { 
+		if (currentTrack != null) {
 			project.addTrack(currentTrack);
 		}
-		currentTrack = project.getAnimalTrackInTracks((String)chicksBox.getValue()); 
+		currentTrack = project.getAnimalTrackInTracks((String) chicksBox.getValue());
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 		refillProgressCanvas();
 	}
@@ -235,7 +255,7 @@ public class SecondWindowController {
 			}
 		}
 	}
-	
+
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
 		for (int i = 0; i < project.getTracks().size(); i++) {
 			AnimalTrack track = project.getTracks().get(i);
@@ -255,22 +275,23 @@ public class SecondWindowController {
 
 	public void findAutoTracks() {
 		tracksBox.getItems().removeAll(tracksBox.getItems());
-		List<AnimalTrack> relevantTracks = 
-				project.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum());
+		List<AnimalTrack> relevantTracks = project
+				.getUnassignedSegmentsThatContainTime(project.getVideo().getCurrentFrameNum());
 		if (relevantTracks.size() > 0) {
 			tracksBox.setStyle("-fx-background-color: rgb(0,255,0)");
 			for (AnimalTrack track : relevantTracks) {
 				tracksBox.getItems().add(track);
 			}
 		} else {
-				tracksBox.setStyle("");
+			tracksBox.setStyle("");
 		}
-		
+
 	}
-	
+
 	private double getImageScalingRatio() {
 		double widthRatio = videoCanvas.getWidth() / project.getVideo().getFrameWidth();
 		double heightRatio = videoCanvas.getHeight() / project.getVideo().getFrameHeight();
+		imageScaleRatio2win = Math.min(widthRatio, heightRatio);
 		return Math.min(widthRatio, heightRatio);
 	}
 
@@ -294,11 +315,11 @@ public class SecondWindowController {
 					sliderBar.setValue(project.getVideo().getCurrentFrameNum());
 				}
 			};
-	
+
 			this.timer = Executors.newSingleThreadScheduledExecutor();
 			this.timer.scheduleAtFixedRate(frameGrabber, 0, (int) project.getVideo().getFrameRate(),
 					TimeUnit.MILLISECONDS);
-	
+
 		}
 	}
 
@@ -318,57 +339,72 @@ public class SecondWindowController {
 			sliderBar.setValue(frameNum);
 		}
 	}
-	
-	
-	//MENU HANDLING CODES
-	
-	@FXML public void menuFileExit() {
+
+	// MENU HANDLING CODES
+
+	@FXML
+	public void menuFileExit() {
 		Platform.exit();
 	}
-	
+
 	/**
 	 * Save to Json?
 	 */
-	@FXML public void menuFileSave() throws FileNotFoundException {
+	@FXML
+	public void menuFileSave() throws FileNotFoundException {
 		File saveFile = new File(project.getVideo().getFilePath());
 		File output = new File("output." + saveFile.getName() + ".txt");
 		project.saveToFile(output);
 	}
 	
-	@FXML public void menuCalibrationToolShowCoordiateSystem() {
-		if(FirstWindowController.origin != null) {
-			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.origin);
-			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.xAxis);
-			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.yAxis);
-		}
+	@FXML public void menuFileOpen() {
+		//open method goes here 
 	}
-	
-	@FXML public void menuCalibrationToolHideCoordiateSystem() {
-		if(paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.origin)) {
-			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.origin);
+
+	@FXML
+	public void menuCalibrationToolShowCoordiateSystem() {
+		if (!paneHoldingVideoCanvas.getChildren().contains(new Circle(project.getVideo().getOrigin().getX(),
+				project.getVideo().getOrigin().getY(), 5, Color.BLUE))) {
+			paneHoldingVideoCanvas.getChildren().add(new Circle(project.getVideo().getOrigin().getX(),
+					project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.yAxis);
+			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.xAxis);
+		}
+
+	}
+
+	@FXML
+	public void menuCalibrationToolHideCoordiateSystem() {
+		if (paneHoldingVideoCanvas.getChildren().contains(new Circle(project.getVideo().getOrigin().getX(),
+				project.getVideo().getOrigin().getY(), 5, Color.BLUE))) {
+			paneHoldingVideoCanvas.getChildren().remove(new Circle(project.getVideo().getOrigin().getX(),
+					project.getVideo().getOrigin().getY(), 5, Color.BLUE));
 			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.yAxis);
 			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.xAxis);
 		}
 	}
-	
-	@FXML public void menuCalibrationToolShowArenaBound() {
-		if(FirstWindowController.mouseDragRect != null) {
-			paneHoldingVideoCanvas.getChildren().add(FirstWindowController.mouseDragRect);
-			
+
+	@FXML
+	public void menuCalibrationToolShowArenaBound() {
+		if (!paneHoldingVideoCanvas.getChildren().contains(project.getVideo().getArenaBounds())) {
+			paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
 		}
 	}
-	
-	@FXML public void menuCalibrationToolHideArenaBound() {
-		if(paneHoldingVideoCanvas.getChildren().contains(FirstWindowController.mouseDragRect)) {
-			paneHoldingVideoCanvas.getChildren().remove(FirstWindowController.mouseDragRect);
+
+	@FXML
+	public void menuCalibrationToolHideArenaBound() {
+		if (paneHoldingVideoCanvas.getChildren().contains(project.getVideo().getArenaBounds())) {
+			paneHoldingVideoCanvas.getChildren().remove(project.getVideo().getArenaBounds());
 		}
 	}
-	
-	@FXML public void menuHelpAbout() {
-		//Say something about our team
+
+	@FXML
+	public void menuHelpAbout() {
+		// Say something about our team
 	}
-	
-	@FXML public void menuHelpInstruction() {
+
+	@FXML
+	public void menuHelpInstruction() {
 		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
 		calibrationInstruction.setTitle("Instructions for Calibration");
 		calibrationInstruction.setHeaderText(null);
@@ -376,5 +412,5 @@ public class SecondWindowController {
 				"Click and drag your mouse to draw the space that the chicks will be" + " tracked within.");
 		calibrationInstruction.showAndWait();
 	}
-	
+
 }

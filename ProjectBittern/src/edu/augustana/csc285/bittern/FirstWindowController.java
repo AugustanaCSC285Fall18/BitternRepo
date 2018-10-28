@@ -65,11 +65,12 @@ public class FirstWindowController implements AutoTrackListener {
 	private AutoTracker autotracker;
 	private GraphicsContext videoGC;
 	private ProjectData project;
-	public static Rectangle mouseDragRect;
+	private Rectangle mouseDragRect;
 	private Point startPoint;
-	public static Circle origin;
+	private Circle origin;
 	public static Line xAxis; 
 	public static Line yAxis;
+	public static double imageScaleRatio1win;
 	
 	private boolean isAbleToSetArena = false;
 	private boolean isAbleToSetOrigin = false; 
@@ -146,7 +147,9 @@ public class FirstWindowController implements AutoTrackListener {
 	private double getImageScalingRatio() {
 		double widthRatio = videoCanvas.getWidth() / project.getVideo().getFrameWidth();
 		double heightRatio = videoCanvas.getHeight() / project.getVideo().getFrameHeight();
+		imageScaleRatio1win = Math.min(widthRatio, heightRatio);
 		return Math.min(widthRatio, heightRatio);
+		
 	}
 
 	@FXML
@@ -294,17 +297,18 @@ public class FirstWindowController implements AutoTrackListener {
 			mouseDragRect.setFill(null);
 			mouseDragRect.setStroke(Color.RED);
 			mouseDragRect.setStrokeWidth(5.0f);
-
-			paneHoldingVideoCanvas.getChildren().add(mouseDragRect);
+			project.getVideo().setArenaBounds(mouseDragRect);
+			paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
 		} else if (isAbleToSetOrigin){
 			if (origin != null) {
-				paneHoldingVideoCanvas.getChildren().remove(origin);
+				paneHoldingVideoCanvas.getChildren().remove(new Circle(project.getVideo().getOrigin().getX(), project.getVideo().getOrigin().getY(), 5, Color.BLUE));
 				paneHoldingVideoCanvas.getChildren().remove(xAxis);
 				paneHoldingVideoCanvas.getChildren().remove(yAxis);
 			}
 			origin = new Circle(event.getX(), event.getY(), 5, Color.BLUE);
-			paneHoldingVideoCanvas.getChildren().add(origin);
 			project.getVideo().setOrigin(origin);
+			paneHoldingVideoCanvas.getChildren().add(new Circle(project.getVideo().getOrigin().getX(), project.getVideo().getOrigin().getY(), 5, Color.BLUE));
+		
 			setUpAxis();
 			paneHoldingVideoCanvas.getChildren().add(xAxis);
 			paneHoldingVideoCanvas.getChildren().add(yAxis);
@@ -382,6 +386,10 @@ public class FirstWindowController implements AutoTrackListener {
 		File saveFile = new File(project.getVideo().getFilePath());
 		File output = new File("output." + saveFile.getName() + ".txt");
 		project.saveToFile(output);
+	}
+	
+	@FXML public void menuFileOpen() {
+		//open method goes here 
 	}
 	
 	//CALIBRATION TOOL 

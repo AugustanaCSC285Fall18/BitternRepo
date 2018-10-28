@@ -34,6 +34,8 @@
 									onAction="#menuFileExit" text="Close" />
 								<MenuItem mnemonicParsing="false"
 									onAction="#menuFileSave" text="Save" />
+								<MenuItem mnemonicParsing="false"
+									onAction="#menuFileOpen" text="Open" />
 							</items>
 						</Menu>
 						<Menu mnemonicParsing="false" text="Calibration Tool">
