@@ -2,8 +2,6 @@ package dataModel;
 
 import java.awt.Point;
 
-import javafx.geometry.Point2D;
-
 public class TimePoint implements Comparable<TimePoint> {
 	private double x;     // location
 	private double y;      

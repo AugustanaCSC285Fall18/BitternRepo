@@ -306,7 +306,7 @@ public class CalibrationWindowController {
 	public void handleSetOriginButton() {
 		isSettingOrigin = true;
 		if (origin != null) {
-			project.getVideo().setOrigin(new Point((int) origin.getCenterX(), (int) origin.getCenterY()));
+			//project.getVideo().setOrigin(new Point((int) origin.getCenterX(), (int) origin.getCenterY()));
 		}
 	}
 

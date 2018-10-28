@@ -4,6 +4,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 
@@ -162,11 +163,14 @@ public class Video {
 		this.yPixelsPerCm = yPixelsPerCm;
 	}
 	
-	public void setOrigin(Point point) {
-		this.origin.setLocation(point.getX(), point.getY());
+	public void setOrigin(Circle c) {
+		this.origin.setLocation(c.getCenterX(), c.getCenterY());
 	}
-
-
+	
+	public Point getOrigin() {
+		return this.origin;
+	}
+	
 	public double convertFrameNumsToSeconds(int numFrames) {
 		return numFrames / getFrameRate();
 	}
@@ -207,6 +211,8 @@ public class Video {
 				+ "\nTotal Number Frames: " + this.getTotalNumFrames() 
 				+ "\n";
 	}
+	
+	
 	
 	/*
 	 * ignore this for now, was trying something but realized that it's
