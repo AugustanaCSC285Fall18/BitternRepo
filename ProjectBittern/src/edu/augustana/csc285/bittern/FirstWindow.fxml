@@ -36,6 +36,10 @@
 								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationSetArenaBounds" text="Draw Arena Bounds" />
 								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationSetActualLengths" text="Set Actual Length" />
 								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationSetOrgin" text="Set Origin" />
+								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationToolShowCoordiateSystem" text="Show Coordinate System" />
+								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationToolHideCoordiateSystem" text="Hide Coordinate System" />
+								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationToolShowArenaBound" text="Show Arena Bound" />
+								<MenuItem mnemonicParsing="false" onAction="#menuCalibrationToolHideArenaBound" text="Hide Arena Bound" />
 							</items>
 						</Menu>
 						<Menu mnemonicParsing="false" text="Help">

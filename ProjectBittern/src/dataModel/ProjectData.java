@@ -10,6 +10,9 @@ import java.util.Scanner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javafx.fxml.FXML;
+
+
 /**
  * This class represents all the data from an animal tracking 
  * project
@@ -217,6 +220,7 @@ public class ProjectData {
 		unassignedSegments.add(autoTrack);
 
 	}
+	
 
 	/**
 	 * searches this object's unassignedSegments for the nearest AnimalTrack to the x 
@@ -244,6 +248,15 @@ public class ProjectData {
 		}
 
 		return closestTrack;
+	}
+	
+	public AnimalTrack getAnimalTrackInTracks(String id) {
+		for(AnimalTrack animal : tracks) {
+			if(animal.getID().equals(id)) {
+				return animal;
+			}
+		}
+		return null;
 	}
 
 		
@@ -288,7 +301,7 @@ public class ProjectData {
 	public static ProjectData fromJSON(String jsonText) throws FileNotFoundException {
 		Gson gson = new Gson();
 		ProjectData data = gson.fromJson(jsonText, ProjectData.class);
-		data.getVideo().connectVideoCapture();
+		//data.getVideo().connectVideoCapture();
 		return data;
 	}
 	
