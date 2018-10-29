@@ -130,7 +130,6 @@ public class SecondWindowController {
 		videoCanvas.heightProperty().bind(paneHoldingVideoCanvas.heightProperty());
 		videoCanvas.widthProperty().addListener((obs, oldV, newV) -> repaintCanvas());
 		videoCanvas.heightProperty().addListener((obs, oldV, newV) -> repaintCanvas());
-
 		progressGC = progressCanvas.getGraphicsContext2D();
 		progressCanvas.widthProperty().bind(progressCanvas.getScene().widthProperty());
 		progressCanvas.widthProperty().addListener(observable -> refillProgressCanvas());
@@ -219,9 +218,15 @@ public class SecondWindowController {
 	 * @param frameNumber the time at which the point was added
 	 */
 	public void updateProgress(int frameNumber) {
-		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; // debug for ends
+		double startWidth = frameNumber / frameWidthRatio;  //- frameWidthRatio; // debug for ends
 		progressGC.setFill(Color.GREEN);
-		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
+		if (project.getVideo().getStepSize() <= 3) {
+			progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
+		} else if (project.getVideo().getStepSize() == 4) {
+			progressGC.fillRect(startWidth, 0, frameWidthRatio * 1.5 , progressCanvas.getHeight());
+		} else {
+			progressGC.fillRect(startWidth, 0, frameWidthRatio * 1.8 , progressCanvas.getHeight());
+		}
 	}
 
 	/**
