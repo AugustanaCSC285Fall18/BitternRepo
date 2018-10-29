@@ -499,7 +499,8 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	/**
-	 * Open saved progress.
+	 * menuFileOpen allows users to open their saved progress
+	 * 
 	 * @throws FileNotFoundException
 	 */
 	@FXML

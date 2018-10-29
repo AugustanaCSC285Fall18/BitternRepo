@@ -485,7 +485,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * Save to Json?
+	 * Save the progress.
+	 * @throws FileNotFoundException
 	 */
 	@FXML
 	private void menuFileSave() throws FileNotFoundException {
