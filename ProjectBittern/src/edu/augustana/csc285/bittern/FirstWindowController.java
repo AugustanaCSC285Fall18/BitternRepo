@@ -509,6 +509,9 @@ public class FirstWindowController implements AutoTrackListener {
 		Window window = myMenuBar.getScene().getWindow();
 		File chosenFile = fileChooser.showOpenDialog(window);
 		project = project.loadFromFile(chosenFile);
+		System.out.println(project.getVideo().getStartFrameNum());
+		//paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
+		
 
 	}
 
@@ -530,7 +533,6 @@ public class FirstWindowController implements AutoTrackListener {
 		isAbleToSetArena = false;
 		isAbleToSetOrigin = false;
 		if (mouseDragRect != null) {
-			project.getVideo().setArenaBounds(mouseDragRect);
 
 			ArrayList<String> choices = new ArrayList();
 			choices.add("Vertical");
