@@ -288,7 +288,7 @@ public class ProjectData {
 	public static ProjectData fromJSON(String jsonText) throws FileNotFoundException {
 		Gson gson = new Gson();
 		ProjectData data = gson.fromJson(jsonText, ProjectData.class);
-		data.getVideo().connectVideoCapture();
+		//data.getVideo().connectVideoCapture();
 		return data;
 	}
 	

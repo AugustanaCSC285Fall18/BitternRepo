@@ -188,19 +188,35 @@ public class Video {
 		this.arenaBounds = rect;
 	}
 	
+	
+	/**
+	 * sets a line to be this video's  x axis 
+	 * @param x - line 
+	 */
 	public void setXAxis(Line x) {
 		this.xAxis = x;
 		
 	}
 	
+	/**
+	 * set a line to be this video's y axis 
+	 * @param  - y 
+	 */
 	public void setYAxis(Line y) {
 		this.yAxis = y ; 
 	}
 	
+	
+	/**
+	 * @return this video's X Axis 
+	 */
 	public Line getXAxis() {
 		return this.xAxis;
 	}
 	
+	/**
+	 * @return this video's Y Axis 
+	 */
 	public Line getYAxis() {
 		return this.yAxis;
 	}
