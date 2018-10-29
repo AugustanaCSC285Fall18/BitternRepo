@@ -481,7 +481,7 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	/**
-	 * Save the progress 
+	 * Save the progress.
 	 * @throws FileNotFoundException
 	 */
 	@FXML
@@ -499,7 +499,7 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	/**
-	 * Open saved progresss
+	 * Open saved progress.
 	 * @throws FileNotFoundException
 	 */
 	@FXML
@@ -509,8 +509,11 @@ public class FirstWindowController implements AutoTrackListener {
 		Window window = myMenuBar.getScene().getWindow();
 		File chosenFile = fileChooser.showOpenDialog(window);
 		project = project.loadFromFile(chosenFile);
-
+		setup(project);
+		System.out.println(project.getVideo().getStartFrameNum());
+//		paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
 	}
+	
 
 	/*
 	 * menuCalibrationSetArenaBounds

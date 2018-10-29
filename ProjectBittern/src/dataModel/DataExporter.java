@@ -61,7 +61,7 @@ public class DataExporter {
 		
 		for (int i = 0; i < adjustedPositions.size(); i+= video.getStepSize()) {
 			TimePoint currentPoint = adjustedPositions.get(i);
-			output += "Time: " + video.getTime(currentPoint.getFrameNum()) + ", "
+			output += video.getTime(currentPoint.getFrameNum()) + ", "
 					+ (int) currentPoint.getX() + ", " 
 					+ (int) currentPoint.getY() + ", "
 					+ (int) currentPoint.getDistanceTo(origin) + "\n";
