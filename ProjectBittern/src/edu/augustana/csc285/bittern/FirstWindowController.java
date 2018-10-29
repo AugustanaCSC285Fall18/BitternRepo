@@ -644,7 +644,7 @@ public class FirstWindowController implements AutoTrackListener {
 		Alert aboutUs = new Alert(AlertType.INFORMATION);
 		aboutUs.setTitle("About");
 		aboutUs.setHeaderText(null);
-		aboutUs.setContentText("This program is designed by team Bittern ");
+		aboutUs.setContentText("This program is designed by Team Bittern \n Team Bittern was formed by: April Tran, Dakota Carpenter, Danielle Osazuwa and Evan St. Paul ");
 		aboutUs.showAndWait();
 	}
 
