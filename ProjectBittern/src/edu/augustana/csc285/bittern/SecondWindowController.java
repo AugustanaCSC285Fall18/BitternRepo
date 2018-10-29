@@ -53,44 +53,25 @@ import utils.UtilsForOpenCV;
  */
 public class SecondWindowController {
 
-	@FXML
-	private Pane paneHoldingVideoCanvas;
-	@FXML
-	private Button addTrackButton;
-	@FXML
-	private Button backButton;
-	@FXML
-	private Button exportButton;
-	@FXML
-	private Button nextButton;
-	@FXML
-	private Button playButton;
-	@FXML
-	private Button previousButton;
-	@FXML
-	private Button removeTrackButton;
-	@FXML
-	private Button showCurrentPathButton;
-	@FXML
-	private Canvas videoCanvas;
-	@FXML
-	private Canvas progressCanvas;
-	@FXML
-	private Label currentFrameLabel;
-	@FXML
-	private Label endFrameLabel;
-	@FXML
-	private Label startFrameLabel;
-	@FXML
-	private Slider sliderBar;
-	@FXML
-	private ComboBox<String> chicksBox;
-	@FXML
-	private ComboBox<AnimalTrack> tracksBox;
-	@FXML
-	private ComboBox<AnimalTrack> usedTracksBox;
-	@FXML
-	private MenuBar myMenuBar;
+	@FXML private Pane paneHoldingVideoCanvas;
+	@FXML private Button addTrackButton;
+	@FXML private Button backButton;
+	@FXML private Button exportButton;
+	@FXML private Button nextButton;
+	@FXML private Button playButton;
+	@FXML private Button previousButton;
+	@FXML private Button removeTrackButton;
+	@FXML private Button showCurrentPathButton;
+	@FXML private Canvas videoCanvas;
+	@FXML private Canvas progressCanvas;
+	@FXML private Label currentFrameLabel;
+	@FXML private Label endFrameLabel;
+	@FXML private Label startFrameLabel;
+	@FXML private Slider sliderBar;
+	@FXML private ComboBox<String> chicksBox;
+	@FXML private ComboBox<AnimalTrack> tracksBox;
+	@FXML private ComboBox<AnimalTrack> usedTracksBox;
+	@FXML private MenuBar myMenuBar;
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -520,7 +501,7 @@ public class SecondWindowController {
 		Window window = myMenuBar.getScene().getWindow();
 		chosenFile = fileChooser.showOpenDialog(window);
 		project = project.loadFromFile(chosenFile);
-
+		setup(project);
 	}
 
 	/**
