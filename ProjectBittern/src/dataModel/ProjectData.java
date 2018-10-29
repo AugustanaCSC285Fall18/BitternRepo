@@ -12,6 +12,7 @@ import com.google.gson.GsonBuilder;
 
 import javafx.fxml.FXML;
 
+
 /**
  * This class represents all the data from an animal tracking 
  * project
@@ -247,6 +248,15 @@ public class ProjectData {
 		}
 
 		return closestTrack;
+	}
+	
+	public AnimalTrack getAnimalTrackInTracks(String id) {
+		for(AnimalTrack animal : tracks) {
+			if(animal.getID().equals(id)) {
+				return animal;
+			}
+		}
+		return null;
 	}
 
 		

@@ -330,7 +330,7 @@ public class SecondWindowController {
 		if (currentTrack != null) {
 			project.addTrack(currentTrack);
 		}
-		currentTrack = project.getAnimal(chicksBox.getValue());
+		currentTrack = project.getAnimalTrackInTracks((String)chicksBox.getValue());
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 		refillProgressCanvas();
 	}
