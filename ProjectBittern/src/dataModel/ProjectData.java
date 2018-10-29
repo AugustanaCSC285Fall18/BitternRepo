@@ -10,8 +10,6 @@ import java.util.Scanner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import src.dataModel.AnimalTrack;
-import src.dataModel.String;
 
 /**
  * This class represents all the data from an animal tracking 

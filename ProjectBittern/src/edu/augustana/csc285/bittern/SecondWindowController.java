@@ -41,7 +41,6 @@ import javafx.stage.FileChooser;
 
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import src.edu.augustana.csc285.bittern.String;
 import utils.UtilsForOpenCV;
 
 
