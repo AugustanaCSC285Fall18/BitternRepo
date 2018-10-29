@@ -1,53 +1,76 @@
 package dataModel;
 
-import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-
+/**
+ * This class represents the positions at certain time of an animal, with a given name
+ * @author danielleosazuwa16
+ *
+ */
 public class AnimalTrack {
 	private String animalID;
 	
 	private List<TimePoint> positions;
 	
+	/**
+	 * constructs an AnimalTrack
+	 * @param id the AnimalTrack's name
+	 */
 	public AnimalTrack(String id) {
 		this.animalID = id;
 		positions = new ArrayList<TimePoint>();
 	}
 	
+	/**
+	 * 
+	 * @return the AnimalTrack's name
+	 */
 	public String getID() {
 		return animalID;
 	}
 	
-
+	/**
+	 * 
+	 * @return the size of this AnimalTrack's list of positions
+	 */
 	public int getSize() {
 		return positions.size();
 	}
 	
+	/**
+	 * 
+	 * @return this AnimalTrack's last position
+	 */
 	public TimePoint getFinalTimePoint() {
 		return positions.get(positions.size()-1);
 	}
 
+	/**
+	 * 
+	 * @return this AnimalTrack's list of TimePoints
+	 */
 	public List<TimePoint> getPositions() {
 		return this.positions;
 	}
 
+	/**
+	 * 
+	 * @param index an index in this AnimalTrack's list of positions
+	 * @return this AnimalTrack's position at the given index
+	 */
 	public TimePoint getTimePointAtIndex(int index) {
 		return positions.get(index);
 	}
 
+	/**
+	 * 
+	 * @param frameNum the given frame number
+	 * @return this AnimalTrack's position at the given frame number, 
+	 * or null if there is no such TimePoint in the list
+	 */
 	public TimePoint getTimePointAtTime(int frameNum) {
-		/*Collections.sort(positions);
-		int index = indexOfPointAt(frameNum);
-		if (index >= 0) {
-			return positions.get(index);
-		} else {
-			return null;
-		}*/
-		
 		for (TimePoint point : positions) {
 			if (point.getFrameNum() == frameNum) {
 				return point;
@@ -56,7 +79,13 @@ public class AnimalTrack {
 		return null;
 	}
 
-	//a mess
+	/**
+	 * searches through this AnimalTrack's list of position for a TimePoint at the given 
+	 * frame number
+	 * @param frameNum the given frame number
+	 * @return the index of this AnimalTrack's TimePoint at the given frame number, or -1
+	 * is there is no such TimePoint in the list
+	 */
 	public int indexOfPointAt(int frameNum) {
 		int min = 0;
 		int max = positions.size();
@@ -73,7 +102,10 @@ public class AnimalTrack {
 		return -(min + 1);
 	} 
 
-	//fix
+	/**
+	 * adds the given TimePoint to this AnimalTrack's list of positions
+	 * @param point the TimePoint to add to this AnimalTrack's list of positions
+	 */
 	public void add(TimePoint point) {
 		if (this.containsPointAtTime(point.getFrameNum()) & positions.size() != 0) {
 			updateTimePoint(point);
@@ -83,23 +115,40 @@ public class AnimalTrack {
 		Collections.sort(positions);
 	}
 	
+	/**
+	 * adds the given list of TimePoint's to this AnimalTrack's positions
+	 * @param points the list of TimePoints to add to this AnimalTrack's positions
+	 */
 	public void add(List<TimePoint> points) {
 		for (TimePoint point : points) {
 			add(point);
 		}
 	}
 			
+	/**
+	 * removes the given TimePoint from this AnimalTrack's positions
+	 * @param point the TimePoint to remove
+	 */
 	public void remove(TimePoint point) {
 		positions.remove(point);
 		Collections.sort(positions);
 	}
 	
+	/**
+	 * removes the given list of TimePoint's from this AnimalTrack's positions
+	 * @param points the given list of TimePoints to remove from this AnimalTrack's positions
+	 */
 	public void remove(List<TimePoint> points) {
 		for (TimePoint point : points) {
 			remove(point);
 		}
 	}
 	
+	/**
+	 * 
+	 * @param frameNum the given frame number
+	 * @return true is this AnimalTrack contains a point at the given frame number
+	 */
 	public boolean containsPointAtTime(int frameNum) {
 		for (TimePoint point : positions) {
 			if (point.isAtSameTime(frameNum)) {
@@ -110,9 +159,9 @@ public class AnimalTrack {
 	}
 	
 	/**
-	 * 
-	 * @param startFrameNum - the starting time (inclusive)
-	 * @param endFrameNum   - the ending time (inclusive)
+	 * searches this AnimalTrack for TimePoints within the given interval
+	 * @param startFrameNum the starting time (inclusive)
+	 * @param endFrameNum the ending time (inclusive)
 	 * @return all time points in that time interval
 	 */
 	public AnimalTrack getTimePointsWithinInterval(int startFrameNum, int endFrameNum) {
@@ -125,6 +174,12 @@ public class AnimalTrack {
 		return pointsInInterval;
 	}
 	
+	/**
+	 * searches this AnimalTrack's positions for the most recent TimePoint from the given frame number
+	 * @param frameNum the given frame number 
+	 * @param frameRate the span to check for points
+	 * @return the most recent TimePoint or null if this AnimalTrack's positions is empty
+	 */
 	public TimePoint getMostRecentPoint(int frameNum, double frameRate) {
 		AnimalTrack pointsInInterval = getTimePointsWithinInterval((int) Math.round(frameNum - frameRate), 
 				(int) Math.round(frameNum + frameRate));
@@ -143,6 +198,12 @@ public class AnimalTrack {
 		return closestPoint; 
 	}
 	
+	/**
+	 * searches this AnimalTrack's positions for the closest TimePoint to the given TimePoint
+	 * @param other the given TimePoint
+	 * @return this AnimalTrack's closest TimePoint or null if this AnimalTrack's list of 
+	 * positions is empty
+	 */
 	public TimePoint getClosestPoint(TimePoint other) {
 		if (positions.size() == 0) {
 			return null;
@@ -157,6 +218,10 @@ public class AnimalTrack {
 		return closestPoint;
 	}
 	
+	/**
+	 * updates this AnimalTrack's TimePoint at the same time as the given TimePoint
+	 * @param newPoint the given TimePoint
+	 */
 	public void updateTimePoint(TimePoint newPoint) {
 		TimePoint oldPoint = getTimePointAtTime(newPoint.getFrameNum());
 		if (oldPoint != null) {
@@ -167,7 +232,9 @@ public class AnimalTrack {
 		}
 	}
 	
-	
+	/**
+	 * a string representation of this AnimalTrack
+	 */
 	public String toString() {
 		int startFrame = positions.get(0).getFrameNum();
 		int endFrame = getFinalTimePoint().getFrameNum();

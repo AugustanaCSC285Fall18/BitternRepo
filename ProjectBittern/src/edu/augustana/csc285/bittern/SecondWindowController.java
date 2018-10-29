@@ -145,7 +145,7 @@ public class SecondWindowController {
 	public void setup(ProjectData project) {
 		try {
 			this.project = project;
-			project.getVideo().resetToStart();
+//			project.getVideo().resetToStart();
 
 			chicksBox.getItems().clear();
 			for (AnimalTrack track : project.getTracks()) {
@@ -157,11 +157,12 @@ public class SecondWindowController {
 
 			sliderBar.setMax(project.getVideo().getTotalNumFrames() - 1);
 			sliderBar.setBlockIncrement(project.getVideo().getFrameRate());
+//			sliderBar.setValue(project.getVideo().getStartFrameNum());
 
 			startFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getStartFrameNum()));
 			endFrameLabel.setText("" + project.getVideo().getTime(project.getVideo().getEndFrameNum()));
 
-			displayFrame(0);
+			displayFrame(project.getVideo().getStartFrameNum());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -329,7 +330,7 @@ public class SecondWindowController {
 		if (currentTrack != null) {
 			project.addTrack(currentTrack);
 		}
-		currentTrack = project.getAnimalTrackInTracks((String) chicksBox.getValue());
+		currentTrack = project.getAnimal(chicksBox.getValue());
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 		refillProgressCanvas();
 	}
@@ -343,9 +344,17 @@ public class SecondWindowController {
 		if (tracksBox.getValue() != null) {
 			videoGC.setFill(Color.DARKBLUE);
 			for (TimePoint point : tracksBox.getValue().getPositions()) {
-				videoGC.fillOval(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
+				if (point.getFrameNum() >= project.getVideo().getCurrentFrameNum()) {
+					videoGC.fillOval(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
+				}
 			}
 		}
+	}
+	
+	@FXML
+	public void handleShowCurrentPath() {
+//		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
+		drawTrackPath(currentTrack, (Color.color(Math.random(), Math.random(), Math.random())));
 	}
 
 	/**
@@ -365,6 +374,25 @@ public class SecondWindowController {
 			videoGC.fillOval(prevPt.getX() * scalingRatio - 3, prevPt.getY() * scalingRatio - 3, 7, 7);
 
 		}
+	}
+	
+	public void drawTrackPath(AnimalTrack track, Color color) {
+		videoGC.beginPath();
+		videoGC.setLineWidth(2.0);
+		videoGC.setStroke(color);
+		
+		for (int i = 0; i < track.getSize() - 1; i++) {
+			videoGC.moveTo(track.getTimePointAtIndex(i).getX(), track.getTimePointAtIndex(i).getY());
+			videoGC.lineTo(track.getTimePointAtIndex(i + 1).getX(), track.getTimePointAtIndex(i+ 1).getY());
+			videoGC.stroke();
+		}
+		
+//		videoGC.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+//		for (TimePoint point : track.getPositions()) {
+//			videoGC.fillOval(point.getX() - 3, point.getY() - 3, 6, 6);
+//		}
+		
+		
 	}
 
 	/**

@@ -52,44 +52,26 @@ import utils.UtilsForOpenCV;
  */
 public class FirstWindowController implements AutoTrackListener {
 
-	@FXML
-	private Pane paneHoldingVideoCanvas;
-	@FXML
-	private Button backButton;
-	@FXML
-	private Button confirmButton;
-	@FXML
-	private Button startTimeButton;
-	@FXML
-	private Button autoTrackButton;
-	@FXML
-	private Button endTimeButton;
-	@FXML
-	private Button nextButton;
-	@FXML
-	private Slider sliderBar;
-	@FXML
-	private Canvas videoCanvas;
-	@FXML
-	private ComboBox<Integer> stepBox;
-	@FXML
-	private ComboBox<String> chicksBox;
-	@FXML
-	private Label showActualLengthX;
-	@FXML
-	private Label showActualLengthY;
-	@FXML
-	private Label currentFrameLabel;
-	@FXML
-	private Label endTimeLabel;
-	@FXML
-	private Label startTimeLabel;
-	@FXML
-	private ProgressBar progressAutoTrack;
-	@FXML
-	private TextField nameField;
-	@FXML
-	private MenuBar myMenuBar;
+	@FXML private Pane paneHoldingVideoCanvas;
+	@FXML private Button backButton;
+	@FXML private Button confirmButton;
+	@FXML private Button startTimeButton;
+	@FXML private Button autoTrackButton;
+	@FXML private Button endTimeButton;
+	@FXML private Button nextButton;
+	@FXML private Button setEmptyFrameButton;
+	@FXML private Slider sliderBar;
+	@FXML private Canvas videoCanvas;
+	@FXML private ComboBox<Integer> stepBox;
+	@FXML private ComboBox<String> chicksBox;
+	@FXML private Label showActualLengthX;
+	@FXML private Label showActualLengthY;
+	@FXML private Label currentFrameLabel;
+	@FXML private Label endTimeLabel;
+	@FXML private Label startTimeLabel;
+	@FXML private ProgressBar progressAutoTrack;
+	@FXML private TextField nameField;
+	@FXML private MenuBar myMenuBar;
 
 	private AutoTracker autotracker;
 	private GraphicsContext videoGC;
@@ -312,6 +294,11 @@ public class FirstWindowController implements AutoTrackListener {
 		isAbleToSetArena = false;
 	}
 
+	@FXML
+	public void handleSetEmptyImage() {
+		project.getVideo().setEmptyFrameNum((int)sliderBar.getValue());
+	}
+	
 	/**
 	 * adjust the controls to show that the given frame has been tracked
 	 * @param frame
