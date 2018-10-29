@@ -76,12 +76,12 @@ public class FirstWindowController implements AutoTrackListener {
 	private AutoTracker autotracker;
 	private GraphicsContext videoGC;
 	private ProjectData project;
-	private Rectangle mouseDragRect;
+	private Rectangle mouseDragRect = new Rectangle(0,0,0,0);
 	private Point startPoint;
 
-	private Circle origin;
-	private Line xAxis;
-	private Line yAxis;
+	private Circle origin = new Circle(0,0,0) ;
+	private Line xAxis = new Line(0,0,0,0);
+	private Line yAxis = new Line(0,0,0,0);
 	private boolean isAbleToSetArena = false;
 
 	private boolean isAbleToSetOrigin = false;
@@ -559,6 +559,77 @@ public class FirstWindowController implements AutoTrackListener {
 	public void menuCalibrationSetOrgin() {
 		isAbleToSetOrigin = true;
 		isAbleToSetArena = false;
+	}
+	
+	/**
+	 * menuCalibrationToolShowCoordiateSystem shows coordinate system of calibration
+	 * tool
+	 */
+	@FXML
+	public void menuCalibrationToolShowCoordiateSystem() {
+		origin.setCenterX(project.getVideo().getOrigin().getX() * getImageScalingRatio());
+		origin.setCenterY(project.getVideo().getOrigin().getY() * getImageScalingRatio());
+		origin.setRadius(5);
+		origin.setStroke(Color.BLUE);
+		
+		xAxis.setStartX(project.getVideo().getXAxis().getStartX() * getImageScalingRatio());
+		xAxis.setStartY(project.getVideo().getXAxis().getStartY() * getImageScalingRatio());
+		xAxis.setEndX(project.getVideo().getXAxis().getEndX() * getImageScalingRatio());
+		xAxis.setEndY(project.getVideo().getXAxis().getEndY() * getImageScalingRatio());
+		
+		yAxis.setStartX(project.getVideo().getYAxis().getStartX() * getImageScalingRatio());
+		yAxis.setStartY(project.getVideo().getYAxis().getStartY() * getImageScalingRatio());
+		yAxis.setEndX(project.getVideo().getYAxis().getEndX() * getImageScalingRatio());
+		yAxis.setEndY(project.getVideo().getYAxis().getEndY() * getImageScalingRatio());
+		
+		xAxis.setStroke(Color.BLUE);
+		xAxis.setStrokeWidth(3.0f);
+		yAxis.setStroke(Color.BLUE);
+		yAxis.setStrokeWidth(3.0f);
+
+		paneHoldingVideoCanvas.getChildren().add(origin);
+		paneHoldingVideoCanvas.getChildren().add(xAxis);
+		paneHoldingVideoCanvas.getChildren().add(yAxis);
+
+	}
+	
+	/**
+	 * menuCalibrationToolHideCoordiateSystem hides coordinate system from this
+	 * window
+	 */
+	@FXML
+	public void menuCalibrationToolHideCoordiateSystem() {
+		paneHoldingVideoCanvas.getChildren().remove(origin);
+		paneHoldingVideoCanvas.getChildren().remove(yAxis);
+		paneHoldingVideoCanvas.getChildren().remove(xAxis);
+
+	}
+	
+	/**
+	 * menuCalibrationToolShowArenaBound shows the arenabound of calibration tool
+	 */
+
+	@FXML
+	public void menuCalibrationToolShowArenaBound() {
+		mouseDragRect = new Rectangle((project.getVideo().getArenaBounds().getX() * getImageScalingRatio()),
+				(project.getVideo().getArenaBounds().getY() * getImageScalingRatio()),
+				(project.getVideo().getArenaBounds().getWidth() * getImageScalingRatio()),
+				(project.getVideo().getArenaBounds().getHeight() * getImageScalingRatio()));
+
+		mouseDragRect.setFill(null);
+		mouseDragRect.setStroke(Color.RED);
+		mouseDragRect.setStrokeWidth(5.0f);
+
+		paneHoldingVideoCanvas.getChildren().add(mouseDragRect);
+	}
+	
+	
+	/**
+	 * menuCalibrationToolHideArenaBound hides arenabounds from this window
+	 */
+	@FXML
+	public void menuCalibrationToolHideArenaBound() {
+		paneHoldingVideoCanvas.getChildren().remove(mouseDragRect);
 	}
 
 	/**

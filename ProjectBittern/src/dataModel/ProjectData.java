@@ -10,6 +10,8 @@ import java.util.Scanner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javafx.fxml.FXML;
+
 /**
  * This class represents all the data from an animal tracking 
  * project
@@ -217,6 +219,7 @@ public class ProjectData {
 		unassignedSegments.add(autoTrack);
 
 	}
+	
 
 	/**
 	 * searches this object's unassignedSegments for the nearest AnimalTrack to the x 
