@@ -41,6 +41,7 @@ import javafx.stage.FileChooser;
 
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import src.edu.augustana.csc285.bittern.String;
 import utils.UtilsForOpenCV;
 
 
@@ -301,7 +302,7 @@ public class SecondWindowController {
 		if (currentTrack != null) {
 			project.addTrack(currentTrack);
 		}
-		currentTrack = project.getAnimal(chicksBox.getValue());
+		currentTrack = project.getAnimalTrackInTracks((String)chicksBox.getValue());
 		sliderBar.setValue(project.getVideo().getStartFrameNum());
 		refillProgressCanvas();
 	}
