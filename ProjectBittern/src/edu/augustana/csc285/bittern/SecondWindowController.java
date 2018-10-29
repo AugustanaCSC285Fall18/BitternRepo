@@ -184,12 +184,6 @@ public class SecondWindowController {
 				updateProgress(curFrameNum);
 				videoGC.setFill(Color.AQUA);
 				videoGC.fillOval(event.getX() - 3, event.getY() -3 , 6, 6);
-				try {
-					Thread.sleep(125);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				jump(project.getVideo().getStepSize());
 			}
 		});
@@ -224,9 +218,13 @@ public class SecondWindowController {
 	 * @param frameNumber the time at which the point was added
 	 */
 	private void updateProgress(int frameNumber) {
-		double startWidth = frameNumber / frameWidthRatio - frameWidthRatio; // debug for ends
+		double width = frameWidthRatio * project.getVideo().getStepSize();
+		double x = frameNumber / frameWidthRatio; 
+		
 		progressGC.setFill(Color.GREEN);
-		progressGC.fillRect(startWidth, 0, frameWidthRatio, progressCanvas.getHeight());
+		progressGC.fillRect(x, 0, width, progressCanvas.getHeight());
+
+		
 	}
 
 	/**
@@ -246,16 +244,16 @@ public class SecondWindowController {
 	 * @param frameNum the time at which the video frame should be displayed
 	 */
 	private void displayFrame(int frameNum) {
+		double scalingRatio = getImageScalingRatio();		
 		sliderBar.setValue(frameNum);
 		project.getVideo().setCurrentFrameNum(frameNum);
 		findAutoTracks();
 		
 		Image curFrame = UtilsForOpenCV.matToJavaFXImage(project.getVideo().readFrame());
-		double scalingRatio = getImageScalingRatio();
 		videoGC.clearRect(0, 0, videoCanvas.getWidth(), videoCanvas.getHeight());
-		videoGC.drawImage(curFrame, 0, 0, curFrame.getWidth() * scalingRatio, curFrame.getHeight() * scalingRatio);
+		videoGC.drawImage(curFrame, 0, 0, curFrame.getWidth() * scalingRatio, curFrame.getHeight() * scalingRatio);	
+		drawAssignedAnimalTracks(scalingRatio, frameNum);
 		
-		drawCurrentPoint(scalingRatio, frameNum);
 		Platform.runLater(() -> {
 			currentFrameLabel.setText(project.getVideo().getTime(project.getVideo().getCurrentFrameNum()));
 		});
@@ -363,17 +361,19 @@ public class SecondWindowController {
 		drawTrackPath(currentTrack, (Color.color(Math.random(), Math.random(), Math.random())));
 	}
 	
-	private void drawCurrentPoint(double scalingRatio, int frameNum) {
-		TimePoint currentPoint = currentTrack.getTimePointAtTime(frameNum);
-		if (currentPoint != null) {
-			drawPoint(currentPoint, scalingRatio);
-		}	
-	}
-	
-	private void drawPoint(TimePoint point, double scalingRatio) {
-		videoGC.setFill(Color.AQUA);
-		videoGC.fillOval(point.getX() * scalingRatio - 3, 
-				point.getY() * scalingRatio - 3, 7, 7);
+	/**
+	 * draws the current AnimalTrack's current positions as a point, along with its last three positions
+	 * @param scalingRatio the ratio of the videoCanvas' dimensions to the project video's dimensions
+	 * @param frameNum the time at which tracks should be drawn
+	 */
+	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
+		Color trackColor = Color.AQUA;
+		Color trackPrevColor = trackColor.deriveColor(0, 0.5, 1.5, 1.0); // subtler variant
+
+		videoGC.setFill(trackPrevColor);
+		for (TimePoint prevPt : currentTrack.getTimePointsWithinInterval(frameNum - 90, frameNum).getPositions()) {
+			videoGC.fillOval(prevPt.getX() * scalingRatio - 3, prevPt.getY() * scalingRatio - 3, 7, 7);
+		}
 	}
 	
 	private void drawTrackPath(AnimalTrack track, Color color) {
@@ -484,7 +484,7 @@ public class SecondWindowController {
 	private void jump(int stepSize) {
 		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
 		if (frameNum < project.getVideo().getEndFrameNum() + project.getVideo().getFrameRate()) {
-			displayFrame((int) frameNum);
+			displayFrame((int) Math.round(frameNum));
 		}
 	}
 
