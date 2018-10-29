@@ -372,6 +372,10 @@ public class FirstWindowController implements AutoTrackListener {
 
 	}
 
+	/**
+	 * Listen to mouse pressed event on videoCanvas
+	 * @param event - mouse Press
+	 */
 	@FXML
 	public void handleMousePressed(MouseEvent event) {
 		if (isAbleToSetArena) {
@@ -415,6 +419,9 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 
+	/**
+	 * Set up coordinate system 
+	 */
 	public void setUpAxis() {
 		xAxis = new Line(0, origin.getCenterY(), videoCanvas.getWidth(), origin.getCenterY());
 		yAxis = new Line(origin.getCenterX(), 0, origin.getCenterX(), videoCanvas.getHeight());
@@ -434,11 +441,7 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * askForXValue prompts users for actual horizontal length
-=======
-	 * 
->>>>>>> c383c218d562c3271925b56e94063e553debc627
 	 */
 	public void askForXValue() {
 		TextInputDialog horizontalValue = new TextInputDialog("cm");
@@ -490,6 +493,10 @@ public class FirstWindowController implements AutoTrackListener {
 		Platform.exit();
 	}
 
+	/**
+	 * Save the progress 
+	 * @throws FileNotFoundException
+	 */
 	@FXML
 	public void menuFileSave() throws FileNotFoundException {
 		try {
@@ -504,6 +511,10 @@ public class FirstWindowController implements AutoTrackListener {
 
 	}
 
+	/**
+	 * Open saved progresss
+	 * @throws FileNotFoundException
+	 */
 	@FXML
 	public void menuFileOpen() throws FileNotFoundException {
 		FileChooser fileChooser = new FileChooser();
@@ -525,7 +536,7 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	/**
-	 * 
+	 * Asks users for actual length
 	 */
 	@FXML
 	public void menuCalibrationSetActualLengths() {
@@ -564,14 +575,14 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	/**
-	 * 
+	 * something about us
 	 */
 	@FXML
 	public void menuHelpAbout() {
 		Alert aboutUs = new Alert(AlertType.INFORMATION);
-		aboutUs.setTitle("About Us");
+		aboutUs.setTitle("About");
 		aboutUs.setHeaderText(null);
-		aboutUs.setContentText(" ");
+		aboutUs.setContentText("This program is designed by team Bittern ");
 		aboutUs.showAndWait();
 	}
 

@@ -43,34 +43,54 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import utils.UtilsForOpenCV;
 
-
 /**
  * This class is responsible for coordinating the behaviors of the GUI controls
- * defined in "SecondWindow.fxml" to allow for manual tracking of animals in a video
+ * defined in "SecondWindow.fxml" to allow for manual tracking of animals in a
+ * video
+ * 
  * @author Group Bittern
  *
  */
 public class SecondWindowController {
 
-	@FXML private Pane paneHoldingVideoCanvas;
-	@FXML private Button addTrackButton;
-	@FXML private Button backButton;
-	@FXML private Button exportButton;
-	@FXML private Button nextButton;
-	@FXML private Button playButton;
-	@FXML private Button previousButton;
-	@FXML private Button removeTrackButton;
-	@FXML private Button showCurrentPathButton;
-	@FXML private Canvas videoCanvas;
-	@FXML private Canvas progressCanvas;
-	@FXML private Label currentFrameLabel;
-	@FXML private Label endFrameLabel;
-	@FXML private Label startFrameLabel;
-	@FXML private Slider sliderBar;
-	@FXML private ComboBox<String> chicksBox;
-	@FXML private ComboBox<AnimalTrack> tracksBox;
-	@FXML private ComboBox<AnimalTrack> usedTracksBox;
-	@FXML private MenuBar myMenuBar;
+	@FXML
+	private Pane paneHoldingVideoCanvas;
+	@FXML
+	private Button addTrackButton;
+	@FXML
+	private Button backButton;
+	@FXML
+	private Button exportButton;
+	@FXML
+	private Button nextButton;
+	@FXML
+	private Button playButton;
+	@FXML
+	private Button previousButton;
+	@FXML
+	private Button removeTrackButton;
+	@FXML
+	private Button showCurrentPathButton;
+	@FXML
+	private Canvas videoCanvas;
+	@FXML
+	private Canvas progressCanvas;
+	@FXML
+	private Label currentFrameLabel;
+	@FXML
+	private Label endFrameLabel;
+	@FXML
+	private Label startFrameLabel;
+	@FXML
+	private Slider sliderBar;
+	@FXML
+	private ComboBox<String> chicksBox;
+	@FXML
+	private ComboBox<AnimalTrack> tracksBox;
+	@FXML
+	private ComboBox<AnimalTrack> usedTracksBox;
+	@FXML
+	private MenuBar myMenuBar;
 
 	private ProjectData project;
 	private ScheduledExecutorService timer;
@@ -80,16 +100,17 @@ public class SecondWindowController {
 	private double frameWidthRatio;
 
 	private Rectangle arenaBound;
-	private Circle origin;
-	private Line xAxis;
-	private Line yAxis;
+	private Circle origin = new Circle();
+	private Line xAxis = new Line();
+	private Line yAxis = new Line();
 	private File chosenFile;
-	
+
 	public static final Color[] TRACK_COLORS = new Color[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN,
 			Color.MAGENTA, Color.BLUEVIOLET, Color.ORANGE };
-	
+
 	/**
-	 * initializes this controller after its root element has been completely processed
+	 * initializes this controller after its root element has been completely
+	 * processed
 	 */
 	@FXML
 	public void initialize() {
@@ -100,6 +121,7 @@ public class SecondWindowController {
 
 	/**
 	 * sets up this class' canvases to resize whenever the scene's size is changed
+	 * 
 	 * @param stage the stage that holds this controller's scene
 	 */
 	public void initializeWithStage(Stage stage) {
@@ -115,8 +137,9 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * sets up the project this controller will work with and adjusts the GUI controls
-	 * to reflect the project's data
+	 * sets up the project this controller will work with and adjusts the GUI
+	 * controls to reflect the project's data
+	 * 
 	 * @param project the data this controller will work with
 	 */
 	public void setup(ProjectData project) {
@@ -146,17 +169,17 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * sets up a click on the videoCanvas to add a TimePoint with the appropriate parameter
-	 * to the current AnimalTrack and jump to the next second of the video with the progress 
-	 * canvas reflecting the added position
+	 * sets up a click on the videoCanvas to add a TimePoint with the appropriate
+	 * parameter to the current AnimalTrack and jump to the next second of the video
+	 * with the progress canvas reflecting the added position
 	 */
 	public void setupClick() {
 		videoCanvas.setOnMouseClicked((event) -> {
 			double scalingRatio = getImageScalingRatio();
 			double unscaledX = event.getX() / scalingRatio;
-			double unscaledY = event.getY() / scalingRatio;		
+			double unscaledY = event.getY() / scalingRatio;
 			int curFrameNum = project.getVideo().getCurrentFrameNum();
-			
+
 			if (project.getVideo().getArenaBounds().contains(new Point2D(unscaledX, unscaledY))
 					&& project.getVideo().timeRelativelyWithinBounds()) {
 				currentTrack.add(new TimePoint(unscaledX, unscaledY, curFrameNum));
@@ -167,10 +190,9 @@ public class SecondWindowController {
 
 	}
 
-	
 	/**
-	 * called when either the current AnimalTrack or the Scene's dimensions are changed,
-	 * refilling the progress canvas to reflect these changes
+	 * called when either the current AnimalTrack or the Scene's dimensions are
+	 * changed, refilling the progress canvas to reflect these changes
 	 */
 	public void refillProgressCanvas() {
 		frameWidthRatio = project.getVideo().getTotalNumFrames() / progressCanvas.getWidth();
@@ -190,7 +212,9 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * refills the progress canvas to reflect an added TimePoint at the given frameNumber
+	 * refills the progress canvas to reflect an added TimePoint at the given
+	 * frameNumber
+	 * 
 	 * @param frameNumber the time at which the point was added
 	 */
 	public void updateProgress(int frameNumber) {
@@ -200,7 +224,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * called whenever the Scene's dimensions change and displays the video frame at that time
+	 * called whenever the Scene's dimensions change and displays the video frame at
+	 * that time
 	 */
 	public void repaintCanvas() {
 		if (project != null) {
@@ -209,8 +234,9 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * sets the video's current frame to the given frame number, and displays the video image 
-	 * at that frameNumber
+	 * sets the video's current frame to the given frame number, and displays the
+	 * video image at that frameNumber
+	 * 
 	 * @param frameNum the time at which the video frame should be displayed
 	 */
 	public void displayFrame(int frameNum) {
@@ -230,7 +256,8 @@ public class SecondWindowController {
 
 	/**
 	 * loads and opens the previous window, and closes this controller's window
-	 * @throws IOException if an error occurs while loading "FirstWindow.fxml" 
+	 * 
+	 * @throws IOException if an error occurs while loading "FirstWindow.fxml"
 	 */
 	@FXML
 	public void handleBack() throws IOException {
@@ -252,6 +279,7 @@ public class SecondWindowController {
 
 	/**
 	 * creates a .csv file with the relevant information from this project
+	 * 
 	 * @throws IOException if an error occurs while loading the project
 	 */
 	@FXML
@@ -260,8 +288,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * adds the selected autorack's positions to the current AnimalTrack and adjust the 
-	 * controls to reflect this change
+	 * adds the selected autorack's positions to the current AnimalTrack and adjust
+	 * the controls to reflect this change
 	 */
 	@FXML
 	public void handleAddAutoTrack() {
@@ -269,7 +297,7 @@ public class SecondWindowController {
 			AnimalTrack autoTrack = tracksBox.getValue();
 			currentTrack.add(autoTrack.getPositions());
 			usedTracksBox.getItems().add(autoTrack);
-			project.getUnassignedSegments().remove(autoTrack); //hmmn
+			project.getUnassignedSegments().remove(autoTrack); // hmmn
 			tracksBox.getItems().remove(autoTrack);
 			refillProgressCanvas();
 			tracksBox.setStyle("");
@@ -277,8 +305,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * removes the selected autotrack's position from the current AnimalTrack and adjusts the 
-	 * controls to reflect this change
+	 * removes the selected autotrack's position from the current AnimalTrack and
+	 * adjusts the controls to reflect this change
 	 */
 	@FXML
 	public void handleRemoveAutoTrack() {
@@ -293,7 +321,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * sets the currentTrack as the ComboBox's value and adjusts the controls to reflect this change
+	 * sets the currentTrack as the ComboBox's value and adjusts the controls to
+	 * reflect this change
 	 */
 	@FXML
 	public void handleChicksBox() {
@@ -320,9 +349,12 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * draws the current AnimalTrack's current positions as a point, along with its last three positions
-	 * @param scalingRatio the ratio of the videoCanvas' dimensions to the project video's dimensions
-	 * @param frameNum the time at which tracks should be drawn
+	 * draws the current AnimalTrack's current positions as a point, along with its
+	 * last three positions
+	 * 
+	 * @param scalingRatio the ratio of the videoCanvas' dimensions to the project
+	 *                     video's dimensions
+	 * @param frameNum     the time at which tracks should be drawn
 	 */
 	private void drawAssignedAnimalTracks(double scalingRatio, int frameNum) {
 		Color trackColor = TRACK_COLORS[project.getAnimalIndex(currentTrack.getID()) % TRACK_COLORS.length];
@@ -336,8 +368,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * checks for possible autoTracks at the current frame Number and when applicable, adds these
-	 * tracks to the autoTrack ComboBox
+	 * checks for possible autoTracks at the current frame Number and when
+	 * applicable, adds these tracks to the autoTrack ComboBox
 	 */
 	public void findAutoTracks() {
 		tracksBox.getItems().removeAll(tracksBox.getItems());
@@ -355,8 +387,11 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * calculates the ratio of the video canvas' dimensions to the project video's dimensions
-	 * @return the ratio of the video canvas' dimensions to the project video's dimensions
+	 * calculates the ratio of the video canvas' dimensions to the project video's
+	 * dimensions
+	 * 
+	 * @return the ratio of the video canvas' dimensions to the project video's
+	 *         dimensions
 	 */
 	private double getImageScalingRatio() {
 		double widthRatio = videoCanvas.getWidth() / project.getVideo().getFrameWidth();
@@ -366,8 +401,9 @@ public class SecondWindowController {
 
 	/**
 	 * plays or pauses the video depending on the play button's text
-	 * @throws InterruptedException thrown if timer is interrupted while awaiting 
-	 * termination
+	 * 
+	 * @throws InterruptedException thrown if timer is interrupted while awaiting
+	 *                              termination
 	 */
 	@FXML
 	public void handlePlay() throws InterruptedException {
@@ -401,7 +437,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * displays the video frame at the configured "time step" before the current frame number
+	 * displays the video frame at the configured "time step" before the current
+	 * frame number
 	 */
 	@FXML
 	public void handlePrevious() {
@@ -409,7 +446,8 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * displays the video frame at the configured "time step" after the current frame number
+	 * displays the video frame at the configured "time step" after the current
+	 * frame number
 	 */
 	@FXML
 	public void handleNext() {
@@ -417,18 +455,23 @@ public class SecondWindowController {
 	}
 
 	/**
-	 * skips the given number of frames and displays the video at the resulting frame number 
+	 * skips the given number of frames and displays the video at the resulting
+	 * frame number
+	 * 
 	 * @param stepSize the number of frames (time) the video should skip through
 	 */
 	public void jump(int stepSize) {
 		double frameNum = sliderBar.getValue() + stepSize * project.getVideo().getFrameRate();
 		if (frameNum < project.getVideo().getEndFrameNum() + project.getVideo().getFrameRate()) {
-			displayFrame((int)frameNum);
+			displayFrame((int) frameNum);
 		}
 	}
 
 	// MENU HANDLING CODES
 
+	/**
+	 * Close the program
+	 */
 	@FXML
 	public void menuFileExit() {
 		Platform.exit();
@@ -444,7 +487,13 @@ public class SecondWindowController {
 		project.saveToFile(output);
 	}
 
-	@FXML public void menuFileOpen() throws FileNotFoundException {
+	/**
+	 * menuFileOpen allows users to open their saved progress
+	 * 
+	 * @throws FileNotFoundException
+	 */
+	@FXML
+	public void menuFileOpen() throws FileNotFoundException {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Progress File");
 		Window window = myMenuBar.getScene().getWindow();
@@ -453,73 +502,92 @@ public class SecondWindowController {
 
 	}
 
+	/**
+	 * menuCalibrationToolShowCoordiateSystem shows coordinate system of calibration
+	 * tool
+	 */
 	@FXML
 	public void menuCalibrationToolShowCoordiateSystem() {
-		if (origin == null && xAxis == null && yAxis == null) {
-			origin = new Circle(project.getVideo().getOrigin().getX() * getImageScalingRatio(),
-					project.getVideo().getOrigin().getY() * getImageScalingRatio(), 5, Color.BLUE);
-			xAxis = new Line(project.getVideo().getXAxis().getStartX() * getImageScalingRatio(),
-					project.getVideo().getXAxis().getStartY() * getImageScalingRatio(),
-					project.getVideo().getXAxis().getEndX() * getImageScalingRatio(),
-					project.getVideo().getXAxis().getEndY() * getImageScalingRatio());
-			yAxis = new Line(project.getVideo().getYAxis().getStartX() * getImageScalingRatio(),
-					project.getVideo().getYAxis().getStartY() * getImageScalingRatio(),
-					project.getVideo().getYAxis().getEndX() * getImageScalingRatio(),
-					project.getVideo().getYAxis().getEndY() * getImageScalingRatio());
+		origin.setCenterX(project.getVideo().getOrigin().getX() * getImageScalingRatio());
+		origin.setCenterY(project.getVideo().getOrigin().getY() * getImageScalingRatio());
+		origin.setRadius(5);
+		origin.setStroke(Color.BLUE);
+		
+		xAxis.setStartX(project.getVideo().getXAxis().getStartX() * getImageScalingRatio());
+		xAxis.setStartY(project.getVideo().getXAxis().getStartY() * getImageScalingRatio());
+		xAxis.setEndX(project.getVideo().getXAxis().getEndX() * getImageScalingRatio());
+		xAxis.setEndY(project.getVideo().getXAxis().getEndY() * getImageScalingRatio());
+		
+		yAxis.setStartX(project.getVideo().getYAxis().getStartX() * getImageScalingRatio());
+		yAxis.setStartY(project.getVideo().getYAxis().getStartY() * getImageScalingRatio());
+		yAxis.setEndX(project.getVideo().getYAxis().getEndX() * getImageScalingRatio());
+		yAxis.setEndY(project.getVideo().getYAxis().getEndY() * getImageScalingRatio());
+		
+		xAxis.setStroke(Color.BLUE);
+		xAxis.setStrokeWidth(3.0f);
+		yAxis.setStroke(Color.BLUE);
+		yAxis.setStrokeWidth(3.0f);
 
-			xAxis.setStroke(Color.BLUE);
-			xAxis.setStrokeWidth(3.0f);
-			yAxis.setStroke(Color.BLUE);
-			yAxis.setStrokeWidth(3.0f);
+		paneHoldingVideoCanvas.getChildren().add(origin);
+		paneHoldingVideoCanvas.getChildren().add(xAxis);
+		paneHoldingVideoCanvas.getChildren().add(yAxis);
 
-			paneHoldingVideoCanvas.getChildren().add(origin);
-			paneHoldingVideoCanvas.getChildren().add(xAxis);
-			paneHoldingVideoCanvas.getChildren().add(yAxis);
-		}
 	}
 
+	/**
+	 * menuCalibrationToolHideCoordiateSystem hides coordinate system from this
+	 * window
+	 */
 	@FXML
 	public void menuCalibrationToolHideCoordiateSystem() {
-		if (origin != null && xAxis != null && yAxis != null) {
-			paneHoldingVideoCanvas.getChildren().remove(origin);
-			paneHoldingVideoCanvas.getChildren().remove(yAxis);
-			paneHoldingVideoCanvas.getChildren().remove(xAxis);
-		}
+		paneHoldingVideoCanvas.getChildren().remove(origin);
+		paneHoldingVideoCanvas.getChildren().remove(yAxis);
+		paneHoldingVideoCanvas.getChildren().remove(xAxis);
 
 	}
+
+	/**
+	 * menuCalibrationToolShowArenaBound shows the arenabound of calibration tool
+	 */
 
 	@FXML
 	public void menuCalibrationToolShowArenaBound() {
-		
-			arenaBound = new Rectangle((project.getVideo().getArenaBounds().getX() * getImageScalingRatio()),
-					(project.getVideo().getArenaBounds().getY() * getImageScalingRatio()),
-					(project.getVideo().getArenaBounds().getWidth() * getImageScalingRatio()),
-					(project.getVideo().getArenaBounds().getHeight() * getImageScalingRatio()));
-			
-			arenaBound.setFill(null);
-			arenaBound.setStroke(Color.RED);
-			arenaBound.setStrokeWidth(5.0f);
+		arenaBound = new Rectangle((project.getVideo().getArenaBounds().getX() * getImageScalingRatio()),
+				(project.getVideo().getArenaBounds().getY() * getImageScalingRatio()),
+				(project.getVideo().getArenaBounds().getWidth() * getImageScalingRatio()),
+				(project.getVideo().getArenaBounds().getHeight() * getImageScalingRatio()));
 
-			paneHoldingVideoCanvas.getChildren().add(arenaBound);
-		
+		arenaBound.setFill(null);
+		arenaBound.setStroke(Color.RED);
+		arenaBound.setStrokeWidth(5.0f);
+
+		paneHoldingVideoCanvas.getChildren().add(arenaBound);
+
 	}
 
+	/**
+	 * menuCalibrationToolHideArenaBound hides arenabounds from this window
+	 */
 	@FXML
 	public void menuCalibrationToolHideArenaBound() {
-		if (arenaBound != null) {
-			paneHoldingVideoCanvas.getChildren().remove(arenaBound);
-		}
+		paneHoldingVideoCanvas.getChildren().remove(arenaBound);
 	}
 
+	/**
+	 * Something about us
+	 */
 	@FXML
 	public void menuHelpAbout() {
 		Alert aboutUs = new Alert(AlertType.INFORMATION);
-		aboutUs.setTitle("About Us");
+		aboutUs.setTitle("About");
 		aboutUs.setHeaderText(null);
-		aboutUs.setContentText(" ");
+		aboutUs.setContentText("This program is designed by team Bittern ");
 		aboutUs.showAndWait();
 	}
 
+	/**
+	 * menuHelpInstruction pops
+	 */
 	@FXML
 	public void menuHelpInstruction() {
 		Alert calibrationInstruction = new Alert(AlertType.INFORMATION);
