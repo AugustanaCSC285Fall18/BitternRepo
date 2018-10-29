@@ -511,9 +511,9 @@ public class FirstWindowController implements AutoTrackListener {
 		project = project.loadFromFile(chosenFile);
 		setup(project);
 		System.out.println(project.getVideo().getStartFrameNum());
-		//paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
-		
+//		paneHoldingVideoCanvas.getChildren().add(project.getVideo().getArenaBounds());
 	}
+	
 
 	/*
 	 * menuCalibrationSetArenaBounds
@@ -533,10 +533,11 @@ public class FirstWindowController implements AutoTrackListener {
 		isAbleToSetArena = false;
 		isAbleToSetOrigin = false;
 		if (mouseDragRect != null) {
+			project.getVideo().setArenaBounds(mouseDragRect);
 
 			ArrayList<String> choices = new ArrayList();
 			choices.add("Vertical");
-			choices.add("Horizontal");
+			choices.add("Horizon");
 
 			ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
 			dialog.setHeaderText("Set up actual length");
