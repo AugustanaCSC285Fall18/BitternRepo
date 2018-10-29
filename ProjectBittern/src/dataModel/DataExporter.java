@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * This class contains methods that analyze and export relevant tracking 
  * information from a ProjectData object
- * @author danielleosazuwa16
+ * @author Group Bittern
  *
  */
 public class DataExporter {
@@ -27,6 +27,8 @@ public class DataExporter {
 		try {
 			for (AnimalTrack track : project.getTracks()) {
 				fWriter.append(track.getID());
+				fWriter.append("\n");
+				fWriter.append("Time, X Positions, Y Positions, Distance From Origin (cm)");
 				fWriter.append("\n");
 				fWriter.append(getResult(track, project.getVideo()));
 			}
@@ -56,12 +58,12 @@ public class DataExporter {
 		List<TimePoint> adjustedPositions = getCalibratedPositions(track, video, origin);
 		String output = "";	
 		
-		for (int i = 0; i < adjustedPositions.size(); i++) {
+		for (int i = 0; i < adjustedPositions.size(); i+= video.getStepSize()) {
 			TimePoint currentPoint = adjustedPositions.get(i);
-			output += "Time: " + video.getTime(currentPoint.getFrameNum()) + ", Position in centimeters: (" 
+			output += "Time: " + video.getTime(currentPoint.getFrameNum()) + ", "
 					+ (int) currentPoint.getX() + ", " 
-					+ (int) currentPoint.getY() + ") Distance from origin: "
-					+ currentPoint.getDistanceTo(origin);
+					+ (int) currentPoint.getY() + ", "
+					+ (int) currentPoint.getDistanceTo(origin) + "\n";
 		}
 		
 		return output;
@@ -74,7 +76,7 @@ public class DataExporter {
 	 * @param origin the origin TimePoint
 	 * @return a list of the adjusted TimePoints
 	 */
-	public static List<TimePoint> getCalibratedPositions(AnimalTrack track, Video video, TimePoint origin) {
+	private static List<TimePoint> getCalibratedPositions(AnimalTrack track, Video video, TimePoint origin) {
 		List<TimePoint> calibratedTimePoints = new ArrayList<>();
 		
 		for (int i = 0; i < track.getPositions().size(); i++) {
