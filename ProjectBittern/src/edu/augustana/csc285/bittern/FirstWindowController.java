@@ -488,7 +488,7 @@ public class FirstWindowController implements AutoTrackListener {
 	public void menuFileSave() throws FileNotFoundException {
 		try {
 			File saveFile = new File(project.getVideo().getFilePath());
-			File output = new File("output." + saveFile.getName() + ".json");
+			File output = new File("progress." + saveFile.getName() + ".json");
 			project.saveToFile(output);
 			System.out.println("File was saved successfully!");
 		} catch (Exception e) {

@@ -490,7 +490,7 @@ public class SecondWindowController {
 	@FXML
 	private void menuFileSave() throws FileNotFoundException {
 		File saveFile = new File(project.getVideo().getFilePath());
-		File output = new File("output." + saveFile.getName() + ".txt");
+		File output = new File("progress." + saveFile.getName() + ".json");
 		project.saveToFile(output);
 	}
 
