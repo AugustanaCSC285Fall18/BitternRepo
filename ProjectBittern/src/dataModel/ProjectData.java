@@ -261,7 +261,7 @@ public class ProjectData {
 
 		
 	/**
-	 * 
+	 * Takes ProjectData, converts it to a json file, and saves it.
 	 * @param saveFile
 	 * @throws FileNotFoundException
 	 */
@@ -273,8 +273,8 @@ public class ProjectData {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Converts ProjectData to json.
+	 * @return json as a string.
 	 */
 	public String toJSON() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();		
@@ -282,9 +282,9 @@ public class ProjectData {
 	}
 	
 	/**
-	 * 
+	 * Loads the selected json file and converts it to ProjectData.
 	 * @param loadFile
-	 * @return
+	 * @return ProjectData from a json file.
 	 * @throws FileNotFoundException
 	 */
 	public static ProjectData loadFromFile(File loadFile) throws FileNotFoundException {
@@ -293,9 +293,9 @@ public class ProjectData {
 	}
 	
 	/**
-	 * 
+	 * Converts a json file to a ProjectData file. 
 	 * @param jsonText
-	 * @return
+	 * @return ProjectData from a json file.
 	 * @throws FileNotFoundException
 	 */
 	public static ProjectData fromJSON(String jsonText) throws FileNotFoundException {
