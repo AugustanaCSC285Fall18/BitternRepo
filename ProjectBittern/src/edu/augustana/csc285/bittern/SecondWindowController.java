@@ -286,7 +286,11 @@ public class SecondWindowController {
 	private void handleAddAutoTrack() {
 		if (tracksBox.getItems().size() != 0) {
 			AnimalTrack autoTrack = tracksBox.getValue();
-			currentTrack.add(autoTrack.getPositions());
+			for (TimePoint position: autoTrack.getPositions()) {
+				if (position.getFrameNum() <= project.getVideo().getEndFrameNum()) {
+					currentTrack.add(position);
+				}
+			}
 			usedTracksBox.getItems().add(autoTrack);
 			project.getUnassignedSegments().remove(autoTrack); // hmmn
 			tracksBox.getItems().remove(autoTrack);
@@ -334,7 +338,7 @@ public class SecondWindowController {
 		if (tracksBox.getValue() != null) {
 			videoGC.setFill(Color.DARKBLUE);
 			for (TimePoint point : tracksBox.getValue().getPositions()) {
-				if (point.getFrameNum() >= project.getVideo().getCurrentFrameNum()) {
+				if (point.getFrameNum() >= project.getVideo().getCurrentFrameNum() && point.getFrameNum() <= project.getVideo().getEndFrameNum()) {
 					videoGC.fillOval(point.getX() * scalingRatio - 1, point.getY() * scalingRatio - 1, 2, 2);
 				}
 			}
@@ -344,7 +348,7 @@ public class SecondWindowController {
 	@FXML
 	private void handleShowCurrentPath() {
 //		drawingGC.clearRect(0, 0, drawingCanvas.getWidth(), drawingCanvas.getHeight());
-		drawTrackPath(currentTrack, (Color.color(Math.random(), Math.random(), Math.random())));
+		drawTrackPath(currentTrack, (Color.color(Math.random(), Math.random(), Math.random())), getImageScalingRatio());
 	}
 	
 	/**
@@ -362,14 +366,14 @@ public class SecondWindowController {
 		}
 	}
 	
-	private void drawTrackPath(AnimalTrack track, Color color) {
+	private void drawTrackPath(AnimalTrack track, Color color, double scalingRatio) {
 		videoGC.beginPath();
 		videoGC.setLineWidth(2.0);
 		videoGC.setStroke(color);
 		
 		for (int i = 0; i < track.getSize() - 1; i++) {
-			videoGC.moveTo(track.getTimePointAtIndex(i).getX(), track.getTimePointAtIndex(i).getY());
-			videoGC.lineTo(track.getTimePointAtIndex(i + 1).getX(), track.getTimePointAtIndex(i+ 1).getY());
+			videoGC.moveTo(track.getTimePointAtIndex(i).getX()  * scalingRatio - 3, track.getTimePointAtIndex(i).getY() * scalingRatio - 3);
+			videoGC.lineTo(track.getTimePointAtIndex(i + 1).getX() * scalingRatio - 3, track.getTimePointAtIndex(i+ 1).getY() * scalingRatio - 3);
 			videoGC.stroke();
 		}
 	}
