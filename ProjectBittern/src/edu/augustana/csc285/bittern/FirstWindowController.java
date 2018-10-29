@@ -481,7 +481,7 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	/**
-	 * Save the progress 
+	 * Save the progress.
 	 * @throws FileNotFoundException
 	 */
 	@FXML
@@ -499,7 +499,7 @@ public class FirstWindowController implements AutoTrackListener {
 	}
 
 	/**
-	 * Open saved progresss
+	 * Open saved progress.
 	 * @throws FileNotFoundException
 	 */
 	@FXML
@@ -509,7 +509,7 @@ public class FirstWindowController implements AutoTrackListener {
 		Window window = myMenuBar.getScene().getWindow();
 		File chosenFile = fileChooser.showOpenDialog(window);
 		project = project.loadFromFile(chosenFile);
-
+		setup(project);
 	}
 
 	/*
@@ -534,7 +534,7 @@ public class FirstWindowController implements AutoTrackListener {
 
 			ArrayList<String> choices = new ArrayList();
 			choices.add("Vertical");
-			choices.add("Horizon");
+			choices.add("Horizontal");
 
 			ChoiceDialog<String> dialog = new ChoiceDialog<>("", choices);
 			dialog.setHeaderText("Set up actual length");
